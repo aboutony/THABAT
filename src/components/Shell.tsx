@@ -74,7 +74,7 @@ export default function Shell({ children }: ShellProps) {
             {/* Top App Bar */}
             <header className={`glass-nav ${styles.header}`}>
                 <div className={styles.brand}>
-                    <span className={styles.logo}>◆</span>
+                    <img src="/thabat-logo.png" alt="THABAT" className={styles.logo} width={32} height={32} />
                     <div className={styles.brandText}>
                         <span className={styles.title}>{tApp('title')}</span>
                         <span className={styles.subtitle}>{tApp('subtitle')}</span>

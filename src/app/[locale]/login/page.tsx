@@ -37,7 +37,7 @@ export default function LoginPage() {
             <div className={styles.authContainer}>
                 {/* Branding */}
                 <div className={styles.brandHeader}>
-                    <div className={styles.brandIcon}>◆</div>
+                    <img src="/thabat-logo.png" alt="THABAT" className={styles.brandIcon} width={48} height={48} style={{ borderRadius: '12px' }} />
                     <h1 className={styles.brandTitle}>THABAT</h1>
                     <p className={styles.brandSubtitle}>{t('tagline')}</p>
                 </div>
