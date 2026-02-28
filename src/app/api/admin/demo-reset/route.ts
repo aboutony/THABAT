@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import sql from '@/db';
 
 const DEMO_PASSWORD = 'Demo2026!';
