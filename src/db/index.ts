@@ -52,6 +52,7 @@ async function initSchema(): Promise<void> {
             full_name TEXT NOT NULL,
             role TEXT DEFAULT 'member',
             language_preference TEXT DEFAULT 'en',
+            theme_preference TEXT DEFAULT 'dark',
             created_at TEXT DEFAULT (datetime('now'))
         )`,
         `CREATE TABLE IF NOT EXISTS metrics_daily (
