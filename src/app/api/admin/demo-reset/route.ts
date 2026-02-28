@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Database from 'better-sqlite3';
 import bcrypt from 'bcrypt';
-import path from 'path';
+import sql from '@/db';
 
-const DB_PATH = path.join(process.cwd(), 'thabat.db');
 const DEMO_PASSWORD = 'Demo2026!';
 const DAYS = 180;
 
@@ -46,7 +44,7 @@ const PROFILES = [
 ];
 
 /**
- * POST /api/admin/demo-reset — Clears and re-seeds 4 demo orgs.
+ * POST /api/admin/demo-reset — Clears and re-seeds 4 demo orgs via Turso.
  */
 export async function POST(request: NextRequest) {
     if (!verifyAdminKey(request)) {
@@ -54,38 +52,34 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const db = new Database(DB_PATH);
-        db.pragma('journal_mode = WAL');
-        db.pragma('foreign_keys = ON');
         const pwHash = await bcrypt.hash(DEMO_PASSWORD, 12);
 
         const today = new Date();
         const dates: string[] = [];
         for (let i = DAYS - 1; i >= 0; i--) { const d = new Date(today); d.setDate(today.getDate() - i); dates.push(d.toISOString().split('T')[0]); }
 
-        // Clean
+        // Clean existing demo data
         for (const p of PROFILES) {
-            const e = db.prepare('SELECT u.id, u.org_id FROM users u WHERE u.email = ?').get(p.email) as { id: string; org_id: string } | undefined;
-            if (e) {
-                for (const tbl of ['stability_scores', 'normalized_metrics', 'metrics_daily', 'action_logs']) db.prepare(`DELETE FROM ${tbl} WHERE org_id = ?`).run(e.org_id);
-                db.prepare('DELETE FROM users WHERE id = ?').run(e.id);
-                db.prepare('DELETE FROM organizations WHERE id = ?').run(e.org_id);
+            const users = await sql`SELECT u.id, u.org_id FROM users u WHERE u.email = ${p.email}`;
+            if (users.length > 0) {
+                const orgId = users[0].org_id as string;
+                const userId = users[0].id as string;
+                await sql`DELETE FROM stability_scores WHERE org_id = ${orgId}`;
+                await sql`DELETE FROM normalized_metrics WHERE org_id = ${orgId}`;
+                await sql`DELETE FROM metrics_daily WHERE org_id = ${orgId}`;
+                await sql`DELETE FROM action_logs WHERE org_id = ${orgId}`;
+                await sql`DELETE FROM users WHERE id = ${userId}`;
+                await sql`DELETE FROM organizations WHERE id = ${orgId}`;
             }
         }
 
-        const s = {
-            org: db.prepare('INSERT INTO organizations (id, name, industry, industry_code, revenue_band, growth_stage) VALUES (?, ?, ?, ?, ?, ?)'),
-            usr: db.prepare("INSERT INTO users (id, org_id, email, password_hash, full_name, role) VALUES (?, ?, ?, ?, ?, 'owner')"),
-            met: db.prepare('INSERT OR REPLACE INTO metrics_daily (org_id, date, cash_balance, revenue, expenses, receivables, payables) VALUES (?, ?, ?, ?, ?, ?, ?)'),
-            nrm: db.prepare('INSERT OR REPLACE INTO normalized_metrics (org_id, date, runway_months, burn_rate, margin_pct, liquidity_ratio, collection_days, stability_score, trend) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'),
-            scr: db.prepare('INSERT OR REPLACE INTO stability_scores (org_id, date, total_score, trajectory_direction, score_delta, liquidity_component, margin_component, receivables_component, cost_component, revenue_component, calibration_profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'),
-        };
-
-        const seedOne = db.transaction((p: typeof PROFILES[0]) => {
+        // Seed each profile
+        for (const p of PROFILES) {
             const orgId = crypto.randomUUID().replace(/-/g, '');
             const userId = crypto.randomUUID().replace(/-/g, '');
-            s.org.run(orgId, p.name, p.industry, p.code, p.band, p.stage);
-            s.usr.run(userId, orgId, p.email, pwHash, `Demo (${p.name})`);
+
+            await sql`INSERT INTO organizations (id, name, industry, industry_code, revenue_band, growth_stage) VALUES (${orgId}, ${p.name}, ${p.industry}, ${p.code}, ${p.band}, ${p.stage})`;
+            await sql`INSERT INTO users (id, org_id, email, password_hash, full_name, role) VALUES (${userId}, ${orgId}, ${p.email}, ${pwHash}, ${`Demo (${p.name})`}, ${'owner'})`;
 
             const hist: number[] = [];
             for (let day = 0; day < DAYS; day++) {
@@ -107,21 +101,13 @@ export async function POST(request: NextRequest) {
                 const delta = hist.length > 0 ? Math.round((total - hist[hist.length - 1]) * 10) / 10 : 0;
                 const mE = Math.max(m.expenses, 1);
 
-                s.met.run(orgId, date, m.cash, m.revenue, m.expenses, m.receivables, m.payables);
-                s.nrm.run(orgId, date,
-                    Math.round((m.cash / mE) * 10) / 10, Math.round((m.expenses - m.revenue) * 100) / 100,
-                    m.revenue > 0 ? Math.round(((m.revenue - m.expenses) / m.revenue) * 1000) / 10 : 0,
-                    Math.round((m.cash / mE) * 100) / 100, m.revenue > 0 ? Math.round((m.receivables / m.revenue) * 30 * 10) / 10 : 0,
-                    total, trend);
-                s.scr.run(orgId, date, total, trend, delta, Math.round(liq * 10) / 10, Math.round(mar * 10) / 10,
-                    Math.round(rec * 10) / 10, Math.round(cos * 10) / 10, Math.round(rev * 10) / 10,
-                    JSON.stringify({ industry: p.code, revenueBand: p.band, growthStage: p.stage }));
+                await sql`INSERT OR REPLACE INTO metrics_daily (org_id, date, cash_balance, revenue, expenses, receivables, payables) VALUES (${orgId}, ${date}, ${m.cash}, ${m.revenue}, ${m.expenses}, ${m.receivables}, ${m.payables})`;
+                await sql`INSERT OR REPLACE INTO normalized_metrics (org_id, date, runway_months, burn_rate, margin_pct, liquidity_ratio, collection_days, stability_score, trend) VALUES (${orgId}, ${date}, ${Math.round((m.cash / mE) * 10) / 10}, ${Math.round((m.expenses - m.revenue) * 100) / 100}, ${m.revenue > 0 ? Math.round(((m.revenue - m.expenses) / m.revenue) * 1000) / 10 : 0}, ${Math.round((m.cash / mE) * 100) / 100}, ${m.revenue > 0 ? Math.round((m.receivables / m.revenue) * 30 * 10) / 10 : 0}, ${total}, ${trend})`;
+                await sql`INSERT OR REPLACE INTO stability_scores (org_id, date, total_score, trajectory_direction, score_delta, liquidity_component, margin_component, receivables_component, cost_component, revenue_component, calibration_profile) VALUES (${orgId}, ${date}, ${total}, ${trend}, ${delta}, ${Math.round(liq * 10) / 10}, ${Math.round(mar * 10) / 10}, ${Math.round(rec * 10) / 10}, ${Math.round(cos * 10) / 10}, ${Math.round(rev * 10) / 10}, ${JSON.stringify({ industry: p.code, revenueBand: p.band, growthStage: p.stage })})`;
                 hist.push(total);
             }
-        });
+        }
 
-        for (const p of PROFILES) seedOne(p);
-        db.close();
         return NextResponse.json({ success: true, message: 'Demo reset complete — 4 orgs × 180 days' });
     } catch (error) {
         console.error('Demo reset error:', error);

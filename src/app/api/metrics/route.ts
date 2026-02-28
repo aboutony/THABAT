@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
         const orgId = session.orgId;
 
         // 1. Fetch org profile for calibration
-        const orgs = sql`SELECT industry, industry_code, revenue_band, growth_stage FROM organizations WHERE id = ${orgId}` as { industry: string; industry_code: string; revenue_band: string; growth_stage: string }[];
+        const orgs = await sql`SELECT industry, industry_code, revenue_band, growth_stage FROM organizations WHERE id = ${orgId}` as { industry: string; industry_code: string; revenue_band: string; growth_stage: string }[];
         const org = orgs[0] || {};
         const calibration: CalibrationProfile = {
             industryCode: org.industry_code || org.industry,
@@ -42,11 +42,11 @@ export async function POST(request: NextRequest) {
 
         // 2. Upsert daily metrics (SQLite ON CONFLICT)
         // Delete + re-insert for upsert since SQLite tagged template doesn't support ON CONFLICT well
-        sql`DELETE FROM metrics_daily WHERE org_id = ${orgId} AND date = ${date}`;
-        sql`INSERT INTO metrics_daily (org_id, date, cash_balance, revenue, expenses, receivables, payables) VALUES (${orgId}, ${date}, ${cash}, ${revenue}, ${expenses}, ${receivables}, ${payables})`;
+        await sql`DELETE FROM metrics_daily WHERE org_id = ${orgId} AND date = ${date}`;
+        await sql`INSERT INTO metrics_daily (org_id, date, cash_balance, revenue, expenses, receivables, payables) VALUES (${orgId}, ${date}, ${cash}, ${revenue}, ${expenses}, ${receivables}, ${payables})`;
 
         // 3. Fetch historical scores for EMA trajectory
-        const history = sql`
+        const history = await sql`
       SELECT stability_score FROM normalized_metrics
       WHERE org_id = ${orgId} AND date < ${date} AND stability_score IS NOT NULL
       ORDER BY date DESC LIMIT 30
@@ -60,15 +60,15 @@ export async function POST(request: NextRequest) {
         const normalized = computeNormalizedMetrics(rawMetrics);
 
         // 5. Upsert normalized metrics
-        sql`DELETE FROM normalized_metrics WHERE org_id = ${orgId} AND date = ${date}`;
-        sql`INSERT INTO normalized_metrics (org_id, date, runway_months, burn_rate, margin_pct, liquidity_ratio, collection_days, stability_score, trend) VALUES (${orgId}, ${date}, ${normalized.runway_months}, ${normalized.burn_rate}, ${normalized.margin_pct}, ${normalized.liquidity_ratio}, ${normalized.collection_days}, ${scoreResult.overall}, ${scoreResult.trend})`;
+        await sql`DELETE FROM normalized_metrics WHERE org_id = ${orgId} AND date = ${date}`;
+        await sql`INSERT INTO normalized_metrics (org_id, date, runway_months, burn_rate, margin_pct, liquidity_ratio, collection_days, stability_score, trend) VALUES (${orgId}, ${date}, ${normalized.runway_months}, ${normalized.burn_rate}, ${normalized.margin_pct}, ${normalized.liquidity_ratio}, ${normalized.collection_days}, ${scoreResult.overall}, ${scoreResult.trend})`;
 
         // 6. Upsert stability_scores
-        sql`DELETE FROM stability_scores WHERE org_id = ${orgId} AND date = ${date}`;
-        sql`INSERT INTO stability_scores (org_id, date, total_score, trajectory_direction, score_delta, liquidity_component, margin_component, receivables_component, cost_component, revenue_component, calibration_profile) VALUES (${orgId}, ${date}, ${scoreResult.overall}, ${scoreResult.trend}, ${scoreResult.delta}, ${scoreResult.liquidity}, ${scoreResult.margins}, ${scoreResult.receivables}, ${scoreResult.costs}, ${scoreResult.revenue}, ${JSON.stringify(scoreResult.calibration)})`;
+        await sql`DELETE FROM stability_scores WHERE org_id = ${orgId} AND date = ${date}`;
+        await sql`INSERT INTO stability_scores (org_id, date, total_score, trajectory_direction, score_delta, liquidity_component, margin_component, receivables_component, cost_component, revenue_component, calibration_profile) VALUES (${orgId}, ${date}, ${scoreResult.overall}, ${scoreResult.trend}, ${scoreResult.delta}, ${scoreResult.liquidity}, ${scoreResult.margins}, ${scoreResult.receivables}, ${scoreResult.costs}, ${scoreResult.revenue}, ${JSON.stringify(scoreResult.calibration)})`;
 
         // 7. Log the action
-        sql`INSERT INTO action_logs (org_id, user_id, action_type, note, metadata) VALUES (${orgId}, ${session.userId}, ${'metrics_ingestion'}, ${'Manual data entry for ' + date}, ${JSON.stringify({ date, score: scoreResult.overall })})`;
+        await sql`INSERT INTO action_logs (org_id, user_id, action_type, note, metadata) VALUES (${orgId}, ${session.userId}, ${'metrics_ingestion'}, ${'Manual data entry for ' + date}, ${JSON.stringify({ date, score: scoreResult.overall })})`;
 
         return NextResponse.json({ score: scoreResult });
     } catch (error) {
@@ -89,15 +89,15 @@ export async function GET() {
 
         const orgId = session.orgId;
 
-        const metrics = sql`
+        const metrics = await sql`
       SELECT * FROM metrics_daily WHERE org_id = ${orgId} ORDER BY date DESC LIMIT 1
     `;
 
-        const score = sql`
+        const score = await sql`
       SELECT * FROM stability_scores WHERE org_id = ${orgId} ORDER BY date DESC LIMIT 1
     `;
 
-        const history = sql`
+        const history = await sql`
       SELECT date, total_score as stability_score, trajectory_direction as trend, score_delta
       FROM stability_scores WHERE org_id = ${orgId} ORDER BY date DESC LIMIT 30
     `;

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Find the demo user for this org
-        const users = sql`SELECT id, org_id, role FROM users WHERE org_id = ${orgId} AND role = 'owner' LIMIT 1`;
+        const users = await sql`SELECT id, org_id, role FROM users WHERE org_id = ${orgId} AND role = 'owner' LIMIT 1`;
         if (users.length === 0) {
             return NextResponse.json({ error: 'No user found for this org' }, { status: 404 });
         }
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
 
     try {
         // Get all orgs that have a demo user
-        const orgs = sql`
+        const orgs = await sql`
             SELECT o.id, o.name, o.industry, o.growth_stage,
                    s.total_score, s.trajectory_direction
             FROM organizations o

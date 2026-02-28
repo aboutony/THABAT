@@ -14,11 +14,11 @@ export async function GET() {
     }
 
     // Total organizations
-    const orgsResult = sql`SELECT COUNT(*) as count FROM organizations` as { count: number }[];
+    const orgsResult = await sql`SELECT COUNT(*) as count FROM organizations` as { count: number }[];
     const totalOrgs = Number(orgsResult[0]?.count) || 0;
 
     // Active this week (orgs with metrics in last 7 days)
-    const activeResult = sql`
+    const activeResult = await sql`
       SELECT COUNT(DISTINCT org_id) as count
       FROM metrics_daily
       WHERE date >= date('now', '-7 days')
@@ -26,7 +26,7 @@ export async function GET() {
     const activeThisWeek = Number(activeResult[0]?.count) || 0;
 
     // Daily Active Executive Ratio (DAU / total orgs, avg over 7 days)
-    const daerResult = sql`
+    const daerResult = await sql`
       SELECT COALESCE(AVG(daily_active) * 100.0 / MAX(1, ${totalOrgs}), 0) as daer
       FROM (
         SELECT date, COUNT(DISTINCT org_id) as daily_active
@@ -38,11 +38,11 @@ export async function GET() {
     const daer = Math.round((Number(daerResult[0]?.daer) || 0) * 10) / 10;
 
     // Total metric entries
-    const entriesResult = sql`SELECT COUNT(*) as count FROM metrics_daily` as { count: number }[];
+    const entriesResult = await sql`SELECT COUNT(*) as count FROM metrics_daily` as { count: number }[];
     const totalMetricsEntries = Number(entriesResult[0]?.count) || 0;
 
     // Average stability score (latest per org)
-    const avgResult = sql`
+    const avgResult = await sql`
       SELECT COALESCE(ROUND(AVG(total_score)), 0) as avg
       FROM (
         SELECT org_id, total_score
@@ -53,14 +53,14 @@ export async function GET() {
     const avgScore = Number(avgResult[0]?.avg) || 0;
 
     // 7-day retention
-    const retainedResult = sql`
+    const retainedResult = await sql`
       SELECT COUNT(DISTINCT org_id) as count FROM metrics_daily
       WHERE date >= date('now', '-7 days')
       AND org_id IN (SELECT DISTINCT org_id FROM metrics_daily WHERE date >= date('now', '-14 days') AND date < date('now', '-7 days'))
     ` as { count: number }[];
     const retained = Number(retainedResult[0]?.count) || 0;
 
-    const lastWeekResult = sql`
+    const lastWeekResult = await sql`
       SELECT COUNT(DISTINCT org_id) as count FROM metrics_daily
       WHERE date >= date('now', '-14 days') AND date < date('now', '-7 days')
     ` as { count: number }[];
@@ -68,7 +68,7 @@ export async function GET() {
     const retentionRate = totalLastWeek > 0 ? Math.round((retained / totalLastWeek) * 100) : 0;
 
     // Score distribution
-    const distResult = sql`
+    const distResult = await sql`
       SELECT
         CASE
           WHEN total_score >= 70 THEN 'Strong'
@@ -96,7 +96,7 @@ export async function GET() {
     }
 
     // Trajectory distribution
-    const trajResult = sql`
+    const trajResult = await sql`
       SELECT trajectory_direction, COUNT(*) as count
       FROM (
         SELECT org_id, trajectory_direction
@@ -118,7 +118,7 @@ export async function GET() {
     }
 
     // Recent actions (last 15)
-    const actionsResult = sql`
+    const actionsResult = await sql`
       SELECT action_type, note, created_at
       FROM action_logs
       ORDER BY created_at DESC
