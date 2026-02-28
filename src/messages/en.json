@@ -1,0 +1,156 @@
+{
+    "app": {
+        "title": "THABAT",
+        "subtitle": "Stability Intelligence"
+    },
+    "nav": {
+        "home": "Home",
+        "analytics": "Analytics",
+        "alerts": "Alerts",
+        "settings": "Settings"
+    },
+    "stability": {
+        "score": "Stability Score",
+        "strengthening": "Strengthening",
+        "stable": "Stable",
+        "weakening": "Weakening"
+    },
+    "drivers": {
+        "title": "Top Drivers",
+        "revenue": "Revenue Growth",
+        "revenueDesc": "Quarterly revenue trending upward",
+        "retention": "Client Retention",
+        "retentionDesc": "Retention rate above target",
+        "efficiency": "Operational Efficiency",
+        "efficiencyDesc": "Cost optimization on track"
+    },
+    "theme": {
+        "light": "Light",
+        "dark": "Dark"
+    },
+    "language": {
+        "toggle": "عربي"
+    },
+    "auth": {
+        "tagline": "SME Stability Intelligence",
+        "login": "Sign In",
+        "signup": "Create Account",
+        "email": "Email",
+        "password": "Password",
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Smith",
+        "orgName": "Organization",
+        "orgNamePlaceholder": "Company Name",
+        "industry": "Industry",
+        "selectIndustry": "Select Industry",
+        "revenueBand": "Revenue Band",
+        "selectRevenue": "Select Range",
+        "loginBtn": "Enter the Fortress",
+        "signupBtn": "Establish Your Fortress",
+        "loading": "Securing...",
+        "noAccount": "No account?",
+        "signupLink": "Create one",
+        "hasAccount": "Already have access?",
+        "loginLink": "Sign in"
+    },
+    "scoring": {
+        "strengthening": "Strengthening",
+        "stable": "Stable",
+        "weakening": "Weakening",
+        "liquidity": "Liquidity",
+        "margins": "Margins",
+        "receivables": "Receivables",
+        "costs": "Cost Volatility",
+        "revenue": "Revenue Stability",
+        "driver": {
+            "runway": "Cash Runway",
+            "margin": "Net Margin",
+            "collection": "Collection Ratio"
+        },
+        "explain": {
+            "runwayHigh": "Strong cash reserves — over 12 months of runway",
+            "runwayMid": "Adequate runway — 3 to 12 months of reserves",
+            "runwayLow": "Critical runway — less than 3 months of cash",
+            "marginHigh": "Healthy margins — operating efficiently",
+            "marginMid": "Moderate margins — room for optimization",
+            "marginLow": "Negative or thin margins — cost action needed",
+            "collectionHigh": "Receivables under control — strong collection",
+            "collectionMid": "Moderate receivables — monitor closely",
+            "collectionLow": "High receivables — collection risk detected"
+        }
+    },
+    "entry": {
+        "title": "Manual Data Entry",
+        "subtitle": "Feed the Stability Engine with today's financials",
+        "date": "Reporting Date",
+        "cash": "Cash Balance",
+        "revenue": "Revenue",
+        "expenses": "Expenses",
+        "receivables": "Receivables",
+        "payables": "Payables",
+        "submit": "Calculate Stability Score",
+        "calculating": "Computing...",
+        "success": "Score calculated successfully"
+    },
+    "analytics": {
+        "title": "Manual Data Entry",
+        "subtitle": "Feed the Stability Engine with today's financials",
+        "latestScore": "Latest Stability Score",
+        "keyDrivers": "Key Drivers"
+    },
+    "integrations": {
+        "title": "Integration Hub",
+        "subtitle": "Connect your ERP for automated data ingestion",
+        "connected": "Connected",
+        "connect": "Connect",
+        "sync": "Sync Now",
+        "syncing": "Syncing...",
+        "connectTo": "Connect to",
+        "testAndSave": "Test & Save",
+        "testing": "Testing...",
+        "cancel": "Cancel",
+        "connectionSuccess": "Connection established and credentials secured",
+        "connectionFailed": "Connection test failed",
+        "syncFailed": "Sync failed",
+        "networkError": "Network error — please try again"
+    },
+    "pilot": {
+        "title": "Pilot KPI Tracker",
+        "subtitle": "Monitor engagement and onboarding progress",
+        "loading": "Loading KPIs...",
+        "totalOrgs": "Total Orgs",
+        "activeWeek": "Active (7d)",
+        "totalEntries": "Entries",
+        "avgScore": "Avg Score",
+        "daer": "DAER",
+        "retention": "Retention",
+        "distribution": "Score Distribution",
+        "trajectory": "Trajectory Distribution",
+        "strengthening": "Strengthening",
+        "stableLabel": "Stable",
+        "weakening": "Weakening",
+        "recentActivity": "Recent Activity"
+    },
+    "settings": {
+        "logout": "Sign Out"
+    },
+    "insight": {
+        "title": "Executive Insight",
+        "consequence": {
+            "liquidity": "Cash reserves cover only {value} months of operations — your ability to absorb disruption is constrained",
+            "margins": "Operating at {value} margin is limiting your capacity to reinvest in growth this period",
+            "receivables": "Outstanding receivables at {value} days are tying up working capital and restricting cash flow flexibility",
+            "costs": "Cost-to-revenue ratio at {value} is compressing margins and reducing operational resilience",
+            "revenue": "Revenue coverage at {value} of expenses signals dependency risk — diversification is needed"
+        }
+    },
+    "benchmark": {
+        "topPercent": "Top {value}%",
+        "ofIndustry": "of {industry} SMEs"
+    },
+    "demo": {
+        "switchOrg": "Demo Organizations",
+        "current": "Active",
+        "switch": "Switch"
+    }
+}

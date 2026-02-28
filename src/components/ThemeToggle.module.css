@@ -1,0 +1,51 @@
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.toggle:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+.toggle:active {
+    transform: scale(0.95);
+}
+
+.iconWrapper {
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    transition: opacity 0.3s ease, transform 0.4s ease;
+}
+
+.active {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+.hidden {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}

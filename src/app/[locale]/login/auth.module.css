@@ -1,0 +1,202 @@
+.authPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: 16px;
+    background: var(--bg-gradient);
+    position: relative;
+    overflow: auto;
+}
+
+/* Theme / Language toggles — centered, prominent, thumb-accessible */
+.authToggles {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 6px 10px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full);
+    width: fit-content;
+    margin: 0 auto;
+}
+
+/* Mesh background on auth pages */
+.authPage::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: var(--bg-mesh);
+    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%;
+    animation: mesh-breathe 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.authContainer {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ---- Branding ---- */
+.brandHeader {
+    text-align: center;
+    padding: 16px 0;
+}
+
+.brandIcon {
+    font-size: 32px;
+    color: var(--accent-primary);
+    filter: drop-shadow(0 0 12px var(--accent-glow));
+    margin-bottom: 8px;
+}
+
+.brandTitle {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.brandSubtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+    margin-top: 4px;
+    letter-spacing: 0.06em;
+}
+
+/* ---- Form Card ---- */
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 28px 24px;
+}
+
+.formTitle {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+/* ---- Fields ---- */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.fieldRow {
+    display: flex;
+    gap: 12px;
+}
+
+.label {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.input {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    font-family: inherit;
+    outline: none;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.input::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.6;
+}
+
+.input:focus {
+    border-color: var(--accent-primary);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Select styling */
+.input option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* ---- Error ---- */
+.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--danger);
+    font-size: var(--font-size-sm);
+}
+
+/* ---- Submit Button ---- */
+.submitBtn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background var(--transition-fast), transform 0.1s ease;
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.submitBtn:hover {
+    background: var(--accent-secondary);
+}
+
+.submitBtn:active {
+    transform: scale(0.98);
+}
+
+.submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---- Switch Link ---- */
+.switchLink {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-tertiary);
+}
+
+.link {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,33 @@
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.toggle:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+.toggle:active {
+    transform: scale(0.95);
+}
+
+.label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}

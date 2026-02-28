@@ -1,0 +1,177 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+}
+
+.icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* ---- Org Cards ---- */
+
+.orgList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.orgCard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: start;
+    font-family: inherit;
+}
+
+.orgCard:hover:not(:disabled) {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.08);
+    transform: translateY(-1px);
+}
+
+.orgCard:disabled {
+    cursor: default;
+}
+
+.orgCard.active {
+    border-color: var(--ring-green);
+    box-shadow: inset 0 0 16px rgba(34, 197, 94, 0.06),
+        0 0 12px rgba(34, 197, 94, 0.06);
+}
+
+/* ---- Internal Layout ---- */
+
+.orgIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: var(--accent-glow);
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.orgInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.orgName {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.orgStage {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    line-height: 1.2;
+}
+
+.orgScore {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.scoreValue {
+    font-size: 18px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.scoreTrend {
+    font-size: 14px;
+    color: var(--text-tertiary);
+}
+
+.action {
+    flex-shrink: 0;
+    min-width: 56px;
+    text-align: end;
+}
+
+.currentBadge {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ring-green);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    background: rgba(34, 197, 94, 0.08);
+}
+
+.switchBtn {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    background: rgba(59, 130, 246, 0.08);
+    transition: background 0.15s ease;
+}
+
+.orgCard:hover:not(:disabled) .switchBtn {
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.loadingDot {
+    font-size: 14px;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}

@@ -1,42 +1,315 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ======================================================
+   THABAT — Glass Fortress Design System
+   "Cinematic Executive" Edition
+   ====================================================== */
+
+/* --- CSS Reset & Base --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Zero layout shift: smooth theme/language transitions */
+html {
+  color-scheme: dark light;
 }
 
 html,
 body {
-  max-width: 100vw;
   overflow-x: hidden;
 }
 
+/*
+ * Prevent CLS on theme toggle — transition ONLY color properties.
+ * Uses targeted selectors to avoid interfering with Framer Motion,
+ * SVG icon rotations, or transform-based animations.
+ */
+body,
+.glass-card,
+.glass-nav,
+nav,
+header,
+main {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* RTL/LTR layout containment for glass cards */
+[dir='rtl'] .glass-card,
+[dir='ltr'] .glass-card {
+  contain: layout style;
+}
+
+/* --- Design Tokens --- */
+
+/* Dark Mode (Default) — Deep Midnight Mesh */
+[data-theme='dark'] {
+  --bg-primary: #0A0E14;
+  --bg-secondary: #162235;
+  --bg-tertiary: #111a2e;
+  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #162235 0%, #0A0E14 50%, #05070A 100%);
+  --bg-mesh:
+    radial-gradient(ellipse 60% 50% at 10% 90%, #162235 0%, transparent 60%),
+    radial-gradient(ellipse 50% 45% at 90% 15%, rgba(22, 34, 53, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 50% 50%, #05070A 0%, transparent 80%),
+    radial-gradient(ellipse 40% 30% at 70% 70%, rgba(59, 130, 246, 0.04) 0%, transparent 70%);
+
+  --text-primary: #edf0f7;
+  --text-secondary: #8b97b5;
+  --text-tertiary: #4a5578;
+  --text-accent: #6ea8fe;
+
+  --accent-primary: #3b82f6;
+  --accent-secondary: #6366f1;
+  --accent-glow: rgba(59, 130, 246, 0.35);
+
+  --glass-bg: rgba(255, 255, 255, 0.02);
+  --glass-bg-hover: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.12);
+  --glass-blur: 40px;
+  --glass-glow: rgba(59, 130, 246, 0.06);
+
+  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(34, 197, 94, 0.05) 0%, transparent 70%);
+  --neon-cast-amber: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
+  --neon-cast-red: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+
+  --ring-track: rgba(255, 255, 255, 0.04);
+  --ring-green: #22c55e;
+  --ring-amber: #f59e0b;
+  --ring-red: #ef4444;
+  --ring-glow-green: rgba(34, 197, 94, 0.45);
+  --ring-glow-amber: rgba(245, 158, 11, 0.45);
+  --ring-glow-red: rgba(239, 68, 68, 0.45);
+
+  --nav-bg: rgba(10, 14, 20, 0.94);
+  --nav-border: rgba(255, 255, 255, 0.05);
+  --nav-active: #3b82f6;
+  --nav-inactive: #3d4a65;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 30px var(--glass-glow);
+}
+
+/* Light Mode — Pearl Depth */
+[data-theme='light'] {
+  --bg-primary: #f0f1f6;
+  --bg-secondary: #e4e7ef;
+  --bg-tertiary: #d8dce8;
+  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #e8ecf6 0%, #f0f1f6 40%, #eceef4 100%);
+  --bg-mesh:
+    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(37, 99, 235, 0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 70%);
+
+  --text-primary: #0d1117;
+  --text-secondary: #3d4f6f;
+  --text-tertiary: #7e8ba6;
+  --text-accent: #2563eb;
+
+  --accent-primary: #2563eb;
+  --accent-secondary: #4f46e5;
+  --accent-glow: rgba(37, 99, 235, 0.25);
+
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-bg-hover: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-border-hover: rgba(255, 255, 255, 0.8);
+  --glass-blur: 40px;
+  --glass-glow: rgba(37, 99, 235, 0.04);
+
+  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(22, 163, 74, 0.04) 0%, transparent 70%);
+  --neon-cast-amber: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(217, 119, 6, 0.04) 0%, transparent 70%);
+  --neon-cast-red: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(220, 38, 38, 0.04) 0%, transparent 70%);
+
+  --ring-track: rgba(0, 0, 0, 0.05);
+  --ring-green: #16a34a;
+  --ring-amber: #d97706;
+  --ring-red: #dc2626;
+  --ring-glow-green: rgba(22, 163, 74, 0.3);
+  --ring-glow-amber: rgba(217, 119, 6, 0.3);
+  --ring-glow-red: rgba(220, 38, 38, 0.3);
+
+  --nav-bg: rgba(240, 241, 246, 0.92);
+  --nav-border: rgba(0, 0, 0, 0.05);
+  --nav-active: #2563eb;
+  --nav-inactive: #7e8ba6;
+
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 24px var(--glass-glow);
+}
+
+/* --- Typography Scale --- */
+:root {
+  --font-size-xs: 0.6875rem;
+  /* 11px */
+  --font-size-sm: 0.75rem;
+  /* 12px */
+  --font-size-base: 0.875rem;
+  /* 14px */
+  --font-size-md: 1rem;
+  /* 16px */
+  --font-size-lg: 1.25rem;
+  /* 20px */
+  --font-size-xl: 1.5rem;
+  /* 24px */
+  --font-size-2xl: 2rem;
+  /* 32px */
+  --font-size-3xl: 2.5rem;
+  /* 40px */
+  --font-size-score: 3.75rem;
+  /* 60px — Stability Score */
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-full: 9999px;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* --- Global Styles --- */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  height: 100dvh;
+  overflow: hidden;
+  transition: background var(--transition-base), color var(--transition-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* --- Glass Card Utility --- */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-glow);
+  transition: background var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform 0.25s ease;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* --- Glass Nav Utility --- */
+.glass-nav {
+  background: var(--nav-bg);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-top: 1px solid var(--nav-border);
+}
+
+/* --- Utility Classes --- */
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+
+.text-accent {
+  color: var(--text-accent);
+}
+
+/* --- Animations --- */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px var(--accent-glow);
   }
+
+  50% {
+    box-shadow: 0 0 50px var(--accent-glow);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mesh Breathing — slow 20s alive animation */
+@keyframes mesh-breathe {
+  0% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 70% 70%;
+  }
+
+  25% {
+    background-position: 5% 10%, 95% 90%, 45% 55%, 65% 75%;
+  }
+
+  50% {
+    background-position: 10% 5%, 90% 95%, 55% 45%, 75% 65%;
+  }
+
+  75% {
+    background-position: 5% 10%, 95% 90%, 45% 55%, 65% 75%;
+  }
+
+  100% {
+    background-position: 0% 0%, 100% 100%, 50% 50%, 70% 70%;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+/* --- Scrollbar (hidden for native feel) --- */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Selection --- */
+::selection {
+  background: var(--accent-primary);
+  color: #fff;
 }

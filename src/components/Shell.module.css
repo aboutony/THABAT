@@ -1,0 +1,181 @@
+.shell {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    margin-inline: auto;
+    background: var(--bg-gradient);
+}
+
+/* Layered mesh depth behind content — alive with 20s breathing */
+.shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bg-mesh);
+    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%;
+    animation: mesh-breathe 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Neon casting layer — ring color bleeds onto background */
+.shell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--neon-cast-green);
+    pointer-events: none;
+    z-index: 0;
+    transition: background 1s ease;
+}
+
+/* Ensure children sit above mesh */
+.shell>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* ---- Viewport Lock: Desktop "phone frame" ---- */
+@media (min-width: 431px) {
+    .shell {
+        border-inline: 1px solid var(--glass-border);
+        box-shadow:
+            0 0 60px rgba(59, 130, 246, 0.04),
+            0 0 120px rgba(99, 102, 241, 0.02),
+            inset 0 0 60px rgba(59, 130, 246, 0.01);
+    }
+}
+
+/* ---- Header / AppBar ---- */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--nav-border);
+    height: 52px;
+    flex-shrink: 0;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    font-size: 24px;
+    color: var(--accent-primary);
+    filter: drop-shadow(0 0 12px var(--accent-glow));
+    line-height: 1;
+}
+
+.brandText {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.title {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.16em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    color: var(--text-tertiary);
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ---- Main Content ---- */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* ---- Bottom Navigation ---- */
+.bottomNav {
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    height: 84px;
+    flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--nav-inactive);
+    transition: color var(--transition-fast), transform 0.1s ease;
+    font-family: inherit;
+    padding: 8px 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.navItem svg {
+    width: 24px;
+    height: 24px;
+}
+
+.navItem span {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.navItem:hover {
+    color: var(--text-secondary);
+}
+
+.navItem:active {
+    transform: scale(0.88);
+}
+
+.navActive {
+    color: var(--nav-active);
+}
+
+.navActive svg {
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+.navActive span {
+    font-weight: 600;
+}

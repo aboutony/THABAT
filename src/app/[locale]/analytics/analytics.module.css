@@ -1,0 +1,134 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 0 16px 80px;
+}
+
+.page::-webkit-scrollbar {
+    display: none;
+}
+
+.page {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Score Preview */
+.scorePreview {
+    margin: 8px 16px 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.scoreRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scoreLabel {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.scoreTrend {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.scoreNumber {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+}
+
+/* Sub-scores */
+.subScores {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.subScore {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.subLabel {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.subWeight {
+    color: var(--text-tertiary);
+    font-size: 9px;
+}
+
+.subBar {
+    flex: 1;
+    height: 4px;
+    background: var(--ring-track);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.subFill {
+    height: 100%;
+    border-radius: 2px;
+}
+
+.subValue {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 24px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Drivers */
+.drivers {
+    border-top: 1px solid var(--glass-border);
+    padding-top: 12px;
+}
+
+.driversTitle {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.driver {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
+.driverLabel {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.driverValue {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+}

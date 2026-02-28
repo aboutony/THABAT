@@ -6,14 +6,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:migrate": "npx tsx src/db/migrate.ts",
+    "seed:demo": "npx tsx scripts/seed-demo.ts"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.6.2",
+    "framer-motion": "^12.34.3",
+    "jose": "^6.1.3",
     "next": "16.1.6",
+    "next-intl": "^4.8.3",
+    "postgres": "^3.4.8",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
