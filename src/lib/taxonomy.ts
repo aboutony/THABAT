@@ -97,6 +97,18 @@ export const INDUSTRY_TAXONOMY: Record<string, IndustryProfile> = {
             revenue: 0.9,
         },
     },
+    MEDICAL_MFG: {
+        code: 'MEDICAL_MFG',
+        nameEN: 'Medical Manufacturing',
+        nameAR: 'التصنيع الطبي',
+        weightCalibration: {
+            liquidity: 1.0,
+            margins: 1.1,      // Regulated pricing
+            receivables: 1.4,  // Govt/insurance procurement — very slow payments
+            costs: 1.3,        // Raw material + compliance costs critical
+            revenue: 0.8,      // Lumpy contract-based revenue
+        },
+    },
     CONSTRUCTION: {
         code: 'CONST',
         nameEN: 'Construction & Real Estate',
@@ -183,6 +195,13 @@ export const REVENUE_BANDS: Record<string, RevenueBandProfile> = {
         labelEN: '50M+ SAR',
         labelAR: '+٥٠ مليون ريال',
         volatilityThreshold: 2,   // Low tolerance (stable data expected)
+        scoreFloor: 25,
+    },
+    '50-200m': {
+        code: '50-200m',
+        labelEN: '50M – 200M SAR',
+        labelAR: '٥٠ – ٢٠٠ مليون ريال',
+        volatilityThreshold: 2,
         scoreFloor: 25,
     },
 };

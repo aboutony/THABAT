@@ -94,11 +94,21 @@ export const SAPConnector: ERPConnector = {
         try {
             const { sessionId } = await sapLogin(c);
 
+            // Exchange rates (Executive Currency = SAR)
+            const FX_RATES: Record<string, number> = {
+                SAR: 1.0,
+                AED: 0.98,  // 1 AED ≈ 0.98 SAR
+                USD: 3.75,
+                EUR: 4.10,
+            };
+
             // Fetch A/R Invoices (OINV) → Revenue
             const invoices = await sapQuery<{
                 DocDate: string;
                 DocTotal: number;
                 DocTotalFc: number;
+                DocCurrency: string;
+                VatSum: number;
             }>(
                 c.serviceLayerUrl,
                 sessionId,
@@ -106,10 +116,12 @@ export const SAPConnector: ERPConnector = {
                 `DocDate ge '${fromDate}' and DocDate le '${toDate}'`
             );
 
-            // Fetch A/P Invoices (OPCH) → Expenses
+            // Fetch A/P Invoices (OPCH) → Expenses + VAT
             const purchaseInvoices = await sapQuery<{
                 DocDate: string;
                 DocTotal: number;
+                DocCurrency: string;
+                VatSum: number;
             }>(
                 c.serviceLayerUrl,
                 sessionId,
@@ -141,26 +153,34 @@ export const SAPConnector: ERPConnector = {
                 `DocDate ge '${fromDate}' and DocDate le '${toDate}'`
             );
 
-            // Aggregate by date
             const dateMap = new Map<string, NormalizedDailyMetrics>();
 
             const getOrCreate = (date: string): NormalizedDailyMetrics => {
                 if (!dateMap.has(date)) {
-                    dateMap.set(date, { date, cashBalance: 0, revenue: 0, expenses: 0, receivables: 0, payables: 0 });
+                    dateMap.set(date, { date, cashBalance: 0, revenue: 0, expenses: 0, receivables: 0, payables: 0, vatAmount: 0 });
                 }
                 return dateMap.get(date)!;
             };
 
+            const toSAR = (amount: number, currency?: string): number => {
+                if (!currency || currency === 'SAR') return amount;
+                const rate = FX_RATES[currency] || 1.0;
+                return amount * rate;
+            };
+
             for (const inv of invoices) {
                 const m = getOrCreate(inv.DocDate);
-                m.revenue += inv.DocTotal || 0;
-                m.receivables += inv.DocTotal || 0;
+                const amount = toSAR(inv.DocTotal || 0, inv.DocCurrency);
+                m.revenue += amount;
+                m.receivables += amount;
             }
 
             for (const pi of purchaseInvoices) {
                 const m = getOrCreate(pi.DocDate);
-                m.expenses += pi.DocTotal || 0;
-                m.payables += pi.DocTotal || 0;
+                const amount = toSAR(pi.DocTotal || 0, pi.DocCurrency);
+                m.expenses += amount;
+                m.payables += amount;
+                m.vatAmount = (m.vatAmount || 0) + toSAR(pi.VatSum || 0, pi.DocCurrency);
             }
 
             for (const ip of incomingPayments) {

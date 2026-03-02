@@ -152,5 +152,36 @@
         "switchOrg": "المؤسسات التجريبية",
         "current": "نشط",
         "switch": "تبديل"
+    },
+    "onboarding": {
+        "title": "ربط SAP Business One",
+        "subtitle": "اربط نظام ERP بمحرك الاستقرار في دقائق",
+        "serviceLayerUrl": "رابط Service Layer",
+        "companyDB": "قاعدة بيانات الشركة",
+        "username": "اسم المستخدم",
+        "password": "كلمة المرور",
+        "branchMapping": "ربط الفروع",
+        "nextStep": "الخطوة التالية",
+        "back": "رجوع",
+        "testConnection": "اختبار الاتصال",
+        "syncing": "جارٍ المزامنة",
+        "syncingMessage": "جارٍ الاتصال بـ SAP Service Layer...",
+        "connected": "متصل",
+        "successMessage": "تم الاتصال بـ SAP Business One بنجاح!",
+        "failed": "فشل",
+        "errorMessage": "فشل الاتصال — تحقق من بيانات الدخول",
+        "tryAgain": "حاول مجدداً",
+        "successTitle": "تم ربط SAP B1!",
+        "successDesc": "بياناتك المالية تتدفق الآن إلى محرك الاستقرار. انتقل إلى لوحة القيادة لرؤية نتيجتك.",
+        "goToDashboard": "انتقل إلى لوحة القيادة"
+    },
+    "consolidated": {
+        "view": "العرض الموحّد",
+        "desc": "النتيجة المجمّعة لجميع الكيانات",
+        "executiveCurrency": "العملة التنفيذية",
+        "trueMargin": "هامش التشغيل الحقيقي",
+        "vatExcluded": "بدون ضريبة القيمة المضافة",
+        "corpTax": "ضريبة الشركات",
+        "afterTax": "بعد الضريبة والقيمة المضافة"
     }
 }

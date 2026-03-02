@@ -42,6 +42,11 @@ async function initSchema(): Promise<void> {
             growth_stage TEXT,
             country TEXT DEFAULT 'SAU',
             company_size TEXT,
+            entity_group TEXT,
+            currency TEXT DEFAULT 'SAR',
+            vat_rate REAL DEFAULT 0.15,
+            corp_tax_rate REAL DEFAULT 0,
+            receivables_warning_days INTEGER DEFAULT 30,
             created_at TEXT DEFAULT (datetime('now'))
         )`,
         `CREATE TABLE IF NOT EXISTS users (
@@ -63,6 +68,7 @@ async function initSchema(): Promise<void> {
             expenses REAL,
             receivables REAL,
             payables REAL,
+            vat_amount REAL DEFAULT 0,
             gross_margin REAL,
             net_income REAL,
             headcount INTEGER,

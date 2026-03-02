@@ -18,6 +18,9 @@ export interface NormalizedDailyMetrics {
     expenses: number;        // SAR
     receivables: number;     // SAR
     payables: number;        // SAR
+    currency?: string;       // Original currency (e.g. 'AED')
+    exchangeRate?: number;   // Rate to Executive Currency (SAR)
+    vatAmount?: number;      // VAT portion of expenses
 }
 
 /**

@@ -152,5 +152,36 @@
         "switchOrg": "Demo Organizations",
         "current": "Active",
         "switch": "Switch"
+    },
+    "onboarding": {
+        "title": "Connect SAP Business One",
+        "subtitle": "Plug your ERP into the Stability Engine in minutes",
+        "serviceLayerUrl": "Service Layer URL",
+        "companyDB": "Company Database",
+        "username": "Username",
+        "password": "Password",
+        "branchMapping": "Branch Mapping",
+        "nextStep": "Next Step",
+        "back": "Back",
+        "testConnection": "Test Connection",
+        "syncing": "Syncing",
+        "syncingMessage": "Connecting to SAP Service Layer...",
+        "connected": "Connected",
+        "successMessage": "SAP Business One connected successfully!",
+        "failed": "Failed",
+        "errorMessage": "Connection failed — check your credentials",
+        "tryAgain": "Try Again",
+        "successTitle": "SAP B1 Connected!",
+        "successDesc": "Your financial data is now flowing into the Stability Engine. Switch to the dashboard to see your live score.",
+        "goToDashboard": "Go to Dashboard"
+    },
+    "consolidated": {
+        "view": "Consolidated View",
+        "desc": "Aggregated score across all entities",
+        "executiveCurrency": "Executive Currency",
+        "trueMargin": "True Operating Margin",
+        "vatExcluded": "VAT Excluded",
+        "corpTax": "Corp Tax",
+        "afterTax": "After Tax & VAT"
     }
 }

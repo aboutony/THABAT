@@ -14,6 +14,23 @@ interface DemoOrg {
     growth_stage: string;
     total_score: number | null;
     trajectory_direction: string | null;
+    entity_group: string | null;
+    currency: string | null;
+    corp_tax_rate: number | null;
+    vat_rate: number | null;
+}
+
+interface ConsolidatedData {
+    consolidatedScore: {
+        overall: number;
+        trend: string;
+    };
+    entities: Array<{
+        name: string;
+        currency: string;
+        latestScore: number | null;
+        trend: string;
+    }>;
 }
 
 const INDUSTRY_ICONS: Record<string, string> = {
@@ -21,10 +38,12 @@ const INDUSTRY_ICONS: Record<string, string> = {
     Retail: '🏬',
     Manufacturing: '🏭',
     'Professional Services': '📊',
+    'Medical Manufacturing': '🏥',
 };
 
 const STAGE_LABELS: Record<string, { en: string; ar: string }> = {
     'high-growth': { en: 'High Growth', ar: 'نمو عالٍ' },
+    growth: { en: 'Growth', ar: 'نمو' },
     mature: { en: 'Mature', ar: 'ناضجة' },
     stable: { en: 'Stable', ar: 'مستقرة' },
     turnaround: { en: 'Turnaround', ar: 'تحوّل' },
@@ -49,6 +68,9 @@ export default function OrgSwitcher() {
     const [orgs, setOrgs] = useState<DemoOrg[]>([]);
     const [loading, setLoading] = useState(true);
     const [switching, setSwitching] = useState<string | null>(null);
+    const [showConsolidated, setShowConsolidated] = useState(false);
+    const [consolidatedData, setConsolidatedData] = useState<ConsolidatedData | null>(null);
+    const [loadingConsolidated, setLoadingConsolidated] = useState(false);
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
 
     const adminKey = typeof window !== 'undefined'
@@ -75,6 +97,33 @@ export default function OrgSwitcher() {
         fetchOrgs();
     }, [fetchOrgs]);
 
+    // Check if there's an entity group among the orgs
+    const entityGroups = new Set(orgs.filter(o => o.entity_group).map(o => o.entity_group!));
+    const hasEntityGroup = entityGroups.size > 0;
+
+    const fetchConsolidated = useCallback(async (group: string) => {
+        setLoadingConsolidated(true);
+        try {
+            const res = await fetch(`/api/metrics/consolidated?group=${group}`);
+            if (res.ok) {
+                const data = await res.json();
+                setConsolidatedData(data);
+            }
+        } catch {
+            // Silently fail
+        } finally {
+            setLoadingConsolidated(false);
+        }
+    }, []);
+
+    const handleToggleConsolidated = () => {
+        const next = !showConsolidated;
+        setShowConsolidated(next);
+        if (next && !consolidatedData && entityGroups.size > 0) {
+            fetchConsolidated(Array.from(entityGroups)[0]);
+        }
+    };
+
     const handleSwitch = async (orgId: string) => {
         if (switching) return;
         setSwitching(orgId);
@@ -90,7 +139,6 @@ export default function OrgSwitcher() {
             });
 
             if (res.ok) {
-                // Full state purge + hard reload
                 localStorage.removeItem('thabat-theme');
                 window.location.href = '/';
             }
@@ -109,6 +157,50 @@ export default function OrgSwitcher() {
                 <span className={styles.icon}>🏢</span>
                 <span className={styles.title}>{t('switchOrg')}</span>
             </div>
+
+            {/* Consolidated View Toggle */}
+            {hasEntityGroup && (
+                <button
+                    className={`${styles.consolidatedToggle} ${showConsolidated ? styles.consolidatedActive : ''}`}
+                    onClick={handleToggleConsolidated}
+                >
+                    <span className={styles.consolidatedIcon}>🌐</span>
+                    <span className={styles.consolidatedLabel}>
+                        {locale === 'ar' ? 'العرض الموحّد' : 'Consolidated View'}
+                    </span>
+                    {showConsolidated && consolidatedData && (
+                        <span
+                            className={styles.consolidatedScore}
+                            style={{ color: getScoreColor(consolidatedData.consolidatedScore.overall) }}
+                        >
+                            {formatNumber(Math.round(consolidatedData.consolidatedScore.overall), locale)}
+                        </span>
+                    )}
+                    {loadingConsolidated && <span className={styles.loadingDot}>⏳</span>}
+                </button>
+            )}
+
+            {/* Consolidated Breakdown */}
+            <AnimatePresence>
+                {showConsolidated && consolidatedData && (
+                    <motion.div
+                        className={styles.consolidatedBreakdown}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                    >
+                        {consolidatedData.entities.map(e => (
+                            <div key={e.name} className={styles.entityRow}>
+                                <span className={styles.entityName}>{e.name}</span>
+                                <span className={styles.entityCurrency}>{e.currency}</span>
+                                <span style={{ color: getScoreColor(e.latestScore) }}>
+                                    {e.latestScore !== null ? formatNumber(Math.round(e.latestScore), locale) : '—'}
+                                </span>
+                            </div>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <div className={styles.orgList}>
                 <AnimatePresence>
@@ -134,6 +226,14 @@ export default function OrgSwitcher() {
                                     <span className={styles.orgName}>{org.name}</span>
                                     <span className={styles.orgStage}>
                                         {STAGE_LABELS[org.growth_stage]?.[locale] || org.growth_stage}
+                                        {org.currency && org.currency !== 'SAR' && (
+                                            <span className={styles.currencyBadge}>{org.currency}</span>
+                                        )}
+                                        {org.corp_tax_rate && Number(org.corp_tax_rate) > 0 && (
+                                            <span className={styles.taxBadge}>
+                                                {locale === 'ar' ? 'ضريبة' : 'Tax'} {Math.round(Number(org.corp_tax_rate) * 100)}%
+                                            </span>
+                                        )}
                                     </span>
                                 </div>
 

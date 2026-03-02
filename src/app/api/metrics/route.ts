@@ -32,12 +32,14 @@ export async function POST(request: NextRequest) {
         const orgId = session.orgId;
 
         // 1. Fetch org profile for calibration
-        const orgs = await sql`SELECT industry, industry_code, revenue_band, growth_stage FROM organizations WHERE id = ${orgId}` as { industry: string; industry_code: string; revenue_band: string; growth_stage: string }[];
+        const orgs = await sql`SELECT industry, industry_code, revenue_band, growth_stage, receivables_warning_days, corp_tax_rate, vat_rate FROM organizations WHERE id = ${orgId}` as { industry: string; industry_code: string; revenue_band: string; growth_stage: string; receivables_warning_days: number; corp_tax_rate: number; vat_rate: number }[];
         const org = orgs[0] || {};
         const calibration: CalibrationProfile = {
             industryCode: org.industry_code || org.industry,
             revenueBand: org.revenue_band,
             growthStage: org.growth_stage,
+            receivablesWarningDays: Number(org.receivables_warning_days) || 30,
+            corpTaxRate: Number(org.corp_tax_rate) || 0,
         };
 
         // 2. Upsert daily metrics (SQLite ON CONFLICT)

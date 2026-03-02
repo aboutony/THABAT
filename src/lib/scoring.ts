@@ -27,12 +27,16 @@ export interface RawMetrics {
     expenses: number;
     receivables: number;
     payables: number;
+    vatAmount?: number;       // VAT portion of expenses (for True Operating Margin)
+    corpTaxRate?: number;     // Corporate tax rate (e.g. 0.09 for UAE 9%)
 }
 
 export interface CalibrationProfile {
     industryCode?: string | null;
     revenueBand?: string | null;
     growthStage?: string | null;
+    receivablesWarningDays?: number | null;  // Custom threshold (e.g. 90 for medical)
+    corpTaxRate?: number | null;             // Corporate tax rate for margin calc
 }
 
 export interface ScoreBreakdown {
@@ -75,16 +79,27 @@ function scoreLiquidity(cash: number, expenses: number): number {
     return clamp((runwayMonths / 12) * 100, 0, 100);
 }
 
-function scoreMargins(revenue: number, expenses: number): number {
+function scoreMargins(revenue: number, expenses: number, vatAmount?: number, corpTaxRate?: number): number {
     if (revenue <= 0) return 0;
-    const marginPct = ((revenue - expenses) / revenue) * 100;
+    // True Operating Margin: exclude VAT from costs, then deduct corp tax provision
+    const trueExpenses = expenses - (vatAmount || 0);
+    let marginPct = ((revenue - trueExpenses) / revenue) * 100;
+    // Apply corporate tax provision (e.g., UAE 9%)
+    if (corpTaxRate && corpTaxRate > 0) {
+        const profit = revenue - trueExpenses;
+        const taxProvision = Math.max(0, profit * corpTaxRate);
+        marginPct = ((revenue - trueExpenses - taxProvision) / revenue) * 100;
+    }
     return clamp((marginPct / 40) * 100, 0, 100);
 }
 
-function scoreReceivables(receivables: number, revenue: number): number {
+function scoreReceivables(receivables: number, revenue: number, warningDays?: number): number {
     if (revenue <= 0) return receivables > 0 ? 0 : 50;
+    // warningDays calibrates the threshold: 90 days for medical (slow payers)
+    // Default ~30 days: ratio of 1.0 = 0 score. With 90 days: ratio 3.0 = 0 score.
+    const thresholdRatio = (warningDays || 30) / 30;
     const ratio = receivables / revenue;
-    return clamp((1 - ratio) * 100, 0, 100);
+    return clamp((1 - ratio / thresholdRatio) * 100, 0, 100);
 }
 
 function scoreCosts(expenses: number, revenue: number): number {
@@ -163,13 +178,14 @@ export function calculateStabilityScore(
     historicalScores: number[] = [],
     profile: CalibrationProfile = {}
 ): ScoreBreakdown {
-    const { cash, revenue, expenses, receivables } = metrics;
+    const { cash, revenue, expenses, receivables, vatAmount, corpTaxRate: metricCorpTax } = metrics;
     const stage = getGrowthStage(profile.growthStage);
+    const effectiveCorpTaxRate = profile.corpTaxRate ?? metricCorpTax ?? 0;
 
     // Calculate sub-scores
     let liquidityScore = scoreLiquidity(cash, expenses);
-    let marginsScore = scoreMargins(revenue, expenses);
-    let receivablesScore = scoreReceivables(receivables, revenue);
+    let marginsScore = scoreMargins(revenue, expenses, vatAmount, effectiveCorpTaxRate);
+    let receivablesScore = scoreReceivables(receivables, revenue, profile.receivablesWarningDays ?? undefined);
     let costsScore = scoreCosts(expenses, revenue);
     let revenueScore = scoreRevenue(revenue, expenses);
 
@@ -236,10 +252,16 @@ function buildDriverInsights(
     metrics: RawMetrics,
     scores: Record<string, number>
 ): DriverInsight[] {
-    const { cash, revenue, expenses, receivables } = metrics;
+    const { cash, revenue, expenses, receivables, vatAmount, corpTaxRate } = metrics;
     const monthlyExpenses = expenses > 0 ? expenses : 1;
     const runway = cash / monthlyExpenses;
-    const marginPct = revenue > 0 ? ((revenue - expenses) / revenue) * 100 : 0;
+    // True Operating Margin (exclude VAT + apply corp tax)
+    const trueExpenses = expenses - (vatAmount || 0);
+    let marginPct = revenue > 0 ? ((revenue - trueExpenses) / revenue) * 100 : 0;
+    if (corpTaxRate && corpTaxRate > 0 && revenue > trueExpenses) {
+        const taxProvision = (revenue - trueExpenses) * corpTaxRate;
+        marginPct = ((revenue - trueExpenses - taxProvision) / revenue) * 100;
+    }
     const collectionRatio = revenue > 0 ? (receivables / revenue) * 100 : 0;
 
     const drivers: DriverInsight[] = [

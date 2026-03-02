@@ -68,13 +68,14 @@ export async function GET(request: NextRequest) {
     try {
         // Get all orgs that have a demo user
         const orgs = await sql`
-            SELECT o.id, o.name, o.industry, o.growth_stage,
+            SELECT o.id, o.name, o.industry, o.growth_stage, o.entity_group, o.currency,
+                   o.corp_tax_rate, o.vat_rate,
                    s.total_score, s.trajectory_direction
             FROM organizations o
-            JOIN users u ON u.org_id = o.id AND u.email LIKE '%@demo.thabat.app'
+            JOIN users u ON u.org_id = o.id AND u.email LIKE '%@demo.%'
             LEFT JOIN stability_scores s ON s.org_id = o.id
                 AND s.date = (SELECT MAX(date) FROM stability_scores WHERE org_id = o.id)
-            ORDER BY o.name
+            ORDER BY o.entity_group, o.name
         `;
 
         return NextResponse.json({ orgs });
