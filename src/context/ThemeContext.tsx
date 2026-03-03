@@ -27,7 +27,7 @@ function applyTheme(t: Theme) {
     // Update meta theme-color for mobile browsers
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
-        meta.setAttribute('content', t === 'dark' ? '#0A0E14' : '#f0f1f6');
+        meta.setAttribute('content', t === 'dark' ? '#050505' : '#050505');
     }
 }
 
@@ -42,8 +42,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             setThemeState(stored);
             applyTheme(stored);
         } else {
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const initial: Theme = prefersDark ? 'dark' : 'light';
+            // Always default to dark for the Rolex exec demo
+            const initial: Theme = 'dark';
             setThemeState(initial);
             applyTheme(initial);
             localStorage.setItem(STORAGE_KEY, initial);

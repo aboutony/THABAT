@@ -52,9 +52,8 @@ export default async function RootLayout({
                   var t = localStorage.getItem('thabat-theme');
                   if (t === 'light' || t === 'dark') {
                     document.documentElement.setAttribute('data-theme', t);
-                  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-                    document.documentElement.setAttribute('data-theme', 'light');
                   }
+                  // Default is dark (set in HTML attribute), no system preference override
                 } catch(e) {}
               })();
             `,

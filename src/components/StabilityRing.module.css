@@ -17,7 +17,7 @@
 
 /* Neon outer glow — 30px spread at 0.15 opacity */
 .glowGreen {
-    filter: drop-shadow(0 0 30px rgba(34, 197, 94, 0.15));
+    filter: drop-shadow(0 0 30px rgba(0, 108, 53, 0.2));
     animation: ringBreathe 3s ease-in-out infinite;
 }
 
@@ -35,11 +35,11 @@
 
     0%,
     100% {
-        filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.10));
+        filter: drop-shadow(0 0 20px rgba(0, 108, 53, 0.12));
     }
 
     50% {
-        filter: drop-shadow(0 0 40px rgba(34, 197, 94, 0.20));
+        filter: drop-shadow(0 0 40px rgba(0, 108, 53, 0.25));
     }
 }
 
@@ -132,36 +132,37 @@
     position: absolute;
     inset: -4px;
     border-radius: 50%;
-    background: conic-gradient(
-        from 0deg,
-        transparent 0%,
-        transparent 60%,
-        rgba(99, 179, 237, 0.4) 75%,
-        rgba(147, 197, 253, 0.6) 85%,
-        rgba(99, 179, 237, 0.4) 95%,
-        transparent 100%
-    );
-    mask: radial-gradient(
-        farthest-side,
-        transparent calc(100% - 18px),
-        black calc(100% - 17px),
-        black calc(100% - 3px),
-        transparent calc(100% - 2px)
-    );
-    -webkit-mask: radial-gradient(
-        farthest-side,
-        transparent calc(100% - 18px),
-        black calc(100% - 17px),
-        black calc(100% - 3px),
-        transparent calc(100% - 2px)
-    );
+    background: conic-gradient(from 0deg,
+            transparent 0%,
+            transparent 60%,
+            rgba(99, 179, 237, 0.4) 75%,
+            rgba(147, 197, 253, 0.6) 85%,
+            rgba(99, 179, 237, 0.4) 95%,
+            transparent 100%);
+    mask: radial-gradient(farthest-side,
+            transparent calc(100% - 18px),
+            black calc(100% - 17px),
+            black calc(100% - 3px),
+            transparent calc(100% - 2px));
+    -webkit-mask: radial-gradient(farthest-side,
+            transparent calc(100% - 18px),
+            black calc(100% - 17px),
+            black calc(100% - 3px),
+            transparent calc(100% - 2px));
     z-index: 2;
     pointer-events: none;
 }
 
 @keyframes shimmerSpin {
-    0% { --shimmer-angle: 0deg; transform: rotate(0deg); }
-    100% { --shimmer-angle: 360deg; transform: rotate(360deg); }
+    0% {
+        --shimmer-angle: 0deg;
+        transform: rotate(0deg);
+    }
+
+    100% {
+        --shimmer-angle: 360deg;
+        transform: rotate(360deg);
+    }
 }
 
 .computingText {

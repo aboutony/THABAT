@@ -101,56 +101,61 @@ main {
   --shadow-glow: 0 0 30px var(--glass-glow);
 }
 
-/* Light Mode — Pearl Depth */
+/* Light Mode — Rolex Override (matches dark for UNIMED exec demo) */
 [data-theme='light'] {
-  --bg-primary: #f0f1f6;
-  --bg-secondary: #e4e7ef;
-  --bg-tertiary: #d8dce8;
-  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #e8ecf6 0%, #f0f1f6 40%, #eceef4 100%);
+  --bg-primary: #050505;
+  --bg-secondary: #0d0d1a;
+  --bg-tertiary: #111118;
+  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #0d0d1a 0%, #050505 50%, #020202 100%);
   --bg-mesh:
-    radial-gradient(ellipse 60% 50% at 20% 80%, rgba(37, 99, 235, 0.04) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 80% 20%, rgba(99, 102, 241, 0.03) 0%, transparent 70%);
+    radial-gradient(ellipse 50% 45% at 85% 10%, rgba(26, 26, 46, 0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 90% 5%, rgba(26, 26, 46, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 55% at 50% 50%, #020202 0%, transparent 80%),
+    radial-gradient(ellipse 40% 30% at 15% 85%, rgba(224, 224, 224, 0.015) 0%, transparent 70%);
 
-  --text-primary: #0d1117;
-  --text-secondary: #3d4f6f;
-  --text-tertiary: #7e8ba6;
-  --text-accent: #2563eb;
+  --text-primary: #edf0f7;
+  --text-secondary: #8b97b5;
+  --text-tertiary: #4a5578;
+  --text-accent: #E0E0E0;
 
-  --accent-primary: #2563eb;
-  --accent-secondary: #4f46e5;
-  --accent-glow: rgba(37, 99, 235, 0.25);
+  --accent-primary: #E0E0E0;
+  --accent-secondary: #B0B0B0;
+  --accent-glow: rgba(224, 224, 224, 0.2);
 
-  --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-bg-hover: rgba(255, 255, 255, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-border-hover: rgba(255, 255, 255, 0.8);
-  --glass-blur: 40px;
-  --glass-glow: rgba(37, 99, 235, 0.04);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-hover: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.16);
+  --glass-blur: 20px;
+  --glass-glow: rgba(224, 224, 224, 0.04);
 
-  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(22, 163, 74, 0.04) 0%, transparent 70%);
-  --neon-cast-amber: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(217, 119, 6, 0.04) 0%, transparent 70%);
-  --neon-cast-red: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(220, 38, 38, 0.04) 0%, transparent 70%);
+  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(0, 108, 53, 0.06) 0%, transparent 70%);
+  --neon-cast-amber: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
+  --neon-cast-red: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
 
-  --ring-track: rgba(0, 0, 0, 0.05);
-  --ring-green: #16a34a;
-  --ring-amber: #d97706;
-  --ring-red: #dc2626;
-  --ring-glow-green: rgba(22, 163, 74, 0.3);
-  --ring-glow-amber: rgba(217, 119, 6, 0.3);
-  --ring-glow-red: rgba(220, 38, 38, 0.3);
+  --ring-track: rgba(255, 255, 255, 0.05);
+  --ring-green: #006C35;
+  --ring-amber: #f59e0b;
+  --ring-red: #ef4444;
+  --ring-glow-green: rgba(0, 108, 53, 0.45);
+  --ring-glow-amber: rgba(245, 158, 11, 0.45);
+  --ring-glow-red: rgba(220, 38, 38, 0.45);
 
-  --nav-bg: rgba(240, 241, 246, 0.92);
-  --nav-border: rgba(0, 0, 0, 0.05);
-  --nav-active: #2563eb;
-  --nav-inactive: #7e8ba6;
+  --nav-bg: rgba(5, 5, 5, 0.85);
+  --nav-border: rgba(255, 255, 255, 0.08);
+  --nav-active: #E0E0E0;
+  --nav-inactive: #4a5060;
 
-  --success: #16a34a;
-  --warning: #d97706;
-  --danger: #dc2626;
+  --success: #006C35;
+  --warning: #f59e0b;
+  --danger: #ef4444;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-glow: 0 0 24px var(--glass-glow);
+  --amber-action: #f59e0b;
+  --amber-action-glow: rgba(245, 158, 11, 0.4);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 30px var(--glass-glow);
 }
 
 /* --- Typography Scale --- */
