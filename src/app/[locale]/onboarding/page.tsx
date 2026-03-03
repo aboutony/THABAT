@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import styles from './Onboarding.module.css';
@@ -24,8 +23,7 @@ const BRANCHES = [
 
 export default function OnboardingPage() {
     const t = useTranslations('onboarding');
-    const pathname = usePathname();
-    const locale = pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
     const isRtl = locale === 'ar';
 
     const [step, setStep] = useState<Step>('credentials');
@@ -80,6 +78,9 @@ export default function OnboardingPage() {
 
     return (
         <div className={styles.wizardShell} dir={isRtl ? 'rtl' : 'ltr'}>
+            <Link href={`/${locale}/settings`} className={styles.cancelLink}>
+                {isRtl ? '→' : '←'} {t('cancel')}
+            </Link>
             <motion.div
                 className={styles.glassCard}
                 initial={{ opacity: 0, y: 30, scale: 0.96 }}
@@ -162,6 +163,9 @@ export default function OnboardingPage() {
                                     />
                                 </div>
                                 <div className={styles.actions}>
+                                    <Link href={`/${locale}/settings`} className={styles.btnBack}>
+                                        ← {t('cancel')}
+                                    </Link>
                                     <button
                                         className={styles.btnPrimary}
                                         disabled={!isCredentialsValid}

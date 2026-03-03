@@ -174,7 +174,8 @@
         "tryAgain": "Try Again",
         "successTitle": "SAP B1 Connected!",
         "successDesc": "Your financial data is now flowing into the Stability Engine. Switch to the dashboard to see your live score.",
-        "goToDashboard": "Go to Dashboard"
+        "goToDashboard": "Go to Dashboard",
+        "cancel": "Cancel"
     },
     "consolidated": {
         "view": "Consolidated View",
