@@ -267,5 +267,27 @@
         "lowStock": "Low Stock",
         "approveRestock": "Approve Restock PO ({amount})",
         "poApproved": "PO Approved & Sent to SAP"
+    },
+    "export": {
+        "title": "Export Executive Summary",
+        "subtitle": "Stability Intelligence",
+        "reportTitle": "Executive Summary Report",
+        "stabilityScore": "Stability Score",
+        "strengthening": "Strengthening",
+        "scoreDesc": "Overall financial health assessment based on 5 core drivers",
+        "revenueGrowth": "Revenue Growth",
+        "clientRetention": "Client Retention",
+        "opEfficiency": "Operational Efficiency",
+        "velocityTitle": "Order-to-Cash Velocity",
+        "days": "days",
+        "sectorAvg": "Sector Avg",
+        "faster": "faster than sector",
+        "contractTitle": "Contract Stability Overview",
+        "client": "Client",
+        "value": "Value",
+        "status": "Status",
+        "actionLog": "Executive Action Log",
+        "footerConfidential": "Confidential – UNIMED Internal Use Only",
+        "footerGenerated": "Generated via THABAT Stability Intelligence on"
     }
 }

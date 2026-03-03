@@ -267,5 +267,27 @@
         "lowStock": "مخزون منخفض",
         "approveRestock": "اعتماد أمر إعادة التوريد ({amount})",
         "poApproved": "تم اعتماد أمر التوريد وإرساله لـ SAP"
+    },
+    "export": {
+        "title": "تصدير الملخص التنفيذي",
+        "subtitle": "ذكاء الاستقرار",
+        "reportTitle": "التقرير التنفيذي",
+        "stabilityScore": "مؤشر الاستقرار",
+        "strengthening": "في تصاعد",
+        "scoreDesc": "تقييم شامل للصحة المالية بناءً على ٥ محركات أساسية",
+        "revenueGrowth": "نمو الإيرادات",
+        "clientRetention": "استبقاء العملاء",
+        "opEfficiency": "الكفاءة التشغيلية",
+        "velocityTitle": "سرعة التحويل النقدي",
+        "days": "يوم",
+        "sectorAvg": "متوسط القطاع",
+        "faster": "أسرع من القطاع",
+        "contractTitle": "نظرة عامة على استقرار العقود",
+        "client": "العميل",
+        "value": "القيمة",
+        "status": "الحالة",
+        "actionLog": "سجل الإجراءات التنفيذية",
+        "footerConfidential": "سري – للاستخدام الداخلي فقط – يونيميد",
+        "footerGenerated": "تم الإنشاء عبر ذكاء الاستقرار ثبات بتاريخ"
     }
 }

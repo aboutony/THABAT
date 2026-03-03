@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
+import ExportButton from './ExportButton';
 import styles from './Shell.module.css';
 
 interface ShellProps {
@@ -95,6 +96,7 @@ export default function Shell({ children }: ShellProps) {
                     </div>
                 </div>
                 <div className={styles.actions}>
+                    <ExportButton />
                     <LanguageToggle />
                     <ThemeToggle />
                 </div>
