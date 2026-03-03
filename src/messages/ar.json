@@ -184,5 +184,46 @@
         "vatExcluded": "بدون ضريبة القيمة المضافة",
         "corpTax": "ضريبة الشركات",
         "afterTax": "بعد الضريبة والقيمة المضافة"
+    },
+    "salesReport": {
+        "back": "العودة إلى لوحة القيادة",
+        "pipeline": "قنوات الإيرادات المتعاقد عليها",
+        "units": "وحدة",
+        "volumeForecast": "توقعات الحجم",
+        "base": "الأساس",
+        "unitPrice": "سعر الوحدة",
+        "projectedRevenue": "الإيرادات المتوقعة",
+        "liquidityTimeline": "المخطط الزمني لتوقعات السيولة",
+        "today": "اليوم",
+        "poConfirmed": "تأكيد أمر الشراء",
+        "deliveryComplete": "اكتمال التسليم",
+        "cashArrival": "وصول النقد (شروط {days} يومًا)",
+        "cashNote": "سوق نوبكو: صافي {days} يومًا من تأكيد التسليم",
+        "productBreakdown": "تفصيل المنتجات"
+    },
+    "approvals": {
+        "back": "العودة للإعدادات",
+        "title": "مركز اعتماد المشتريات",
+        "pending": "قيد الانتظار",
+        "approved": "معتمد",
+        "pendingValue": "القيمة المعلّقة",
+        "urgent": "عاجل",
+        "standard": "عادي",
+        "lowPriority": "أولوية منخفضة",
+        "approveBtn": "اعتماد ومزامنة مع SAP",
+        "approvedSynced": "تمّ الاعتماد والمزامنة",
+        "toastSuccess": "تم إرسال أمر الشراء إلى SAP Business One"
+    },
+    "receivables": {
+        "back": "العودة",
+        "title": "تقرير المستحقات",
+        "subtitle": "قريبًا — تحليل الذمم المدينة المفصل",
+        "badge": "قيد التطوير",
+        "agingBuckets": "فئات التقادم",
+        "topDebtors": "أكبر المدينين",
+        "collectionRate": "معدل التحصيل"
+    },
+    "common": {
+        "sar": "ر.س"
     }
 }

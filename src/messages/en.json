@@ -184,5 +184,46 @@
         "vatExcluded": "VAT Excluded",
         "corpTax": "Corp Tax",
         "afterTax": "After Tax & VAT"
+    },
+    "salesReport": {
+        "back": "Back to Dashboard",
+        "pipeline": "Contracted Revenue Pipeline",
+        "units": "units",
+        "volumeForecast": "Volume Forecast",
+        "base": "Base",
+        "unitPrice": "Unit Price",
+        "projectedRevenue": "Projected Revenue",
+        "liquidityTimeline": "Liquidity Forecast Timeline",
+        "today": "Today",
+        "poConfirmed": "PO Confirmed",
+        "deliveryComplete": "Delivery Complete",
+        "cashArrival": "Cash Arrival ({days}-day terms)",
+        "cashNote": "NUPCO Marketplace: Net {days} days from delivery confirmation",
+        "productBreakdown": "Product Breakdown"
+    },
+    "approvals": {
+        "back": "Back to Settings",
+        "title": "Procurement Approval Hub",
+        "pending": "Pending",
+        "approved": "Approved",
+        "pendingValue": "Pending Value",
+        "urgent": "Urgent",
+        "standard": "Standard",
+        "lowPriority": "Low Priority",
+        "approveBtn": "Approve & Sync to SAP",
+        "approvedSynced": "Approved & Synced",
+        "toastSuccess": "PO Sent to SAP Business One"
+    },
+    "receivables": {
+        "back": "Back",
+        "title": "Receivables Report",
+        "subtitle": "Coming Soon — Detailed Receivables Analytics",
+        "badge": "Under Development",
+        "agingBuckets": "Aging Buckets",
+        "topDebtors": "Top Debtors",
+        "collectionRate": "Collection Rate"
+    },
+    "common": {
+        "sar": "SAR"
     }
 }

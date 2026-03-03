@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import Shell from '@/components/Shell';
+import { formatNumber } from '@/lib/locale-utils';
 import styles from './approvals.module.css';
 
 interface PurchaseOrder {
@@ -60,6 +62,8 @@ const PENDING_POS: PurchaseOrder[] = [
 
 export default function ApprovalsPage() {
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const t = useTranslations('approvals');
+    const tc = useTranslations('common');
     const [orders, setOrders] = useState<PurchaseOrder[]>(PENDING_POS);
     const [toast, setToast] = useState<string | null>(null);
 
@@ -69,7 +73,7 @@ export default function ApprovalsPage() {
                 po.id === id ? { ...po, status: 'approved' as const } : po
             )
         );
-        setToast('PO Sent to SAP Business One');
+        setToast(t('toastSuccess'));
         setTimeout(() => setToast(null), 3500);
     };
 
@@ -77,14 +81,16 @@ export default function ApprovalsPage() {
     const approvedCount = orders.filter(o => o.status === 'approved').length;
     const totalPending = orders.filter(o => o.status === 'pending').reduce((sum, o) => sum + o.amount, 0);
 
-    const formatSAR = (n: number) =>
-        `SAR ${n.toLocaleString(locale === 'ar' ? 'ar-SA' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const formatSAR = (n: number) => {
+        const formatted = n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return `${tc('sar')} ${formatNumber(formatted, locale)}`;
+    };
 
     const urgencyLabel = (u: string) => {
         switch (u) {
-            case 'high': return '🔴 Urgent';
-            case 'medium': return '🟡 Standard';
-            case 'low': return '🟢 Low Priority';
+            case 'high': return `🔴 ${t('urgent')}`;
+            case 'medium': return `🟡 ${t('standard')}`;
+            case 'low': return `🟢 ${t('lowPriority')}`;
             default: return u;
         }
     };
@@ -92,33 +98,32 @@ export default function ApprovalsPage() {
     return (
         <Shell>
             <div className={styles.page}>
-                {/* Back */}
                 <Link href={`/${locale}/settings`} className={styles.backLink}>
-                    ← {locale === 'ar' ? 'العودة للإعدادات' : 'Back to Settings'}
+                    ← {t('back')}
                 </Link>
 
-                {/* Summary Bar */}
+                {/* Summary */}
                 <motion.div
                     className={`glass-card ${styles.summaryCard}`}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <div className={styles.summaryTitle}>Procurement Approval Hub</div>
+                    <div className={styles.summaryTitle}>{t('title')}</div>
                     <div className={styles.summaryRow}>
                         <div className={styles.summaryItem}>
-                            <span className={styles.summaryNumber}>{pendingCount}</span>
-                            <span className={styles.summaryLabel}>Pending</span>
+                            <span className={styles.summaryNumber}>{formatNumber(pendingCount, locale)}</span>
+                            <span className={styles.summaryLabel}>{t('pending')}</span>
                         </div>
                         <div className={styles.summaryDivider} />
                         <div className={styles.summaryItem}>
-                            <span className={`${styles.summaryNumber} ${styles.approved}`}>{approvedCount}</span>
-                            <span className={styles.summaryLabel}>Approved</span>
+                            <span className={`${styles.summaryNumber} ${styles.approved}`}>{formatNumber(approvedCount, locale)}</span>
+                            <span className={styles.summaryLabel}>{t('approved')}</span>
                         </div>
                         <div className={styles.summaryDivider} />
                         <div className={styles.summaryItem}>
                             <span className={styles.summaryNumber}>{formatSAR(totalPending)}</span>
-                            <span className={styles.summaryLabel}>Pending Value</span>
+                            <span className={styles.summaryLabel}>{t('pendingValue')}</span>
                         </div>
                     </div>
                 </motion.div>
@@ -161,14 +166,14 @@ export default function ApprovalsPage() {
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" width="16" height="16">
                                             <polyline points="20 6 9 17 4 12" />
                                         </svg>
-                                        Approved & Synced
+                                        {t('approvedSynced')}
                                     </motion.div>
                                 ) : (
                                     <button
                                         className={styles.approveBtn}
                                         onClick={() => handleApprove(po.id)}
                                     >
-                                        Approve & Sync to SAP
+                                        {t('approveBtn')}
                                     </button>
                                 )}
                             </div>
@@ -176,7 +181,7 @@ export default function ApprovalsPage() {
                     ))}
                 </div>
 
-                {/* Toast Notification */}
+                {/* Toast */}
                 <AnimatePresence>
                     {toast && (
                         <motion.div

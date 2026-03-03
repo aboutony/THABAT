@@ -2,21 +2,23 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import Shell from '@/components/Shell';
 import styles from './receivables.module.css';
 
 export default function ReceivablesReportPage() {
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const t = useTranslations('receivables');
+
+    const placeholders = [t('agingBuckets'), t('topDebtors'), t('collectionRate')];
 
     return (
         <Shell>
             <div className={styles.page}>
-                {/* Back Link */}
                 <Link href={`/${locale}`} className={styles.backLink}>
-                    ← {locale === 'ar' ? 'العودة' : 'Back'}
+                    ← {t('back')}
                 </Link>
 
-                {/* Placeholder Hero */}
                 <motion.div
                     className={`glass-card ${styles.hero}`}
                     initial={{ opacity: 0, y: 20, scale: 0.97 }}
@@ -31,20 +33,13 @@ export default function ReceivablesReportPage() {
                             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
                     </div>
-                    <h1 className={styles.title}>
-                        {locale === 'ar' ? 'تقرير المستحقات' : 'Receivables Report'}
-                    </h1>
-                    <p className={styles.subtitle}>
-                        {locale === 'ar' ? 'قريبًا — تحليل الذمم المدينة المفصل' : 'Coming Soon — Detailed Receivables Analytics'}
-                    </p>
-                    <div className={styles.badge}>
-                        {locale === 'ar' ? 'قيد التطوير' : 'Under Development'}
-                    </div>
+                    <h1 className={styles.title}>{t('title')}</h1>
+                    <p className={styles.subtitle}>{t('subtitle')}</p>
+                    <div className={styles.badge}>{t('badge')}</div>
                 </motion.div>
 
-                {/* Placeholder Cards */}
                 <div className={styles.placeholderGrid}>
-                    {['Aging Buckets', 'Top Debtors', 'Collection Rate'].map((label, i) => (
+                    {placeholders.map((label, i) => (
                         <motion.div
                             key={label}
                             className={`glass-card ${styles.placeholderCard}`}
