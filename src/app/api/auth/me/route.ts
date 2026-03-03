@@ -25,16 +25,31 @@ export async function GET() {
 
         const user = users[0];
 
+        // For admin users who have switched orgs, the JWT orgId
+        // may differ from their DB org_id. Use the session orgId
+        // and fetch that org's name for the UI.
+        let orgId = user.org_id as string;
+        let orgName = user.org_name as string;
+        const role = session.role || user.role;
+
+        if (session.role === 'admin' && session.orgId !== user.org_id) {
+            orgId = session.orgId;
+            const switchedOrg = await sql`SELECT name, industry, revenue_band, growth_stage FROM organizations WHERE id = ${session.orgId}`;
+            if (switchedOrg.length > 0) {
+                orgName = switchedOrg[0].name as string;
+            }
+        }
+
         return NextResponse.json({
             user: {
                 id: user.id,
-                orgId: user.org_id,
+                orgId,
                 email: user.email,
                 fullName: user.full_name,
-                role: user.role,
+                role,
                 languagePreference: user.language_preference,
                 themePreference: user.theme_preference,
-                orgName: user.org_name,
+                orgName,
                 industry: user.industry,
                 revenueBand: user.revenue_band,
                 growthStage: user.growth_stage,

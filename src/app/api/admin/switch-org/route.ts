@@ -21,16 +21,20 @@ export async function POST(request: NextRequest) {
         }
 
         // Find the demo user for this org
-        const users = await sql`SELECT id, org_id, role FROM users WHERE org_id = ${orgId} AND role = 'owner' LIMIT 1`;
+        const users = await sql`SELECT id, org_id, role FROM users WHERE org_id = ${orgId} LIMIT 1`;
         if (users.length === 0) {
             return NextResponse.json({ error: 'No user found for this org' }, { status: 404 });
         }
 
         const user = users[0];
+
+        // CRITICAL: Preserve admin role across org switches.
+        // The JWT carries the target org's user ID but keeps role=admin
+        // so the admin can continue switching freely.
         const token = await signJWT({
-            userId: user.id as string,
+            userId: session.userId,
             orgId: user.org_id as string,
-            role: user.role as string,
+            role: 'admin',
         });
 
         const response = NextResponse.json({ success: true });
