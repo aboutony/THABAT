@@ -140,6 +140,7 @@
             "liquidity": "Cash reserves cover only {value} months of operations — your ability to absorb disruption is constrained",
             "margins": "Operating at {value} margin is limiting your capacity to reinvest in growth this period",
             "receivables": "Outstanding receivables at {value} days are tying up working capital and restricting cash flow flexibility",
+            "receivablesDrift": "Warning: High receivables drift is currently eroding your net stability. 90-day cash availability is at risk.",
             "costs": "Cost-to-revenue ratio at {value} is compressing margins and reducing operational resilience",
             "revenue": "Revenue coverage at {value} of expenses signals dependency risk — diversification is needed"
         }

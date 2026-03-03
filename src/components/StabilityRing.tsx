@@ -11,9 +11,10 @@ interface StabilityRingProps {
     score: number;       // 0–100
     trend: Trend;
     locale?: string;
+    loading?: boolean;   // Show shimmer 'Computing...' state
 }
 
-export default function StabilityRing({ score, trend, locale = 'en' }: StabilityRingProps) {
+export default function StabilityRing({ score, trend, locale = 'en', loading = false }: StabilityRingProps) {
     const t = useTranslations('stability');
 
     // SVG geometry — pixel-locked 220px diameter
@@ -65,7 +66,7 @@ export default function StabilityRing({ score, trend, locale = 'en' }: Stability
 
     return (
         <div className={styles.container}>
-            <div className={`${styles.ringWrapper} ${getGlowClass()}`} style={{ width: size, height: size }}>
+            <div className={`${styles.ringWrapper} ${loading ? styles.shimmerLoading : getGlowClass()}`} style={{ width: size, height: size }}>
                 <svg
                     className={styles.svg}
                     viewBox={`0 0 ${size} ${size}`}
@@ -146,14 +147,25 @@ export default function StabilityRing({ score, trend, locale = 'en' }: Stability
 
                 {/* Inner content */}
                 <div className={styles.inner}>
-                    <motion.div
-                        className={styles.scoreValue}
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8, delay: 0.6, type: 'spring', stiffness: 100 }}
-                    >
-                        {formatScore(score, locale)}
-                    </motion.div>
+                    {loading ? (
+                        <motion.div
+                            className={styles.computingText}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                        >
+                            {locale === 'ar' ? 'جارٍ الحساب...' : 'Computing...'}
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            className={styles.scoreValue}
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.8, delay: 0.6, type: 'spring', stiffness: 100 }}
+                        >
+                            {formatScore(score, locale)}
+                        </motion.div>
+                    )}
                     <div className={styles.scoreLabel}>{t('score')}</div>
 
                     {/* Trajectory Arrow */}

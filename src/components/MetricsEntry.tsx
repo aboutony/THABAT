@@ -47,11 +47,11 @@ export default function MetricsEntry({ onSubmit, loading }: MetricsEntryProps) {
     };
 
     const fields = [
-        { key: 'cash' as const, icon: '💰', color: 'var(--accent-primary)' },
-        { key: 'revenue' as const, icon: '📈', color: 'var(--success)' },
-        { key: 'expenses' as const, icon: '📉', color: 'var(--danger)' },
-        { key: 'receivables' as const, icon: '📋', color: 'var(--warning)' },
-        { key: 'payables' as const, icon: '📤', color: 'var(--text-tertiary)' },
+        { key: 'cash' as const, icon: '💰', color: 'var(--accent-primary)', placeholder: '8,500,000' },
+        { key: 'revenue' as const, icon: '📈', color: 'var(--success)', placeholder: '12,000,000' },
+        { key: 'expenses' as const, icon: '📉', color: 'var(--danger)', placeholder: '9,800,000' },
+        { key: 'receivables' as const, icon: '📋', color: 'var(--warning)', placeholder: '14,500,000' },
+        { key: 'payables' as const, icon: '📤', color: 'var(--text-tertiary)', placeholder: '6,200,000' },
     ];
 
     return (
@@ -98,7 +98,7 @@ export default function MetricsEntry({ onSubmit, loading }: MetricsEntryProps) {
                                 className={styles.metricInput}
                                 value={form[field.key] || ''}
                                 onChange={(e) => update(field.key, e.target.value)}
-                                placeholder="0.00"
+                                placeholder={field.placeholder}
                                 min="0"
                                 step="0.01"
                                 required

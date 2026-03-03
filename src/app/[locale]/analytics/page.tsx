@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import MetricsEntry from '@/components/MetricsEntry';
 import PageHeader from '@/components/PageHeader';
 import PercentileBadge from '@/components/PercentileBadge';
+import StabilityRing from '@/components/StabilityRing';
 import Shell from '@/components/Shell';
 import { useAuth } from '@/context/AuthContext';
 import { formatNumber } from '@/lib/locale-utils';
@@ -33,6 +34,7 @@ export default function AnalyticsPage() {
     const tb = useTranslations('benchmark');
     const [score, setScore] = useState<ScoreResult | null>(null);
     const [loading, setLoading] = useState(false);
+    const [ringLoading, setRingLoading] = useState(false);
     const [fetchingLatest, setFetchingLatest] = useState(true);
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
 
@@ -69,6 +71,7 @@ export default function AnalyticsPage() {
         payables: number;
     }) => {
         setLoading(true);
+        setRingLoading(true);
         try {
             const res = await fetch('/api/metrics', {
                 method: 'POST',
@@ -78,11 +81,14 @@ export default function AnalyticsPage() {
 
             if (res.ok) {
                 const result = await res.json();
+                // Hold the shimmer for a moment to emphasize 'Engine Calculation'
+                await new Promise(r => setTimeout(r, 1800));
                 setScore(result.score);
             }
         } catch (err) {
             console.error('Failed to submit metrics:', err);
         } finally {
+            setRingLoading(false);
             setLoading(false);
         }
     };
@@ -99,7 +105,24 @@ export default function AnalyticsPage() {
                 <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
                 {/* Industry Percentile Badge */}
-                <PercentileBadge percentile={12} industryLabel={tb('ofIndustry', { industry: locale === 'ar' ? 'التقنية في المملكة' : 'KSA Tech' })} />
+                <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: locale === 'ar' ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
+
+                {/* Stability Ring — with shimmer on compute */}
+                {(ringLoading || score) && (
+                    <motion.div
+                        className={styles.ringContainer}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <StabilityRing
+                            score={score?.overall ?? 0}
+                            trend={(score?.trend as 'strengthening' | 'stable' | 'weakening') ?? 'stable'}
+                            locale={locale}
+                            loading={ringLoading}
+                        />
+                    </motion.div>
+                )}
 
                 {/* Score Preview (if calculated) */}
                 {score && !fetchingLatest && (

@@ -17,6 +17,14 @@
     scrollbar-width: none;
 }
 
+/* Stability Ring container */
+.ringContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 0;
+}
+
 /* Score Preview */
 .scorePreview {
     margin: 8px 16px 0;

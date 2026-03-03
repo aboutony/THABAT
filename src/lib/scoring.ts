@@ -334,6 +334,22 @@ export function generateConsequenceStatement(
     breakdown: ScoreBreakdown,
     metrics: RawMetrics
 ): ConsequenceInsight {
+    const { cash, revenue, expenses, receivables } = metrics;
+
+    // ── STRESS TEST: Receivables Drift Override ──
+    // If receivables exceed 125% of cash on hand, force the warning
+    // regardless of which metric scores lowest.
+    if (receivables > 1.25 * cash && cash > 0) {
+        const driftRatio = ((receivables / cash) * 100).toFixed(0);
+        return {
+            metricKey: 'scoring.receivables',
+            consequenceKey: 'insight.consequence.receivablesDrift',
+            severity: 'warning',
+            impactValue: `${driftRatio}%`,
+            score: breakdown.receivables,
+        };
+    }
+
     const scores = [
         { key: 'liquidity', score: breakdown.liquidity },
         { key: 'margins', score: breakdown.margins },
@@ -350,7 +366,6 @@ export function generateConsequenceStatement(
         weakest.score < 30 ? 'critical' : weakest.score < 50 ? 'warning' : 'moderate';
 
     // Compute contextual impact values
-    const { cash, revenue, expenses, receivables } = metrics;
     let impactValue = '';
 
     switch (weakest.key) {
