@@ -1,6 +1,6 @@
 /* ======================================================
    THABAT — Glass Fortress Design System
-   "Cinematic Executive" Edition
+   "Rolex" Corporate Premium Command Center Edition
    ====================================================== */
 
 /* --- CSS Reset & Base --- */
@@ -44,57 +44,60 @@ main {
 
 /* --- Design Tokens --- */
 
-/* Dark Mode (Default) — Deep Midnight Mesh */
+/* Dark Mode (Default) — Rolex Matte Black */
 [data-theme='dark'] {
-  --bg-primary: #0A0E14;
-  --bg-secondary: #162235;
-  --bg-tertiary: #111a2e;
-  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #162235 0%, #0A0E14 50%, #05070A 100%);
+  --bg-primary: #050505;
+  --bg-secondary: #0d0d1a;
+  --bg-tertiary: #111118;
+  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #0d0d1a 0%, #050505 50%, #020202 100%);
   --bg-mesh:
-    radial-gradient(ellipse 60% 50% at 10% 90%, #162235 0%, transparent 60%),
-    radial-gradient(ellipse 50% 45% at 90% 15%, rgba(22, 34, 53, 0.7) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 55% at 50% 50%, #05070A 0%, transparent 80%),
-    radial-gradient(ellipse 40% 30% at 70% 70%, rgba(59, 130, 246, 0.04) 0%, transparent 70%);
+    radial-gradient(ellipse 50% 45% at 85% 10%, rgba(26, 26, 46, 0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 90% 5%, rgba(26, 26, 46, 0.35) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 55% at 50% 50%, #020202 0%, transparent 80%),
+    radial-gradient(ellipse 40% 30% at 15% 85%, rgba(224, 224, 224, 0.015) 0%, transparent 70%);
 
   --text-primary: #edf0f7;
   --text-secondary: #8b97b5;
   --text-tertiary: #4a5578;
-  --text-accent: #6ea8fe;
+  --text-accent: #E0E0E0;
 
-  --accent-primary: #3b82f6;
-  --accent-secondary: #6366f1;
-  --accent-glow: rgba(59, 130, 246, 0.35);
+  --accent-primary: #E0E0E0;
+  --accent-secondary: #B0B0B0;
+  --accent-glow: rgba(224, 224, 224, 0.2);
 
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  --glass-bg-hover: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.12);
-  --glass-blur: 40px;
-  --glass-glow: rgba(59, 130, 246, 0.06);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-hover: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.16);
+  --glass-blur: 20px;
+  --glass-glow: rgba(224, 224, 224, 0.04);
 
-  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(34, 197, 94, 0.05) 0%, transparent 70%);
+  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(0, 108, 53, 0.06) 0%, transparent 70%);
   --neon-cast-amber: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
   --neon-cast-red: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
 
-  --ring-track: rgba(255, 255, 255, 0.04);
-  --ring-green: #22c55e;
+  --ring-track: rgba(255, 255, 255, 0.05);
+  --ring-green: #006C35;
   --ring-amber: #f59e0b;
   --ring-red: #ef4444;
-  --ring-glow-green: rgba(34, 197, 94, 0.45);
+  --ring-glow-green: rgba(0, 108, 53, 0.45);
   --ring-glow-amber: rgba(245, 158, 11, 0.45);
   --ring-glow-red: rgba(239, 68, 68, 0.45);
 
-  --nav-bg: rgba(10, 14, 20, 0.94);
-  --nav-border: rgba(255, 255, 255, 0.05);
-  --nav-active: #3b82f6;
-  --nav-inactive: #3d4a65;
+  --nav-bg: rgba(5, 5, 5, 0.85);
+  --nav-border: rgba(255, 255, 255, 0.08);
+  --nav-active: #E0E0E0;
+  --nav-inactive: #4a5060;
 
-  --success: #22c55e;
+  --success: #006C35;
   --warning: #f59e0b;
   --danger: #ef4444;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --amber-action: #f59e0b;
+  --amber-action-glow: rgba(245, 158, 11, 0.4);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.6);
   --shadow-glow: 0 0 30px var(--glass-glow);
 }
 
@@ -206,9 +209,9 @@ body {
 /* --- Glass Card Utility --- */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-glow);
   transition: background var(--transition-fast),
@@ -295,12 +298,29 @@ body {
   }
 }
 
+/* Amber Executive Action Pulse — signals that card needs 'Executive Action' */
+@keyframes amber-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.2), 0 0 20px rgba(245, 158, 11, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.45), 0 0 40px rgba(245, 158, 11, 0.2);
+  }
+}
+
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
 .animate-fade-in {
   animation: fade-in 0.5s ease-out forwards;
+}
+
+.amber-action-glow {
+  animation: amber-pulse 2.5s ease-in-out infinite;
 }
 
 /* --- Scrollbar (hidden for native feel) --- */

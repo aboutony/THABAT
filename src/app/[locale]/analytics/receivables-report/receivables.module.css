@@ -1,0 +1,106 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px 16px 80px;
+    scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+    display: none;
+}
+
+.backLink {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color var(--transition-fast);
+}
+
+.backLink:hover {
+    color: var(--text-primary);
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 16px;
+    text-align: center;
+}
+
+.iconCircle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(224, 224, 224, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-primary);
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    margin: 0;
+    max-width: 280px;
+    line-height: 1.5;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--warning);
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+}
+
+.placeholderGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.placeholderCard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    height: 72px;
+}
+
+.placeholderBar {
+    width: 4px;
+    height: 32px;
+    border-radius: 2px;
+    background: rgba(224, 224, 224, 0.15);
+}
+
+.placeholderLabel {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}

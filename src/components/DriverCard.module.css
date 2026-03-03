@@ -79,3 +79,10 @@
 [dir='rtl'] .valueCol {
     align-items: flex-start;
 }
+
+/* Link wrapper — removes default anchor styling */
+.cardLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}

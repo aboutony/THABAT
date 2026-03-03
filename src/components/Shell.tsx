@@ -33,6 +33,7 @@ export default function Shell({ children }: ShellProps) {
             path: '',
             label: tNav('home'),
             adminOnly: false,
+            alertGlow: false,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -44,6 +45,7 @@ export default function Shell({ children }: ShellProps) {
             path: 'analytics',
             label: tNav('analytics'),
             adminOnly: false,
+            alertGlow: false,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="20" x2="18" y2="10" />
@@ -56,6 +58,7 @@ export default function Shell({ children }: ShellProps) {
             path: 'alerts',
             label: tNav('alerts'),
             adminOnly: true,
+            alertGlow: true, // Executive Action glow when alerts are active
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -67,6 +70,7 @@ export default function Shell({ children }: ShellProps) {
             path: 'settings',
             label: tNav('settings'),
             adminOnly: false,
+            alertGlow: false,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3" />
@@ -101,13 +105,13 @@ export default function Shell({ children }: ShellProps) {
                 {children}
             </main>
 
-            {/* Bottom Navigation */}
-            <nav className={`glass-nav ${styles.bottomNav}`}>
+            {/* Floating Glass Bottom Navigation */}
+            <nav className={styles.bottomNav}>
                 {navItems.map((item) => (
                     <Link
                         key={item.path}
                         href={`/${locale}/${item.path}`}
-                        className={`${styles.navItem} ${isActive(item.path) ? styles.navActive : ''}`}
+                        className={`${styles.navItem} ${isActive(item.path) ? styles.navActive : ''} ${item.alertGlow ? styles.navAlertGlow : ''}`}
                     >
                         {item.icon}
                         <span>{item.label}</span>

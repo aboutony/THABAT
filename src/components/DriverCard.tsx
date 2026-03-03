@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import Link from 'next/link';
 import styles from './DriverCard.module.css';
 
 interface DriverCardProps {
@@ -11,9 +12,10 @@ interface DriverCardProps {
     value: string;
     trend: 'up' | 'down' | 'neutral';
     delay?: number;
+    href?: string;
 }
 
-export default function DriverCard({ icon, label, description, value, trend, delay = 0 }: DriverCardProps) {
+export default function DriverCard({ icon, label, description, value, trend, delay = 0, href }: DriverCardProps) {
     const cardRef = useRef<HTMLDivElement>(null);
     const mouseX = useMotionValue(0.5);
     const mouseY = useMotionValue(0.5);
@@ -52,7 +54,7 @@ export default function DriverCard({ icon, label, description, value, trend, del
         }
     };
 
-    return (
+    const cardContent = (
         <motion.div
             ref={cardRef}
             className={`glass-card ${styles.card}`}
@@ -85,4 +87,14 @@ export default function DriverCard({ icon, label, description, value, trend, del
             </div>
         </motion.div>
     );
+
+    if (href) {
+        return (
+            <Link href={href} className={styles.cardLink}>
+                {cardContent}
+            </Link>
+        );
+    }
+
+    return cardContent;
 }

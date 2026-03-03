@@ -42,7 +42,7 @@ export default async function RootLayout({
         >
             <head>
                 {/* Theme-color for mobile browser chrome */}
-                <meta name="theme-color" content="#0A0E14" />
+                <meta name="theme-color" content="#050505" />
                 {/* Inline script to prevent theme flicker */}
                 <script
                     dangerouslySetInnerHTML={{
