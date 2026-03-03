@@ -188,6 +188,7 @@
     color: var(--text-tertiary);
     min-width: 70px;
     flex-shrink: 0;
+    text-align: start;
 }
 
 .bucketBarOuter {
@@ -196,6 +197,7 @@
     background: rgba(255, 255, 255, 0.04);
     border-radius: 4px;
     overflow: hidden;
+    display: flex;
 }
 
 .bucketBarInner {
@@ -254,4 +256,74 @@
     font-weight: 700;
     color: #E0E0E0;
     font-variant-numeric: tabular-nums;
+}
+
+/* ══════════════════════════════════
+   RTL OVERRIDES — Arabic Mode
+   ══════════════════════════════════ */
+
+:global([dir="rtl"]) .backLink {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .poTag {
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+}
+
+:global([dir="rtl"]) .poCard,
+:global([dir="rtl"]) .agingCard,
+:global([dir="rtl"]) .debtorsCard,
+:global([dir="rtl"]) .headerCard {
+    text-align: right;
+}
+
+:global([dir="rtl"]) .headerCard {
+    text-align: center;
+}
+
+:global([dir="rtl"]) .poRow {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .bucketRow {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .bucketLabel {
+    text-align: end;
+}
+
+:global([dir="rtl"]) .bucketBarOuter {
+    justify-content: flex-end;
+}
+
+:global([dir="rtl"]) .bucketAmount {
+    text-align: start;
+}
+
+:global([dir="rtl"]) .debtorRow {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .debtorInfo {
+    align-items: flex-end;
+    text-align: right;
+}
+
+:global([dir="rtl"]) .sectionTitle {
+    text-align: right;
+}
+
+:global([dir="rtl"]) .poProduct,
+:global([dir="rtl"]) .poClient {
+    text-align: right;
+}
+
+:global([dir="rtl"]) .poNote {
+    text-align: right;
+}
+
+:global([dir="rtl"]) .collectionRow {
+    flex-direction: row-reverse;
 }

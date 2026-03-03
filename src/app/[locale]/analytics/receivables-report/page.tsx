@@ -120,29 +120,32 @@ export default function ReceivablesReportPage() {
                 >
                     <div className={styles.sectionTitle}>{t('agingBuckets')}</div>
                     <div className={styles.bucketList}>
-                        {RECEIVABLES_DATA.agingBuckets.map((bucket, i) => (
-                            <div key={i} className={styles.bucketRow}>
-                                <span className={styles.bucketLabel}>
-                                    {isAr ? bucket.labelAr : bucket.label} {t('days')}
-                                </span>
-                                <div className={styles.bucketBarOuter}>
-                                    <motion.div
-                                        className={styles.bucketBarInner}
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${(bucket.amount / maxBucket) * 100}%` }}
-                                        transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
-                                        style={{
-                                            background: i < 2
-                                                ? 'rgba(0, 108, 53, 0.6)'
-                                                : i === 2
-                                                    ? 'rgba(245, 158, 11, 0.6)'
-                                                    : 'rgba(239, 68, 68, 0.6)',
-                                        }}
-                                    />
+                        {(isAr ? [...RECEIVABLES_DATA.agingBuckets].reverse() : RECEIVABLES_DATA.agingBuckets).map((bucket, i) => {
+                            const origIdx = RECEIVABLES_DATA.agingBuckets.indexOf(bucket);
+                            return (
+                                <div key={i} className={styles.bucketRow}>
+                                    <span className={styles.bucketLabel}>
+                                        {isAr ? bucket.labelAr : bucket.label} {t('days')}
+                                    </span>
+                                    <div className={styles.bucketBarOuter}>
+                                        <motion.div
+                                            className={styles.bucketBarInner}
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${(bucket.amount / maxBucket) * 100}%` }}
+                                            transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
+                                            style={{
+                                                background: origIdx < 2
+                                                    ? 'rgba(0, 108, 53, 0.6)'
+                                                    : origIdx === 2
+                                                        ? 'rgba(245, 158, 11, 0.6)'
+                                                        : 'rgba(239, 68, 68, 0.6)',
+                                            }}
+                                        />
+                                    </div>
+                                    <span className={styles.bucketAmount}>{formatSARShort(bucket.amount)}</span>
                                 </div>
-                                <span className={styles.bucketAmount}>{formatSARShort(bucket.amount)}</span>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </motion.div>
 
