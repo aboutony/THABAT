@@ -44,8 +44,8 @@
 }
 
 .success {
-    background: rgba(34, 197, 94, 0.1);
-    border: 1px solid rgba(34, 197, 94, 0.2);
+    background: rgba(0, 108, 53, 0.12);
+    border: 1px solid rgba(0, 108, 53, 0.25);
     color: var(--success);
 }
 
@@ -70,7 +70,7 @@
 }
 
 .erpCard.connected {
-    border-color: rgba(34, 197, 94, 0.2);
+    border-color: rgba(0, 108, 53, 0.25);
 }
 
 .erpHeader {
@@ -124,18 +124,22 @@
 }
 
 .connectBtn {
-    background: var(--accent-primary);
-    color: #fff;
+    background: #006C35;
+    color: #E0E0E0;
     margin-inline-start: auto;
 }
 
 .syncBtn {
-    background: rgba(34, 197, 94, 0.15);
+    background: rgba(0, 108, 53, 0.15);
     color: var(--success);
-    border: 1px solid rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(0, 108, 53, 0.25);
 }
 
-.connectBtn:hover,
+.connectBtn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 108, 53, 0.5);
+}
+
 .syncBtn:hover {
     transform: scale(1.02);
 }
@@ -263,14 +267,19 @@
 .saveBtn {
     flex: 2;
     padding: 12px;
-    background: var(--accent-primary);
+    background: #006C35;
     border: none;
     border-radius: var(--radius-sm);
-    color: #fff;
+    color: #E0E0E0;
     font-size: var(--font-size-sm);
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
+    transition: box-shadow var(--transition-fast);
+}
+
+.saveBtn:hover {
+    box-shadow: 0 0 15px rgba(0, 108, 53, 0.5);
 }
 
 .saveBtn:disabled {

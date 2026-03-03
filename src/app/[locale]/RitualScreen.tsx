@@ -91,6 +91,7 @@ export default function RitualScreen() {
             description: t('revenueDesc'),
             value: latestData ? formatPercent(((latestData.metrics.revenue - latestData.metrics.expenses) / Math.max(latestData.metrics.revenue, 1) * 100), locale) : formatPercent(12.4, locale),
             trend: 'up' as const,
+            href: `/${locale}/analytics/receivables-report`,
         },
         {
             icon: (
@@ -117,6 +118,7 @@ export default function RitualScreen() {
             description: t('efficiencyDesc'),
             value: latestData ? formatPercent(latestData.score.margins, locale) : formatPercent(88.7, locale),
             trend: 'up' as const,
+            href: `/${locale}/analytics/receivables-report`,
         },
     ];
 

@@ -172,12 +172,21 @@ export default function IntegrationsPage() {
                                             </button>
                                         </>
                                     ) : (
-                                        <button
-                                            className={styles.connectBtn}
-                                            onClick={() => handleSelectERP(provider)}
-                                        >
-                                            {t('connect')}
-                                        </button>
+                                        provider === 'sap' ? (
+                                            <a
+                                                className={styles.connectBtn}
+                                                href={`/${locale}/onboarding`}
+                                            >
+                                                {t('connect')}
+                                            </a>
+                                        ) : (
+                                            <button
+                                                className={styles.connectBtn}
+                                                onClick={() => handleSelectERP(provider)}
+                                            >
+                                                {t('connect')}
+                                            </button>
+                                        )
                                     )}
                                 </div>
                             </motion.div>
