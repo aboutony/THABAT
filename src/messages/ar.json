@@ -219,13 +219,14 @@
         "title": "تقرير المستحقات",
         "subtitle": "قريبًا — تحليل الذمم المدينة المفصل",
         "badge": "قيد التطوير",
-        "agingBuckets": "فئات التقادم",
+        "agingBuckets": "تصنيف أعمار الديون",
         "topDebtors": "أكبر المدينين",
         "collectionRate": "معدل التحصيل",
-        "totalOutstanding": "إجمالي المستحقات",
+        "totalOutstanding": "إجمالي المبالغ المستحقة",
         "invoiceAmount": "مبلغ الفاتورة",
         "legallyDue": "مستحق قانونيًا",
-        "days": "يوم"
+        "days": "يوم",
+        "nupcoTerms": "سوق نوبكو: السداد مستحق قانونيًا بعد {days} يومًا من التقديم الإلكتروني"
     },
     "common": {
         "sar": "ر.س"
@@ -237,11 +238,11 @@
         "activeContracts": "نشط",
         "renewed": "مجدد",
         "avgYears": "متوسط السنوات",
-        "contractValue": "تفصيل قيمة العقود",
+        "contractValue": "توزيع قيمة العقود",
         "renewals": "تجديدات",
         "active": "نشط",
         "new": "جديد",
-        "recurringOrders": "طلبات نوبكو المتكررة",
+        "recurringOrders": "الطلبات المتكررة",
         "year": "سنة",
         "unitsYear": "وحدة/سنة"
     }

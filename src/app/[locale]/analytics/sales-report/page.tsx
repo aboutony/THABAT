@@ -8,26 +8,28 @@ import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './sales.module.css';
 
-// NUPCO PO Data — hardcoded UNIMED operational data
 const NUPCO_PO = {
     number: 'PO 4100000309',
-    client: 'NUPCO (National Unified Procurement Company)',
+    client: { en: 'NUPCO (National Unified Procurement Company)', ar: 'نوبكو (الشركة الوطنية الموحدة للشراء)' },
     baseRevenue: 1053000.0,
     unitPrice: 650.0,
     baseUnits: 1620,
     paymentTerms: 120,
     products: [
-        { name: 'Urological Catheter – Foley 2-Way', sku: 'UC-F2W-16', unitPrice: 650.0, qty: 800 },
-        { name: 'Suture Braid Silk 2/0 – 75cm', sku: 'SBS-20-75', unitPrice: 469.9, qty: 600 },
-        { name: 'Surgical Drain – Jackson-Pratt', sku: 'SD-JP-400', unitPrice: 312.5, qty: 220 },
+        { name: { en: 'Urological Catheter – Foley 2-Way', ar: 'قسطرة بولية – فولي ثنائية الاتجاه' }, sku: 'UC-F2W-16', unitPrice: 650.0, qty: 800 },
+        { name: { en: 'Suture Braid Silk 2/0 – 75cm', ar: 'خيط جراحي حريري مجدول 2/0 – 75سم' }, sku: 'SBS-20-75', unitPrice: 469.9, qty: 600 },
+        { name: { en: 'Surgical Drain – Jackson-Pratt', ar: 'مصرف جراحي – جاكسون برات' }, sku: 'SD-JP-400', unitPrice: 312.5, qty: 220 },
     ],
 };
 
 export default function SalesReportPage() {
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const isAr = locale === 'ar';
     const t = useTranslations('salesReport');
     const tc = useTranslations('common');
     const [volumeMultiplier, setVolumeMultiplier] = useState(100);
+
+    const L = (obj: { en: string; ar: string }) => isAr ? obj.ar : obj.en;
 
     const forecast = useMemo(() => {
         const factor = volumeMultiplier / 100;
@@ -45,15 +47,15 @@ export default function SalesReportPage() {
     };
 
     const formatDate = (d: Date) => {
-        const str = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        return locale === 'ar' ? formatNumber(str, 'ar') : str;
+        const dateLocale = isAr ? 'ar-SA' : 'en-US';
+        return d.toLocaleDateString(dateLocale, { month: 'short', day: 'numeric', year: 'numeric' });
     };
 
     return (
         <Shell>
             <div className={styles.page}>
                 <Link href={`/${locale}`} className={styles.backLink}>
-                    ← {t('back')}
+                    {isAr ? '→' : '←'} {t('back')}
                 </Link>
 
                 {/* Pipeline */}
@@ -64,8 +66,8 @@ export default function SalesReportPage() {
                     transition={{ duration: 0.6 }}
                 >
                     <div className={styles.pipelineHeader}>
-                        <span className={styles.poTag}>{NUPCO_PO.number}</span>
-                        <span className={styles.clientLabel}>{NUPCO_PO.client}</span>
+                        <span className={styles.poTag}>{formatNumber(NUPCO_PO.number, locale)}</span>
+                        <span className={styles.clientLabel}>{L(NUPCO_PO.client)}</span>
                     </div>
                     <div className={styles.pipelineValue}>
                         {formatSAR(forecast.revenue)}
@@ -166,7 +168,7 @@ export default function SalesReportPage() {
                     {NUPCO_PO.products.map((p, i) => (
                         <div key={i} className={styles.productRow}>
                             <div className={styles.productInfo}>
-                                <span className={styles.productName}>{p.name}</span>
+                                <span className={styles.productName}>{L(p.name)}</span>
                                 <span className={styles.productSku}>{p.sku}</span>
                             </div>
                             <div className={styles.productNumbers}>

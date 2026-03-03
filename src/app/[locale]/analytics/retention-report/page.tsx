@@ -14,8 +14,8 @@ const RETENTION_DATA = {
     avgContractYears: 3.5,
     primaryContracts: [
         {
-            client: 'NUPCO – National Unified Procurement',
-            type: 'Framework Agreement',
+            client: { en: 'NUPCO – National Unified Procurement', ar: 'نوبكو – الشركة الوطنية الموحدة للشراء' },
+            type: { en: 'Framework Agreement', ar: 'اتفاقية إطارية' },
             value: 4200000,
             startYear: 2023,
             endYear: 2027,
@@ -23,8 +23,8 @@ const RETENTION_DATA = {
             status: 'active',
         },
         {
-            client: 'MOH – Ministry of Health (Central)',
-            type: 'Direct Purchase Agreement',
+            client: { en: 'MOH – Ministry of Health (Central)', ar: 'وزارة الصحة – الإدارة المركزية' },
+            type: { en: 'Direct Purchase Agreement', ar: 'اتفاقية شراء مباشر' },
             value: 2100000,
             startYear: 2024,
             endYear: 2026,
@@ -32,8 +32,8 @@ const RETENTION_DATA = {
             status: 'active',
         },
         {
-            client: 'King Faisal Specialist Hospital',
-            type: 'Tender Contract',
+            client: { en: 'King Faisal Specialist Hospital', ar: 'مستشفى الملك فيصل التخصصي' },
+            type: { en: 'Tender Contract', ar: 'عقد مناقصة' },
             value: 1350000,
             startYear: 2024,
             endYear: 2026,
@@ -41,8 +41,8 @@ const RETENTION_DATA = {
             status: 'active',
         },
         {
-            client: 'Saudi German Hospital Group',
-            type: 'Supply Agreement',
+            client: { en: 'Saudi German Hospital Group', ar: 'مجموعة المستشفى السعودي الألماني' },
+            type: { en: 'Supply Agreement', ar: 'اتفاقية توريد' },
             value: 890000,
             startYear: 2025,
             endYear: 2027,
@@ -51,25 +51,43 @@ const RETENTION_DATA = {
         },
     ],
     recurringNUPCO: [
-        { product: 'Urological Catheter – Foley 2-Way', annualQty: 3200, unitPrice: 650.0 },
-        { product: 'Suture Braid Silk 2/0 – 75cm', annualQty: 2400, unitPrice: 469.9 },
-        { product: 'Surgical Drain – Jackson-Pratt', annualQty: 880, unitPrice: 312.5 },
+        {
+            product: { en: 'Urological Catheter – Foley 2-Way', ar: 'قسطرة بولية – فولي ثنائية الاتجاه' },
+            annualQty: 3200,
+            unitPrice: 650.0,
+        },
+        {
+            product: { en: 'Suture Braid Silk 2/0 – 75cm', ar: 'خيط جراحي حريري مجدول 2/0 – 75سم' },
+            annualQty: 2400,
+            unitPrice: 469.9,
+        },
+        {
+            product: { en: 'Surgical Drain – Jackson-Pratt', ar: 'مصرف جراحي – جاكسون برات' },
+            annualQty: 880,
+            unitPrice: 312.5,
+        },
     ],
 };
 
 export default function RetentionReportPage() {
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const isAr = locale === 'ar';
     const t = useTranslations('retention');
     const tc = useTranslations('common');
+
+    const L = (obj: { en: string; ar: string }) => isAr ? obj.ar : obj.en;
 
     const formatSAR = (n: number) => {
         const formatted = n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         return `${tc('sar')} ${formatNumber(formatted, locale)}`;
     };
 
+    const mSuffix = isAr ? 'م' : 'M';
+    const kSuffix = isAr ? 'ألف' : 'K';
+
     const formatSARShort = (n: number) => {
-        if (n >= 1000000) return `${tc('sar')} ${formatNumber((n / 1000000).toFixed(1), locale)}M`;
-        if (n >= 1000) return `${tc('sar')} ${formatNumber((n / 1000).toFixed(0), locale)}K`;
+        if (n >= 1000000) return `${tc('sar')} ${formatNumber((n / 1000000).toFixed(1), locale)}${mSuffix}`;
+        if (n >= 1000) return `${tc('sar')} ${formatNumber((n / 1000).toFixed(0), locale)}${kSuffix}`;
         return formatSAR(n);
     };
 
@@ -80,7 +98,7 @@ export default function RetentionReportPage() {
         <Shell>
             <div className={styles.page}>
                 <Link href={`/${locale}`} className={styles.backLink}>
-                    ← {t('back')}
+                    {isAr ? '→' : '←'} {t('back')}
                 </Link>
 
                 {/* Header */}
@@ -126,13 +144,13 @@ export default function RetentionReportPage() {
                         <motion.div
                             key={i}
                             className={styles.contractRow}
-                            initial={{ opacity: 0, x: -8 }}
+                            initial={{ opacity: 0, x: isAr ? 8 : -8 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.3 + i * 0.1 }}
                         >
                             <div className={styles.contractInfo}>
-                                <span className={styles.contractClient}>{c.client}</span>
-                                <span className={styles.contractType}>{c.type}</span>
+                                <span className={styles.contractClient}>{L(c.client)}</span>
+                                <span className={styles.contractType}>{L(c.type)}</span>
                                 <span className={styles.contractPeriod}>
                                     {formatNumber(c.startYear, locale)}-{formatNumber(c.endYear, locale)} • {formatNumber(c.renewals, locale)} {t('renewals')}
                                 </span>
@@ -161,7 +179,7 @@ export default function RetentionReportPage() {
                     {RETENTION_DATA.recurringNUPCO.map((p, i) => (
                         <div key={i} className={styles.productRow}>
                             <div className={styles.productInfo}>
-                                <span className={styles.productName}>{p.product}</span>
+                                <span className={styles.productName}>{L(p.product)}</span>
                                 <span className={styles.productQty}>
                                     {formatNumber(p.annualQty.toLocaleString('en-US'), locale)} {t('unitsYear')}
                                 </span>

@@ -225,7 +225,8 @@
         "totalOutstanding": "Total Outstanding",
         "invoiceAmount": "Invoice Amount",
         "legallyDue": "Legally Due",
-        "days": "days"
+        "days": "days",
+        "nupcoTerms": "NUPCO Marketplace: Payment legally due {days} days after electronic filing"
     },
     "common": {
         "sar": "SAR"

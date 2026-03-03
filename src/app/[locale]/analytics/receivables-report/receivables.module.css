@@ -143,6 +143,17 @@
     color: var(--warning);
 }
 
+.poNote {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    line-height: 1.5;
+    margin-top: 4px;
+}
+
 /* ── Aging Buckets ── */
 .agingCard {
     padding: 16px;
