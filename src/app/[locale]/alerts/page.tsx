@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import PageHeader from '@/components/PageHeader';
 import Shell from '@/components/Shell';
+import { useAuth } from '@/context/AuthContext';
 import { localizeActionType, localizeActionNote, getScoreBandLabel, formatNumber } from '@/lib/locale-utils';
 import styles from './pilot.module.css';
 
@@ -22,9 +24,20 @@ interface KPIData {
 
 export default function PilotDashboard() {
     const t = useTranslations('pilot');
+    const router = useRouter();
+    const currentPathname = usePathname();
+    const { user, loading: authLoading } = useAuth();
     const [data, setData] = useState<KPIData | null>(null);
     const [loading, setLoading] = useState(true);
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+
+    // Admin guard — redirect non-admin users to home
+    useEffect(() => {
+        if (!authLoading && user && user.role !== 'admin') {
+            const loc = currentPathname.startsWith('/ar') ? 'ar' : 'en';
+            router.push(`/${loc}`);
+        }
+    }, [user, authLoading, router, currentPathname]);
 
     const fetchKPIs = useCallback(async () => {
         try {

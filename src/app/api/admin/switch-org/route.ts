@@ -1,22 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/db';
-import { signJWT, COOKIE_NAME } from '@/lib/auth';
-
-function verifyAdminKey(request: NextRequest): boolean {
-    const key = request.headers.get('x-admin-key');
-    const expected = process.env.THABAT_ADMIN_KEY || '';
-    if (!expected || !key) return false;
-    return key === expected;
-}
+import { signJWT, getSession, COOKIE_NAME } from '@/lib/auth';
 
 /**
  * POST /api/admin/switch-org
  * Switches the current session to a different org's demo user.
- * Requires x-admin-key header.
+ * Admin-only: requires role 'admin' in the JWT session.
  * Body: { orgId: string }
  */
 export async function POST(request: NextRequest) {
-    if (!verifyAdminKey(request)) {
+    const session = await getSession();
+    if (!session || session.role !== 'admin') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -57,28 +51,61 @@ export async function POST(request: NextRequest) {
 
 /**
  * GET /api/admin/switch-org
- * Returns all demo organizations for the switcher UI.
- * Requires x-admin-key header.
+ * Returns organizations based on the user's role:
+ *   - Admin: ALL demo orgs (full switcher)
+ *   - Non-admin: Only orgs in the same entity_group (e.g., UNIMED KSA + UAE)
  */
-export async function GET(request: NextRequest) {
-    if (!verifyAdminKey(request)) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+export async function GET() {
+    const session = await getSession();
+    if (!session) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {
-        // Get all orgs that have a demo user
-        const orgs = await sql`
-            SELECT o.id, o.name, o.industry, o.growth_stage, o.entity_group, o.currency,
-                   o.corp_tax_rate, o.vat_rate,
-                   s.total_score, s.trajectory_direction
-            FROM organizations o
-            JOIN users u ON u.org_id = o.id AND u.email LIKE '%@demo.%'
-            LEFT JOIN stability_scores s ON s.org_id = o.id
-                AND s.date = (SELECT MAX(date) FROM stability_scores WHERE org_id = o.id)
-            ORDER BY o.entity_group, o.name
-        `;
+        if (session.role === 'admin') {
+            // Admin sees ALL demo orgs
+            const orgs = await sql`
+                SELECT o.id, o.name, o.industry, o.growth_stage, o.entity_group, o.currency,
+                       o.corp_tax_rate, o.vat_rate,
+                       s.total_score, s.trajectory_direction
+                FROM organizations o
+                JOIN users u ON u.org_id = o.id AND u.email LIKE '%@demo.%'
+                LEFT JOIN stability_scores s ON s.org_id = o.id
+                    AND s.date = (SELECT MAX(date) FROM stability_scores WHERE org_id = o.id)
+                ORDER BY o.entity_group, o.name
+            `;
+            return NextResponse.json({ orgs });
+        } else {
+            // Non-admin: only show orgs in their entity_group
+            const userOrg = await sql`SELECT entity_group FROM organizations WHERE id = ${session.orgId}`;
+            const entityGroup = userOrg[0]?.entity_group as string | null;
 
-        return NextResponse.json({ orgs });
+            if (entityGroup) {
+                const orgs = await sql`
+                    SELECT o.id, o.name, o.industry, o.growth_stage, o.entity_group, o.currency,
+                           o.corp_tax_rate, o.vat_rate,
+                           s.total_score, s.trajectory_direction
+                    FROM organizations o
+                    LEFT JOIN stability_scores s ON s.org_id = o.id
+                        AND s.date = (SELECT MAX(date) FROM stability_scores WHERE org_id = o.id)
+                    WHERE o.entity_group = ${entityGroup}
+                    ORDER BY o.name
+                `;
+                return NextResponse.json({ orgs });
+            } else {
+                // No entity group — show only their own org
+                const orgs = await sql`
+                    SELECT o.id, o.name, o.industry, o.growth_stage, o.entity_group, o.currency,
+                           o.corp_tax_rate, o.vat_rate,
+                           s.total_score, s.trajectory_direction
+                    FROM organizations o
+                    LEFT JOIN stability_scores s ON s.org_id = o.id
+                        AND s.date = (SELECT MAX(date) FROM stability_scores WHERE org_id = o.id)
+                    WHERE o.id = ${session.orgId}
+                `;
+                return NextResponse.json({ orgs });
+            }
+        }
     } catch (error) {
         console.error('List orgs error:', error);
         return NextResponse.json({ error: 'Failed' }, { status: 500 });

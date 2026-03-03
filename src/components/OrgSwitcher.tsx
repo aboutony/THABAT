@@ -73,15 +73,11 @@ export default function OrgSwitcher() {
     const [loadingConsolidated, setLoadingConsolidated] = useState(false);
     const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
 
-    const adminKey = typeof window !== 'undefined'
-        ? (document.querySelector('meta[name="admin-key"]') as HTMLMetaElement)?.content || ''
-        : '';
+    const isAdmin = user?.role === 'admin';
 
     const fetchOrgs = useCallback(async () => {
         try {
-            const res = await fetch('/api/admin/switch-org', {
-                headers: { 'x-admin-key': adminKey || 'demo-key-2026' },
-            });
+            const res = await fetch('/api/admin/switch-org');
             if (res.ok) {
                 const data = await res.json();
                 setOrgs(data.orgs || []);
@@ -91,7 +87,7 @@ export default function OrgSwitcher() {
         } finally {
             setLoading(false);
         }
-    }, [adminKey]);
+    }, []);
 
     useEffect(() => {
         fetchOrgs();
@@ -125,7 +121,7 @@ export default function OrgSwitcher() {
     };
 
     const handleSwitch = async (orgId: string) => {
-        if (switching) return;
+        if (switching || !isAdmin) return;
         setSwitching(orgId);
 
         try {
@@ -133,7 +129,6 @@ export default function OrgSwitcher() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-admin-key': adminKey || 'demo-key-2026',
                 },
                 body: JSON.stringify({ orgId }),
             });
@@ -254,9 +249,9 @@ export default function OrgSwitcher() {
                                         <span className={styles.currentBadge}>{t('current')}</span>
                                     ) : isLoading ? (
                                         <span className={styles.loadingDot}>⏳</span>
-                                    ) : (
+                                    ) : isAdmin ? (
                                         <span className={styles.switchBtn}>{t('switch')}</span>
-                                    )}
+                                    ) : null}
                                 </div>
                             </motion.button>
                         );

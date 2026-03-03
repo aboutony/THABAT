@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import styles from './Shell.module.css';
@@ -15,9 +16,11 @@ export default function Shell({ children }: ShellProps) {
     const tApp = useTranslations('app');
     const tNav = useTranslations('nav');
     const pathname = usePathname();
+    const { user } = useAuth();
 
     // Detect locale from pathname
     const locale = pathname.startsWith('/ar') ? 'ar' : 'en';
+    const isAdmin = user?.role === 'admin';
 
     // Active tab detection
     const isActive = (path: string) => {
@@ -25,10 +28,11 @@ export default function Shell({ children }: ShellProps) {
         return pathname.includes(`/${path}`);
     };
 
-    const navItems = [
+    const allNavItems = [
         {
             path: '',
             label: tNav('home'),
+            adminOnly: false,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -39,6 +43,7 @@ export default function Shell({ children }: ShellProps) {
         {
             path: 'analytics',
             label: tNav('analytics'),
+            adminOnly: false,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="20" x2="18" y2="10" />
@@ -50,6 +55,7 @@ export default function Shell({ children }: ShellProps) {
         {
             path: 'alerts',
             label: tNav('alerts'),
+            adminOnly: true,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -60,6 +66,7 @@ export default function Shell({ children }: ShellProps) {
         {
             path: 'settings',
             label: tNav('settings'),
+            adminOnly: false,
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3" />
@@ -68,6 +75,9 @@ export default function Shell({ children }: ShellProps) {
             ),
         },
     ];
+
+    // Filter: admin-only tabs hidden from regular users
+    const navItems = allNavItems.filter(item => !item.adminOnly || isAdmin);
 
     return (
         <div className={styles.shell}>
@@ -107,3 +117,4 @@ export default function Shell({ children }: ShellProps) {
         </div>
     );
 }
+

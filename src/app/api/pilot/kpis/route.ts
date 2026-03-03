@@ -13,6 +13,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // Admin-only route
+    if (session.role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     // Total organizations
     const orgsResult = await sql`SELECT COUNT(*) as count FROM organizations` as { count: number }[];
     const totalOrgs = Number(orgsResult[0]?.count) || 0;
