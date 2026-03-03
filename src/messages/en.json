@@ -233,17 +233,22 @@
     },
     "retention": {
         "back": "Back to Dashboard",
-        "title": "Client Retention Report",
-        "overallRetention": "Overall Retention Rate",
+        "contractStability": "Contract Stability",
+        "overallRetention": "Overall Stability Rate",
         "activeContracts": "Active",
-        "renewed": "Renewed",
+        "recurringRevenue": "Recurring Revenue",
         "avgYears": "Avg Years",
         "contractValue": "Contract Value Breakdown",
         "renewals": "renewals",
+        "renewalStatus": "Renewal Status",
+        "renewalAlert": "Contract expiring in {days} days – Immediate action required",
+        "daysRemaining": "days remaining",
         "active": "Active",
         "new": "New",
-        "recurringOrders": "Recurring NUPCO Orders",
+        "recurringOrders": "Recurring Products",
         "year": "yr",
-        "unitsYear": "units/yr"
+        "unitsYear": "units/yr",
+        "requestRenewalBrief": "Request Renewal Brief",
+        "renewalBriefSent": "Brief sent to Sales Director"
     }
 }

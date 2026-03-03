@@ -1,7 +1,7 @@
 .page {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     height: 100%;
     min-height: 0;
     overflow-y: auto;
@@ -80,7 +80,7 @@
 }
 
 .statNum {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #E0E0E0;
     font-variant-numeric: tabular-nums;
@@ -91,10 +91,11 @@
 }
 
 .statLabel {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-tertiary);
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    text-align: center;
 }
 
 .statDivider {
@@ -103,46 +104,37 @@
     background: rgba(255, 255, 255, 0.08);
 }
 
-/* ── Contracts Card ── */
-.contractsCard,
-.recurringCard {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.sectionHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
+/* ── Section Title ── */
 .sectionTitle {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    margin-top: 4px;
 }
 
-.sectionTotal {
-    font-size: 13px;
-    font-weight: 700;
-    color: #006C35;
-    font-variant-numeric: tabular-nums;
+/* ── Contract Card ── */
+.contractCard {
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
 }
 
-.contractRow {
+.contractCard:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.expiringCard {
+    border-color: rgba(245, 158, 11, 0.3) !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.08);
+}
+
+.contractHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.contractRow:last-child {
-    border-bottom: none;
+    gap: 8px;
 }
 
 .contractInfo {
@@ -167,80 +159,218 @@
     color: var(--text-tertiary);
 }
 
-.contractPeriod {
-    font-size: 10px;
-    color: var(--text-tertiary);
-    font-variant-numeric: tabular-nums;
-}
-
 .contractRight {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 4px;
     flex-shrink: 0;
-    margin-inline-start: 12px;
 }
 
 .contractAmount {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: #E0E0E0;
     font-variant-numeric: tabular-nums;
 }
 
-.contractStatus {
+.stabilityBadge {
     font-size: 9px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     padding: 2px 8px;
     border-radius: 10px;
 }
 
-.statusActive {
+.badgeStable {
     color: #006C35;
     background: rgba(0, 108, 53, 0.12);
 }
 
-.statusNew {
+.badgeExpiring {
     color: var(--warning);
     background: rgba(245, 158, 11, 0.12);
 }
 
-/* ── Product Rows ── */
+.badgeNew {
+    color: #60A5FA;
+    background: rgba(96, 165, 250, 0.12);
+}
+
+/* ── Renewal Alert ── */
+.renewalAlert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 8px;
+}
+
+.alertPulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--warning);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.6);
+    }
+
+    50% {
+        opacity: 0.7;
+        box-shadow: 0 0 8px 4px rgba(245, 158, 11, 0);
+    }
+}
+
+.alertText {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--warning);
+}
+
+/* ── Contract Meta ── */
+.metaRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.metaItem {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.metaDot {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Expanded Section ── */
+.expandedSection {
+    overflow: hidden;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.productsHeader {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
 .productRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.productRow:last-child {
-    border-bottom: none;
-}
-
-.productInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    padding: 5px 0;
 }
 
 .productName {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--text-primary);
 }
 
 .productQty {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
 }
 
-.productTotal {
-    font-size: 13px;
+/* ── Renewal Button ── */
+.renewalBtn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
     font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #006C35;
     color: #E0E0E0;
-    font-variant-numeric: tabular-nums;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 108, 53, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.renewalBtn:hover {
+    box-shadow: 0 0 25px rgba(0, 108, 53, 0.6);
+    transform: translateY(-1px);
+}
+
+.renewalBtn:disabled {
+    cursor: default;
+    transform: none;
+}
+
+.renewalSent {
+    background: rgba(0, 108, 53, 0.15);
+    color: #006C35;
+    box-shadow: none;
+}
+
+/* ══════════════════════════════════
+   RTL OVERRIDES — Arabic Mode
+   ══════════════════════════════════ */
+
+:global([dir="rtl"]) .contractHeader {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .contractInfo {
+    align-items: flex-end;
+    text-align: right;
+}
+
+:global([dir="rtl"]) .contractRight {
+    align-items: flex-start;
+}
+
+:global([dir="rtl"]) .metaRow {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .productRow {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .sectionTitle {
+    text-align: right;
+}
+
+:global([dir="rtl"]) .renewalAlert {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .alertText {
+    text-align: right;
+}
+
+:global([dir="rtl"]) .headerCard {
+    text-align: center;
+}
+
+:global([dir="rtl"]) .backLink {
+    flex-direction: row-reverse;
 }

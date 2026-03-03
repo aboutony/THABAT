@@ -233,17 +233,22 @@
     },
     "retention": {
         "back": "العودة إلى لوحة القيادة",
-        "title": "تقرير استبقاء العملاء",
-        "overallRetention": "معدل الاستبقاء الإجمالي",
+        "contractStability": "استقرار العقود",
+        "overallRetention": "معدل الاستقرار الإجمالي",
         "activeContracts": "نشط",
-        "renewed": "مجدد",
+        "recurringRevenue": "الإيرادات المتكررة",
         "avgYears": "متوسط السنوات",
         "contractValue": "توزيع قيمة العقود",
         "renewals": "تجديدات",
+        "renewalStatus": "حالة التجديد",
+        "renewalAlert": "العقد ينتهي خلال {days} يومًا – يتطلب إجراءً فوريًا",
+        "daysRemaining": "يوم متبقي",
         "active": "نشط",
         "new": "جديد",
-        "recurringOrders": "الطلبات المتكررة",
+        "recurringOrders": "المنتجات المتكررة",
         "year": "سنة",
-        "unitsYear": "وحدة/سنة"
+        "unitsYear": "وحدة/سنة",
+        "requestRenewalBrief": "طلب ملخص التجديد",
+        "renewalBriefSent": "تم إرسال الملخص لمدير المبيعات"
     }
 }
