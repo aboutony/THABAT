@@ -210,7 +210,7 @@
 
 .stageConnector {
     position: absolute;
-    left: 11px;
+    inset-inline-start: 11px;
     top: 24px;
     width: 2px;
     height: calc(100% - 24px);
@@ -403,15 +403,6 @@
 
 :global([dir="rtl"]) .pipelineHeader {
     flex-direction: row-reverse;
-}
-
-:global([dir="rtl"]) .stageRow {
-    flex-direction: row-reverse;
-}
-
-:global([dir="rtl"]) .stageConnector {
-    left: auto;
-    right: 11px;
 }
 
 :global([dir="rtl"]) .stageContent {
