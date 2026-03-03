@@ -250,5 +250,22 @@
         "unitsYear": "units/yr",
         "requestRenewalBrief": "Request Renewal Brief",
         "renewalBriefSent": "Brief sent to Sales Director"
+    },
+    "efficiency": {
+        "back": "Back to Dashboard",
+        "orderToCash": "Order-to-Cash Velocity",
+        "days": "days",
+        "sectorAverage": "Sector Average",
+        "fasterThanSector": "faster than sector",
+        "fulfillmentStatus": "Fulfillment Status",
+        "production": "Production Complete",
+        "logistics": "Logistics & Shipping",
+        "nupcoAcceptance": "NUPCO Acceptance",
+        "paymentPending": "Payment Pending",
+        "inventoryCriticality": "Inventory Criticality",
+        "daysRemaining": "days remaining",
+        "lowStock": "Low Stock",
+        "approveRestock": "Approve Restock PO ({amount})",
+        "poApproved": "PO Approved & Sent to SAP"
     }
 }

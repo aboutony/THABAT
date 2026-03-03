@@ -118,7 +118,7 @@ export default function RitualScreen() {
             description: t('efficiencyDesc'),
             value: latestData ? formatPercent(latestData.score.margins, locale) : formatPercent(88.7, locale),
             trend: 'up' as const,
-            href: `/${locale}/analytics/receivables-report`,
+            href: `/${locale}/analytics/efficiency-report`,
         },
     ];
 

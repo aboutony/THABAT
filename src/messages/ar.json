@@ -250,5 +250,22 @@
         "unitsYear": "وحدة/سنة",
         "requestRenewalBrief": "طلب ملخص التجديد",
         "renewalBriefSent": "تم إرسال الملخص لمدير المبيعات"
+    },
+    "efficiency": {
+        "back": "العودة إلى لوحة القيادة",
+        "orderToCash": "سرعة التحويل النقدي",
+        "days": "يوم",
+        "sectorAverage": "متوسط القطاع",
+        "fasterThanSector": "أسرع من القطاع",
+        "fulfillmentStatus": "حالة التنفيذ",
+        "production": "اكتمال الإنتاج",
+        "logistics": "الخدمات اللوجستية والشحن",
+        "nupcoAcceptance": "قبول نوبكو",
+        "paymentPending": "بانتظار الدفع",
+        "inventoryCriticality": "حرجية المخزون",
+        "daysRemaining": "يوم متبقي",
+        "lowStock": "مخزون منخفض",
+        "approveRestock": "اعتماد أمر إعادة التوريد ({amount})",
+        "poApproved": "تم اعتماد أمر التوريد وإرساله لـ SAP"
     }
 }
