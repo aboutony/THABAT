@@ -10,8 +10,8 @@ import { signJWT, getSession, COOKIE_NAME } from '@/lib/auth';
  */
 export async function POST(request: NextRequest) {
     const session = await getSession();
-    if (!session || session.role !== 'admin') {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!session) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {
@@ -20,7 +20,21 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'orgId required' }, { status: 400 });
         }
 
-        // Find the demo user for this org
+        const isAdmin = session.role === 'admin';
+
+        // Non-admin: verify the target org is in the same entity_group
+        if (!isAdmin) {
+            const [currentOrg] = await sql`SELECT entity_group FROM organizations WHERE id = ${session.orgId}`;
+            const [targetOrg] = await sql`SELECT entity_group FROM organizations WHERE id = ${orgId}`;
+            const currentGroup = currentOrg?.entity_group as string | null;
+            const targetGroup = targetOrg?.entity_group as string | null;
+
+            if (!currentGroup || !targetGroup || currentGroup !== targetGroup) {
+                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+            }
+        }
+
+        // Find any user for the target org to get a valid reference
         const users = await sql`SELECT id, org_id, role FROM users WHERE org_id = ${orgId} LIMIT 1`;
         if (users.length === 0) {
             return NextResponse.json({ error: 'No user found for this org' }, { status: 404 });
@@ -28,13 +42,11 @@ export async function POST(request: NextRequest) {
 
         const user = users[0];
 
-        // CRITICAL: Preserve admin role across org switches.
-        // The JWT carries the target org's user ID but keeps role=admin
-        // so the admin can continue switching freely.
+        // Admin: preserve admin role. Non-admin: use target org user's identity.
         const token = await signJWT({
-            userId: session.userId,
+            userId: isAdmin ? session.userId : user.id as string,
             orgId: user.org_id as string,
-            role: 'admin',
+            role: isAdmin ? 'admin' : user.role as string,
         });
 
         const response = NextResponse.json({ success: true });

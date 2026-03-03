@@ -121,7 +121,7 @@ export default function OrgSwitcher() {
     };
 
     const handleSwitch = async (orgId: string) => {
-        if (switching || !isAdmin) return;
+        if (switching) return;
         setSwitching(orgId);
 
         try {
@@ -249,9 +249,9 @@ export default function OrgSwitcher() {
                                         <span className={styles.currentBadge}>{t('current')}</span>
                                     ) : isLoading ? (
                                         <span className={styles.loadingDot}>⏳</span>
-                                    ) : isAdmin ? (
+                                    ) : (
                                         <span className={styles.switchBtn}>{t('switch')}</span>
-                                    ) : null}
+                                    )}
                                 </div>
                             </motion.button>
                         );
