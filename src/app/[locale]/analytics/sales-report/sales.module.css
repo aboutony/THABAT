@@ -1,0 +1,345 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px 16px 80px;
+    scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+    display: none;
+}
+
+.backLink {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color var(--transition-fast);
+}
+
+.backLink:hover {
+    color: var(--text-primary);
+}
+
+/* ── Pipeline Card ── */
+.pipelineCard {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+}
+
+.pipelineHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.poTag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #006C35;
+    background: rgba(0, 108, 53, 0.12);
+    border: 1px solid rgba(0, 108, 53, 0.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+}
+
+.clientLabel {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+}
+
+.pipelineValue {
+    font-size: 28px;
+    font-weight: 700;
+    color: #E0E0E0;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+}
+
+.pipelineSubtext {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* ── Slider Card ── */
+.sliderCard {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sliderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sliderTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.sliderValue {
+    font-size: 20px;
+    font-weight: 700;
+    color: #006C35;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Custom range slider */
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, rgba(0, 108, 53, 0.2), rgba(0, 108, 53, 0.5));
+    outline: none;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #006C35;
+    border: 2px solid #E0E0E0;
+    box-shadow: 0 0 10px rgba(0, 108, 53, 0.4);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 18px rgba(0, 108, 53, 0.6);
+}
+
+.slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #006C35;
+    border: 2px solid #E0E0E0;
+    box-shadow: 0 0 10px rgba(0, 108, 53, 0.4);
+    cursor: pointer;
+}
+
+.sliderLabels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+}
+
+.sliderMetrics {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.metricPill {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+}
+
+.metricLabel {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.metricVal {
+    font-size: 14px;
+    font-weight: 700;
+    color: #E0E0E0;
+    font-variant-numeric: tabular-nums;
+}
+
+.metricVal.highlight {
+    color: #006C35;
+}
+
+/* ── Timeline Card ── */
+.timelineCard {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.timelineTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-left: 4px;
+}
+
+.timelineNode {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.dotNow {
+    background: #006C35;
+    box-shadow: 0 0 8px rgba(0, 108, 53, 0.5);
+}
+
+.dotMid {
+    background: var(--warning);
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.dotEnd {
+    background: #E0E0E0;
+    box-shadow: 0 0 8px rgba(224, 224, 224, 0.3);
+}
+
+.timelineConnector {
+    width: 2px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    margin-left: 5px;
+}
+
+.nodeContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.nodeDate {
+    font-size: 12px;
+    font-weight: 700;
+    color: #E0E0E0;
+}
+
+.nodeLabel {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.cashNote {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+/* ── Breakdown Card ── */
+.breakdownCard {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.breakdownTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.productRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.productRow:last-child {
+    border-bottom: none;
+}
+
+.productInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.productName {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.productSku {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-family: monospace;
+    letter-spacing: 0.04em;
+}
+
+.productNumbers {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.productQty {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.productTotal {
+    font-size: 13px;
+    font-weight: 700;
+    color: #E0E0E0;
+    font-variant-numeric: tabular-nums;
+}
