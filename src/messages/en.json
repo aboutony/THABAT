@@ -221,9 +221,28 @@
         "badge": "Under Development",
         "agingBuckets": "Aging Buckets",
         "topDebtors": "Top Debtors",
-        "collectionRate": "Collection Rate"
+        "collectionRate": "Collection Rate",
+        "totalOutstanding": "Total Outstanding",
+        "invoiceAmount": "Invoice Amount",
+        "legallyDue": "Legally Due",
+        "days": "days"
     },
     "common": {
         "sar": "SAR"
+    },
+    "retention": {
+        "back": "Back to Dashboard",
+        "title": "Client Retention Report",
+        "overallRetention": "Overall Retention Rate",
+        "activeContracts": "Active",
+        "renewed": "Renewed",
+        "avgYears": "Avg Years",
+        "contractValue": "Contract Value Breakdown",
+        "renewals": "renewals",
+        "active": "Active",
+        "new": "New",
+        "recurringOrders": "Recurring NUPCO Orders",
+        "year": "yr",
+        "unitsYear": "units/yr"
     }
 }

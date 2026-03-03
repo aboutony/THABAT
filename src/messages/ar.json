@@ -221,9 +221,28 @@
         "badge": "قيد التطوير",
         "agingBuckets": "فئات التقادم",
         "topDebtors": "أكبر المدينين",
-        "collectionRate": "معدل التحصيل"
+        "collectionRate": "معدل التحصيل",
+        "totalOutstanding": "إجمالي المستحقات",
+        "invoiceAmount": "مبلغ الفاتورة",
+        "legallyDue": "مستحق قانونيًا",
+        "days": "يوم"
     },
     "common": {
         "sar": "ر.س"
+    },
+    "retention": {
+        "back": "العودة إلى لوحة القيادة",
+        "title": "تقرير استبقاء العملاء",
+        "overallRetention": "معدل الاستبقاء الإجمالي",
+        "activeContracts": "نشط",
+        "renewed": "مجدد",
+        "avgYears": "متوسط السنوات",
+        "contractValue": "تفصيل قيمة العقود",
+        "renewals": "تجديدات",
+        "active": "نشط",
+        "new": "جديد",
+        "recurringOrders": "طلبات نوبكو المتكررة",
+        "year": "سنة",
+        "unitsYear": "وحدة/سنة"
     }
 }

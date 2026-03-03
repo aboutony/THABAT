@@ -46,109 +46,76 @@
     color: var(--text-secondary);
 }
 
-.totalValue {
-    font-size: 28px;
+.rateValue {
+    font-size: 36px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: #006C35;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
+    line-height: 1;
 }
 
-.totalLabel {
+.rateLabel {
     font-size: 11px;
     color: var(--text-tertiary);
     text-transform: uppercase;
     letter-spacing: 0.06em;
 }
 
-.collectionRow {
+.statsRow {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-    padding: 6px 14px;
-    background: rgba(0, 108, 53, 0.1);
-    border: 1px solid rgba(0, 108, 53, 0.2);
-    border-radius: 20px;
+    justify-content: center;
+    gap: 0;
+    margin-top: 12px;
+    width: 100%;
 }
 
-.collectionLabel {
-    font-size: 11px;
-    color: var(--text-tertiary);
-}
-
-.collectionValue {
-    font-size: 14px;
-    font-weight: 700;
-    color: #006C35;
-    font-variant-numeric: tabular-nums;
-}
-
-/* ── Primary PO Card ── */
-.poCard {
-    padding: 16px;
+.stat {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-}
-
-.poTag {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #006C35;
-    background: rgba(0, 108, 53, 0.1);
-    border: 1px solid rgba(0, 108, 53, 0.2);
-    border-radius: 20px;
-    padding: 3px 12px;
-    width: fit-content;
-}
-
-.poProduct {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.poClient {
-    font-size: 11px;
-    color: var(--text-tertiary);
-}
-
-.poRow {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding-top: 4px;
+    gap: 2px;
+    flex: 1;
 }
 
-.poLabel {
-    font-size: 11px;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.poAmount {
-    font-size: 14px;
+.statNum {
+    font-size: 18px;
     font-weight: 700;
     color: #E0E0E0;
     font-variant-numeric: tabular-nums;
 }
 
-.poDate {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--warning);
+.greenNum {
+    color: #006C35;
 }
 
-/* ── Aging Buckets ── */
-.agingCard {
+.statLabel {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.statDivider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Contracts Card ── */
+.contractsCard,
+.recurringCard {
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sectionTitle {
@@ -159,57 +126,90 @@
     letter-spacing: 0.06em;
 }
 
-.bucketList {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.bucketRow {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.bucketLabel {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-tertiary);
-    min-width: 70px;
-    flex-shrink: 0;
-}
-
-.bucketBarOuter {
-    flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.bucketBarInner {
-    height: 100%;
-    border-radius: 4px;
-}
-
-.bucketAmount {
-    font-size: 11px;
+.sectionTotal {
+    font-size: 13px;
     font-weight: 700;
-    color: #E0E0E0;
-    min-width: 68px;
-    text-align: end;
+    color: #006C35;
     font-variant-numeric: tabular-nums;
 }
 
-/* ── Top Debtors ── */
-.debtorsCard {
-    padding: 16px;
+.contractRow {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.debtorRow {
+.contractRow:last-child {
+    border-bottom: none;
+}
+
+.contractInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.contractClient {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contractType {
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.contractPeriod {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+}
+
+.contractRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-inline-start: 12px;
+}
+
+.contractAmount {
+    font-size: 13px;
+    font-weight: 700;
+    color: #E0E0E0;
+    font-variant-numeric: tabular-nums;
+}
+
+.contractStatus {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.statusActive {
+    color: #006C35;
+    background: rgba(0, 108, 53, 0.12);
+}
+
+.statusNew {
+    color: var(--warning);
+    background: rgba(245, 158, 11, 0.12);
+}
+
+/* ── Product Rows ── */
+.productRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -217,28 +217,28 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.debtorRow:last-child {
+.productRow:last-child {
     border-bottom: none;
 }
 
-.debtorInfo {
+.productInfo {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.debtorName {
+.productName {
     font-size: 13px;
     font-weight: 600;
     color: var(--text-primary);
 }
 
-.debtorDays {
+.productQty {
     font-size: 10px;
     color: var(--text-tertiary);
 }
 
-.debtorAmount {
+.productTotal {
     font-size: 13px;
     font-weight: 700;
     color: #E0E0E0;

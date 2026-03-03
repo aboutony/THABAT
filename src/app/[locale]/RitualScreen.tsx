@@ -106,7 +106,7 @@ export default function RitualScreen() {
             description: t('retentionDesc'),
             value: latestData ? formatPercent(latestData.score.receivables, locale) : formatPercent(94.2, locale),
             trend: 'up' as const,
-            href: `/${locale}/analytics/receivables-report`,
+            href: `/${locale}/analytics/retention-report`,
         },
         {
             icon: (
