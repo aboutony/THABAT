@@ -78,9 +78,6 @@ export default function OnboardingPage() {
 
     return (
         <div className={styles.wizardShell} dir={isRtl ? 'rtl' : 'ltr'}>
-            <Link href={`/${locale}/settings`} className={styles.cancelLink}>
-                {isRtl ? '→' : '←'} {t('cancel')}
-            </Link>
             <motion.div
                 className={styles.glassCard}
                 initial={{ opacity: 0, y: 30, scale: 0.96 }}
