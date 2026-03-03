@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import PageHeader from '@/components/PageHeader';
@@ -29,7 +29,7 @@ export default function PilotDashboard() {
     const { user, loading: authLoading } = useAuth();
     const [data, setData] = useState<KPIData | null>(null);
     const [loading, setLoading] = useState(true);
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
 
     // Admin guard — redirect non-admin users to home
     useEffect(() => {

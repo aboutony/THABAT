@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './retention.module.css';
@@ -70,7 +70,7 @@ const RETENTION_DATA = {
 };
 
 export default function RetentionReportPage() {
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
     const isAr = locale === 'ar';
     const t = useTranslations('retention');
     const tc = useTranslations('common');

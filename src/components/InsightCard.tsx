@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import type { ConsequenceInsight } from '@/lib/scoring';
 import { formatNumber, toArabicDigits } from '@/lib/locale-utils';
 import styles from './InsightCard.module.css';
@@ -13,7 +13,7 @@ interface InsightCardProps {
 export default function InsightCard({ insight }: InsightCardProps) {
     const t = useTranslations();
     const ts = useTranslations('scoring');
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
 
     const severityIcon = {
         critical: '🔴',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ERP_CONFIGS, type ERPProvider } from '@/connectors';
 import PageHeader from '@/components/PageHeader';
@@ -19,7 +19,7 @@ interface Connection {
 export default function IntegrationsPage() {
     const t = useTranslations('integrations');
     const tSettings = useTranslations('settings');
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
     const { user, logout } = useAuth();
     const [connections, setConnections] = useState<Connection[]>([]);
     const [selectedERP, setSelectedERP] = useState<ERPProvider | null>(null);

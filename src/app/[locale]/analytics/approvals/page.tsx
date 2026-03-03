@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './approvals.module.css';
@@ -61,7 +61,7 @@ const PENDING_POS: PurchaseOrder[] = [
 ];
 
 export default function ApprovalsPage() {
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
     const t = useTranslations('approvals');
     const tc = useTranslations('common');
     const [orders, setOrders] = useState<PurchaseOrder[]>(PENDING_POS);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
 import { formatNumber } from '@/lib/locale-utils';
@@ -71,7 +71,7 @@ export default function OrgSwitcher() {
     const [showConsolidated, setShowConsolidated] = useState(false);
     const [consolidatedData, setConsolidatedData] = useState<ConsolidatedData | null>(null);
     const [loadingConsolidated, setLoadingConsolidated] = useState(false);
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
 
     const isAdmin = user?.role === 'admin';
 
@@ -220,7 +220,7 @@ export default function OrgSwitcher() {
                                 <div className={styles.orgInfo}>
                                     <span className={styles.orgName}>{org.name}</span>
                                     <span className={styles.orgStage}>
-                                        {STAGE_LABELS[org.growth_stage]?.[locale] || org.growth_stage}
+                                        {STAGE_LABELS[org.growth_stage]?.[locale as 'en' | 'ar'] || org.growth_stage}
                                         {org.currency && org.currency !== 'SAR' && (
                                             <span className={styles.currencyBadge}>{org.currency}</span>
                                         )}

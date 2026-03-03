@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import MetricsEntry from '@/components/MetricsEntry';
 import PageHeader from '@/components/PageHeader';
@@ -36,7 +36,7 @@ export default function AnalyticsPage() {
     const [loading, setLoading] = useState(false);
     const [ringLoading, setRingLoading] = useState(false);
     const [fetchingLatest, setFetchingLatest] = useState(true);
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
 
     // Fetch latest score on mount
     const fetchLatest = useCallback(async () => {

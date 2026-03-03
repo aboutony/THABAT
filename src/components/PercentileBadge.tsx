@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './PercentileBadge.module.css';
 
@@ -12,7 +12,7 @@ interface PercentileBadgeProps {
 
 export default function PercentileBadge({ percentile, industryLabel }: PercentileBadgeProps) {
     const t = useTranslations('benchmark');
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
 
     const tierIcon = percentile <= 10 ? '🏆' : percentile <= 25 ? '🥇' : percentile <= 50 ? '🥈' : '📊';
 

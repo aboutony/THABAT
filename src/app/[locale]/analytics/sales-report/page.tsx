@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './sales.module.css';
@@ -23,7 +23,7 @@ const NUPCO_PO = {
 };
 
 export default function SalesReportPage() {
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
     const isAr = locale === 'ar';
     const t = useTranslations('salesReport');
     const tc = useTranslations('common');

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
 import InsightCard from '@/components/InsightCard';
@@ -23,7 +23,7 @@ export default function RitualScreen() {
     const t = useTranslations('drivers');
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
-    const locale = typeof window !== 'undefined' && window.location.pathname.startsWith('/ar') ? 'ar' : 'en';
+    const locale = useLocale();
 
     // Fetch latest score from the API
     useEffect(() => {
