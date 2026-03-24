@@ -5,13 +5,20 @@
     gap: 12px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition: transform 0.12s ease, background var(--transition-fast);
     height: 94px;
     flex-shrink: 0;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--neu-raised-sm);
+    transition: box-shadow var(--transition-base);
+}
+
+.card:hover {
+    box-shadow: var(--neu-raised);
 }
 
 .card:active {
-    transform: scale(0.97);
+    box-shadow: var(--neu-inset-sm);
 }
 
 .iconBox {
@@ -21,7 +28,8 @@
     width: 40px;
     height: 40px;
     border-radius: var(--radius-sm);
-    background: var(--accent-glow);
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-xs);
     color: var(--accent-primary);
     flex-shrink: 0;
 }
@@ -62,7 +70,7 @@
 
 .value {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-primary);
     line-height: 1.2;
     font-variant-numeric: tabular-nums;
@@ -80,7 +88,7 @@
     align-items: flex-start;
 }
 
-/* Link wrapper — removes default anchor styling */
+/* Link wrapper */
 .cardLink {
     text-decoration: none;
     color: inherit;

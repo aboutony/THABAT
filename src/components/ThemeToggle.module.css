@@ -4,25 +4,23 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    border: 1px solid var(--glass-border);
+    border: none;
     border-radius: var(--radius-full);
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: var(--bg-primary);
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    box-shadow: var(--neu-raised-xs);
+    transition: box-shadow var(--transition-base), color var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .toggle:hover {
-    background: var(--glass-bg-hover);
-    border-color: var(--glass-border-hover);
+    box-shadow: var(--neu-raised-sm);
     color: var(--text-primary);
-    transform: scale(1.05);
 }
 
 .toggle:active {
-    transform: scale(0.95);
+    box-shadow: var(--neu-inset-sm);
 }
 
 .iconWrapper {

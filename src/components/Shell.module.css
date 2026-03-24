@@ -8,46 +8,12 @@
     width: 100%;
     max-width: 390px;
     margin-inline: auto;
-    background: var(--bg-gradient);
+    background: var(--bg-primary);
 }
 
-/* Layered mesh depth behind content — alive with 20s breathing */
-.shell::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--bg-mesh);
-    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%;
-    animation: mesh-breathe 20s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* Neon casting layer — ring color bleeds onto background */
-.shell::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--neon-cast-green);
-    pointer-events: none;
-    z-index: 0;
-    transition: background 1s ease;
-}
-
-/* Ensure children sit above mesh */
-.shell>* {
-    position: relative;
-    z-index: 1;
-}
-
-/* ---- Viewport Lock: Desktop "phone frame" ---- */
 @media (min-width: 391px) {
     .shell {
-        border-inline: 1px solid var(--glass-border);
-        box-shadow:
-            0 0 60px rgba(224, 224, 224, 0.03),
-            0 0 120px rgba(224, 224, 224, 0.01),
-            inset 0 0 60px rgba(224, 224, 224, 0.005);
+        box-shadow: 10px 0 40px rgba(0, 0, 0, 0.12), -10px 0 40px rgba(0, 0, 0, 0.08);
     }
 }
 
@@ -60,9 +26,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px;
-    border-bottom: 1px solid var(--nav-border);
-    height: 52px;
+    height: 56px;
     flex-shrink: 0;
+    background: var(--bg-primary);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='dark'] .header {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .brand {
@@ -72,10 +43,8 @@
 }
 
 .logo {
-    font-size: 24px;
-    color: var(--accent-primary);
-    filter: drop-shadow(0 0 12px var(--accent-glow));
-    line-height: 1;
+    border-radius: 10px;
+    box-shadow: var(--neu-raised-xs);
 }
 
 .brandText {
@@ -86,16 +55,16 @@
 
 .title {
     font-size: var(--font-size-md);
-    font-weight: 700;
+    font-weight: 800;
     color: var(--text-primary);
-    letter-spacing: 0.16em;
+    letter-spacing: 0.12em;
     line-height: 1.2;
     text-transform: uppercase;
 }
 
 .subtitle {
     font-size: var(--font-size-xs);
-    font-weight: 400;
+    font-weight: 500;
     color: var(--text-tertiary);
     letter-spacing: 0.06em;
     line-height: 1.2;
@@ -114,9 +83,10 @@
     flex-direction: column;
     overflow: hidden;
     min-height: 0;
+    background: var(--bg-primary);
 }
 
-/* ---- Floating Glass Bottom Navigation ---- */
+/* ---- Neumorphic Bottom Navigation ---- */
 .bottomNav {
     position: sticky;
     bottom: 0;
@@ -126,16 +96,11 @@
     justify-content: space-around;
     height: 72px;
     flex-shrink: 0;
-    margin: 0 16px 12px;
+    margin: 0 16px 14px;
     padding-bottom: env(safe-area-inset-bottom, 0);
     border-radius: 24px;
-    background: rgba(12, 12, 18, 0.75);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:
-        0 -4px 30px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised);
 }
 
 .navItem {
@@ -149,12 +114,13 @@
     background: transparent;
     cursor: pointer;
     color: var(--nav-inactive);
-    transition: color var(--transition-fast), transform 0.1s ease;
+    transition: color var(--transition-fast), box-shadow 0.2s ease;
     font-family: inherit;
     padding: 8px 0;
     -webkit-tap-highlight-color: transparent;
     text-decoration: none;
-    border-radius: 16px;
+    border-radius: 18px;
+    margin: 6px 4px;
 }
 
 .navItem svg {
@@ -164,7 +130,7 @@
 
 .navItem span {
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.03em;
 }
 
@@ -173,25 +139,27 @@
 }
 
 .navItem:active {
-    transform: scale(0.88);
+    box-shadow: var(--neu-inset-sm);
 }
 
+/* Active — inset pressed state */
 .navActive {
     color: var(--nav-active);
+    box-shadow: var(--neu-inset-sm);
 }
 
 .navActive svg {
-    filter: drop-shadow(0 0 8px rgba(224, 224, 224, 0.3));
+    filter: drop-shadow(0 0 6px var(--accent-glow));
 }
 
 .navActive span {
-    font-weight: 600;
+    font-weight: 800;
 }
 
-/* Amber action glow on nav icon */
+/* Amber alert glow */
 .navAlertGlow svg {
-    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.5));
     color: var(--amber-action);
+    filter: drop-shadow(0 0 5px var(--amber-action-glow));
 }
 
 .navAlertGlow {

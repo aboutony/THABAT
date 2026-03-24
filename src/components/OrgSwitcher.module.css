@@ -26,11 +26,10 @@
 }
 
 /* ---- Org Cards ---- */
-
 .orgList {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 .orgCard {
@@ -39,21 +38,22 @@
     gap: 12px;
     padding: 14px 16px;
     border-radius: var(--radius-md);
-    border: 1px solid var(--glass-border);
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    border: none;
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-sm);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: box-shadow var(--transition-base);
     width: 100%;
     text-align: start;
     font-family: inherit;
 }
 
 .orgCard:hover:not(:disabled) {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.08);
-    transform: translateY(-1px);
+    box-shadow: var(--neu-raised);
+}
+
+.orgCard:active:not(:disabled) {
+    box-shadow: var(--neu-inset-sm);
 }
 
 .orgCard:disabled {
@@ -61,13 +61,10 @@
 }
 
 .orgCard.active {
-    border-color: var(--ring-green);
-    box-shadow: inset 0 0 16px rgba(34, 197, 94, 0.06),
-        0 0 12px rgba(34, 197, 94, 0.06);
+    box-shadow: var(--neu-inset);
 }
 
 /* ---- Internal Layout ---- */
-
 .orgIcon {
     display: flex;
     align-items: center;
@@ -75,7 +72,8 @@
     width: 40px;
     height: 40px;
     border-radius: var(--radius-sm);
-    background: var(--accent-glow);
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-xs);
     font-size: 20px;
     flex-shrink: 0;
 }
@@ -138,25 +136,25 @@
     letter-spacing: 0.1em;
     padding: 4px 8px;
     border-radius: 20px;
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    background: rgba(34, 197, 94, 0.08);
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-xs);
 }
 
 .switchBtn {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--accent-primary);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     padding: 4px 10px;
     border-radius: 20px;
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    background: rgba(59, 130, 246, 0.08);
-    transition: background 0.15s ease;
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-xs);
+    transition: box-shadow var(--transition-fast);
 }
 
 .orgCard:hover:not(:disabled) .switchBtn {
-    background: rgba(59, 130, 246, 0.15);
+    box-shadow: var(--neu-raised-sm);
 }
 
 .loadingDot {
@@ -165,19 +163,11 @@
 }
 
 @keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.4;
-    }
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
 }
 
 /* ---- Consolidated View ---- */
-
 .consolidatedToggle {
     display: flex;
     align-items: center;
@@ -185,22 +175,21 @@
     width: 100%;
     padding: 12px 16px;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(99, 102, 241, 0.04));
+    border: none;
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-sm);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: box-shadow var(--transition-base);
     font-family: inherit;
     text-align: start;
 }
 
 .consolidatedToggle:hover {
-    border-color: rgba(59, 130, 246, 0.3);
-    box-shadow: 0 0 16px rgba(59, 130, 246, 0.08);
+    box-shadow: var(--neu-raised);
 }
 
 .consolidatedToggle.consolidatedActive {
-    border-color: rgba(59, 130, 246, 0.4);
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.08));
+    box-shadow: var(--neu-inset);
 }
 
 .consolidatedIcon {
@@ -246,16 +235,12 @@
     font-weight: 600;
     padding: 2px 6px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-xs);
     color: var(--text-tertiary);
 }
 
-[data-theme="light"] .entityCurrency {
-    background: rgba(0, 0, 0, 0.04);
-}
-
 /* ---- Badges ---- */
-
 .currencyBadge {
     display: inline-block;
     margin-inline-start: 6px;
@@ -263,7 +248,8 @@
     font-weight: 700;
     padding: 1px 5px;
     border-radius: 4px;
-    background: rgba(59, 130, 246, 0.12);
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-xs);
     color: var(--accent-primary);
     vertical-align: middle;
 }
@@ -275,7 +261,8 @@
     font-weight: 700;
     padding: 1px 5px;
     border-radius: 4px;
-    background: rgba(245, 158, 11, 0.12);
+    background: var(--bg-primary);
+    box-shadow: var(--neu-raised-xs);
     color: var(--ring-amber);
     vertical-align: middle;
 }

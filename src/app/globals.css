@@ -1,6 +1,6 @@
 /* ======================================================
-   THABAT — Glass Fortress Design System
-   "Rolex" Corporate Premium Command Center Edition
+   THABAT — Soft Neumorphic Design System
+   Light & Dark mode — raised/inset shadow depth
    ====================================================== */
 
 /* --- CSS Reset & Base --- */
@@ -12,9 +12,8 @@
   padding: 0;
 }
 
-/* Zero layout shift: smooth theme/language transitions */
 html {
-  color-scheme: dark light;
+  color-scheme: light dark;
 }
 
 html,
@@ -22,177 +21,194 @@ body {
   overflow-x: hidden;
 }
 
-/*
- * Prevent CLS on theme toggle — transition ONLY color properties.
- * Uses targeted selectors to avoid interfering with Framer Motion,
- * SVG icon rotations, or transform-based animations.
- */
 body,
 .glass-card,
-.glass-nav,
 nav,
 header,
 main {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* RTL/LTR layout containment for glass cards */
+/* RTL layout containment */
 [dir='rtl'] .glass-card,
 [dir='ltr'] .glass-card {
   contain: layout style;
 }
 
-/* --- Design Tokens --- */
+/* =====================================================
+   LIGHT MODE — Soft Warm Gray
+   ===================================================== */
+[data-theme='light'] {
 
-/* Dark Mode (Default) — Rolex Matte Black */
-[data-theme='dark'] {
-  --bg-primary: #050505;
-  --bg-secondary: #0d0d1a;
-  --bg-tertiary: #111118;
-  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #0d0d1a 0%, #050505 50%, #020202 100%);
-  --bg-mesh:
-    radial-gradient(ellipse 50% 45% at 85% 10%, rgba(26, 26, 46, 0.6) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 35% at 90% 5%, rgba(26, 26, 46, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 55% at 50% 50%, #020202 0%, transparent 80%),
-    radial-gradient(ellipse 40% 30% at 15% 85%, rgba(224, 224, 224, 0.015) 0%, transparent 70%);
+  /* Backgrounds */
+  --bg-primary:   #E8ECF0;
+  --bg-secondary: #E0E4E8;
+  --bg-tertiary:  #D8DCE2;
+  --bg-gradient:  #E8ECF0;
+  --bg-mesh:      none;
 
-  --text-primary: #edf0f7;
-  --text-secondary: #8b97b5;
-  --text-tertiary: #4a5578;
-  --text-accent: #E0E0E0;
+  /* Text */
+  --text-primary:   #1A202C;
+  --text-secondary: #4A5568;
+  --text-tertiary:  #A0AEC0;
+  --text-accent:    #B45309;
 
-  --accent-primary: #E0E0E0;
-  --accent-secondary: #B0B0B0;
-  --accent-glow: rgba(224, 224, 224, 0.2);
+  /* Accent (gold/amber) */
+  --accent-primary:   #B45309;
+  --accent-secondary: #D97706;
+  --accent-glow:      rgba(180, 83, 9, 0.1);
 
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-bg-hover: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-hover: rgba(255, 255, 255, 0.16);
-  --glass-blur: 20px;
-  --glass-glow: rgba(224, 224, 224, 0.04);
+  /* Neumorphic shadows — light */
+  --neu-raised:       6px 6px 14px #c5cad0, -6px -6px 14px #ffffff;
+  --neu-raised-sm:    4px 4px 10px #c5cad0, -4px -4px 10px #ffffff;
+  --neu-raised-xs:    2px 2px 6px  #c5cad0, -2px -2px 6px  #ffffff;
+  --neu-raised-hover: 8px 8px 18px #bdc2c9, -8px -8px 18px #ffffff;
+  --neu-inset:        inset 4px 4px 10px #c5cad0, inset -4px -4px 10px #ffffff;
+  --neu-inset-sm:     inset 2px 2px 6px  #c5cad0, inset -2px -2px 6px  #ffffff;
 
-  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(0, 108, 53, 0.06) 0%, transparent 70%);
-  --neon-cast-amber: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
-  --neon-cast-red: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+  /* Legacy glass-card tokens — remapped to neumorphic */
+  --glass-bg:           var(--bg-primary);
+  --glass-bg-hover:     var(--bg-secondary);
+  --glass-border:       transparent;
+  --glass-border-hover: transparent;
+  --glass-blur:         0px;
+  --glass-glow:         var(--neu-raised);
 
-  --ring-track: rgba(255, 255, 255, 0.05);
-  --ring-green: #006C35;
-  --ring-amber: #f59e0b;
-  --ring-red: #ef4444;
-  --ring-glow-green: rgba(0, 108, 53, 0.45);
-  --ring-glow-amber: rgba(245, 158, 11, 0.45);
-  --ring-glow-red: rgba(239, 68, 68, 0.45);
+  /* Neon casts disabled */
+  --neon-cast-green: none;
+  --neon-cast-amber: none;
+  --neon-cast-red:   none;
 
-  --nav-bg: rgba(5, 5, 5, 0.85);
-  --nav-border: rgba(255, 255, 255, 0.08);
-  --nav-active: #E0E0E0;
-  --nav-inactive: #4a5060;
+  /* Ring */
+  --ring-track:      rgba(0, 0, 0, 0.07);
+  --ring-green:      #276749;
+  --ring-amber:      #D97706;
+  --ring-red:        #C53030;
+  --ring-glow-green: rgba(39, 103, 73, 0.3);
+  --ring-glow-amber: rgba(217, 119, 6, 0.3);
+  --ring-glow-red:   rgba(197, 48, 48, 0.3);
 
-  --success: #006C35;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  /* Nav */
+  --nav-bg:       var(--bg-primary);
+  --nav-border:   transparent;
+  --nav-active:   #B45309;
+  --nav-inactive: #A0AEC0;
 
-  --amber-action: #f59e0b;
-  --amber-action-glow: rgba(245, 158, 11, 0.4);
+  /* Status */
+  --success: #276749;
+  --warning: #D97706;
+  --danger:  #C53030;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 30px var(--glass-glow);
+  /* Amber action */
+  --amber-action:      #D97706;
+  --amber-action-glow: rgba(217, 119, 6, 0.25);
+
+  /* Shadows (legacy token names preserved) */
+  --shadow-sm:   var(--neu-raised-xs);
+  --shadow-md:   var(--neu-raised-sm);
+  --shadow-glow: var(--neu-raised);
 }
 
-/* Light Mode — Rolex Override (matches dark for UNIMED exec demo) */
-[data-theme='light'] {
-  --bg-primary: #050505;
-  --bg-secondary: #0d0d1a;
-  --bg-tertiary: #111118;
-  --bg-gradient: radial-gradient(ellipse 120% 80% at 50% 10%, #0d0d1a 0%, #050505 50%, #020202 100%);
-  --bg-mesh:
-    radial-gradient(ellipse 50% 45% at 85% 10%, rgba(26, 26, 46, 0.6) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 35% at 90% 5%, rgba(26, 26, 46, 0.35) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 55% at 50% 50%, #020202 0%, transparent 80%),
-    radial-gradient(ellipse 40% 30% at 15% 85%, rgba(224, 224, 224, 0.015) 0%, transparent 70%);
+/* =====================================================
+   DARK MODE — Deep Navy Neumorphic
+   ===================================================== */
+[data-theme='dark'] {
 
-  --text-primary: #edf0f7;
-  --text-secondary: #8b97b5;
-  --text-tertiary: #4a5578;
-  --text-accent: #E0E0E0;
+  /* Backgrounds */
+  --bg-primary:   #1E2130;
+  --bg-secondary: #252A3E;
+  --bg-tertiary:  #2A2F45;
+  --bg-gradient:  #1E2130;
+  --bg-mesh:      none;
 
-  --accent-primary: #E0E0E0;
-  --accent-secondary: #B0B0B0;
-  --accent-glow: rgba(224, 224, 224, 0.2);
+  /* Text */
+  --text-primary:   #CDD6F4;
+  --text-secondary: #8896B3;
+  --text-tertiary:  #3E4560;
+  --text-accent:    #C99A2E;
 
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-bg-hover: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-hover: rgba(255, 255, 255, 0.16);
-  --glass-blur: 20px;
-  --glass-glow: rgba(224, 224, 224, 0.04);
+  /* Accent (gold) */
+  --accent-primary:   #C99A2E;
+  --accent-secondary: #A07820;
+  --accent-glow:      rgba(201, 154, 46, 0.12);
 
-  --neon-cast-green: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(0, 108, 53, 0.06) 0%, transparent 70%);
-  --neon-cast-amber: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
-  --neon-cast-red: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(239, 68, 68, 0.05) 0%, transparent 70%);
+  /* Neumorphic shadows — dark */
+  --neu-raised:       8px 8px 18px #13162A, -8px -8px 18px #292D42;
+  --neu-raised-sm:    5px 5px 12px #13162A, -5px -5px 12px #292D42;
+  --neu-raised-xs:    3px 3px 8px  #13162A, -3px -3px 8px  #292D42;
+  --neu-raised-hover: 10px 10px 22px #12152A, -10px -10px 22px #2A2E44;
+  --neu-inset:        inset 4px 4px 10px #13162A, inset -4px -4px 10px #292D42;
+  --neu-inset-sm:     inset 2px 2px 6px  #13162A, inset -2px -2px 6px  #292D42;
 
-  --ring-track: rgba(255, 255, 255, 0.05);
-  --ring-green: #006C35;
-  --ring-amber: #f59e0b;
-  --ring-red: #ef4444;
-  --ring-glow-green: rgba(0, 108, 53, 0.45);
-  --ring-glow-amber: rgba(245, 158, 11, 0.45);
-  --ring-glow-red: rgba(220, 38, 38, 0.45);
+  /* Legacy glass-card tokens — remapped */
+  --glass-bg:           var(--bg-primary);
+  --glass-bg-hover:     var(--bg-secondary);
+  --glass-border:       transparent;
+  --glass-border-hover: transparent;
+  --glass-blur:         0px;
+  --glass-glow:         var(--neu-raised);
 
-  --nav-bg: rgba(5, 5, 5, 0.85);
-  --nav-border: rgba(255, 255, 255, 0.08);
-  --nav-active: #E0E0E0;
-  --nav-inactive: #4a5060;
+  /* Neon casts disabled */
+  --neon-cast-green: none;
+  --neon-cast-amber: none;
+  --neon-cast-red:   none;
 
-  --success: #006C35;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  /* Ring */
+  --ring-track:      rgba(255, 255, 255, 0.05);
+  --ring-green:      #A6E3A1;
+  --ring-amber:      #FAB387;
+  --ring-red:        #F38BA8;
+  --ring-glow-green: rgba(166, 227, 161, 0.35);
+  --ring-glow-amber: rgba(250, 179, 135, 0.35);
+  --ring-glow-red:   rgba(243, 139, 168, 0.35);
 
-  --amber-action: #f59e0b;
-  --amber-action-glow: rgba(245, 158, 11, 0.4);
+  /* Nav */
+  --nav-bg:       var(--bg-primary);
+  --nav-border:   transparent;
+  --nav-active:   #C99A2E;
+  --nav-inactive: #3E4560;
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 30px var(--glass-glow);
+  /* Status */
+  --success: #A6E3A1;
+  --warning: #FAB387;
+  --danger:  #F38BA8;
+
+  /* Amber action */
+  --amber-action:      #FAB387;
+  --amber-action-glow: rgba(250, 179, 135, 0.3);
+
+  /* Shadows (legacy names preserved) */
+  --shadow-sm:   var(--neu-raised-xs);
+  --shadow-md:   var(--neu-raised-sm);
+  --shadow-glow: var(--neu-raised);
 }
 
 /* --- Typography Scale --- */
 :root {
-  --font-size-xs: 0.6875rem;
-  /* 11px */
-  --font-size-sm: 0.75rem;
-  /* 12px */
-  --font-size-base: 0.875rem;
-  /* 14px */
-  --font-size-md: 1rem;
-  /* 16px */
-  --font-size-lg: 1.25rem;
-  /* 20px */
-  --font-size-xl: 1.5rem;
-  /* 24px */
-  --font-size-2xl: 2rem;
-  /* 32px */
-  --font-size-3xl: 2.5rem;
-  /* 40px */
-  --font-size-score: 3.75rem;
-  /* 60px — Stability Score */
+  --font-size-xs:    0.6875rem;  /* 11px */
+  --font-size-sm:    0.75rem;    /* 12px */
+  --font-size-base:  0.875rem;   /* 14px */
+  --font-size-md:    1rem;       /* 16px */
+  --font-size-lg:    1.25rem;    /* 20px */
+  --font-size-xl:    1.5rem;     /* 24px */
+  --font-size-2xl:   2rem;       /* 32px */
+  --font-size-3xl:   2.5rem;     /* 40px */
+  --font-size-score: 3.75rem;    /* 60px */
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
+  --radius-sm:   10px;
+  --radius-md:   16px;
+  --radius-lg:   22px;
   --radius-full: 9999px;
 
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
+  --spacing-xs:  4px;
+  --spacing-sm:  8px;
+  --spacing-md:  16px;
+  --spacing-lg:  24px;
+  --spacing-xl:  32px;
   --spacing-2xl: 48px;
 
   --transition-fast: 0.15s ease;
-  --transition-base: 0.3s ease;
+  --transition-base: 0.25s ease;
   --transition-slow: 0.5s ease;
 }
 
@@ -206,132 +222,63 @@ body {
   color: var(--text-primary);
   height: 100dvh;
   overflow: hidden;
-  transition: background var(--transition-base), color var(--transition-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- Glass Card Utility --- */
+/* =====================================================
+   .glass-card — neumorphic raised card utility
+   Used by DriverCard, InsightCard, PercentileBadge, etc.
+   ===================================================== */
 .glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-primary);
+  border: none;
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-glow);
-  transition: background var(--transition-fast),
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform 0.25s ease;
+  box-shadow: var(--neu-raised);
+  transition:
+    box-shadow var(--transition-base),
+    background var(--transition-base);
 }
 
 .glass-card:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--glass-border-hover);
+  box-shadow: var(--neu-raised-hover);
 }
 
-/* --- Glass Nav Utility --- */
+.glass-card:active {
+  box-shadow: var(--neu-inset-sm);
+}
+
+/* Nav utility (Shell compatibility) */
 .glass-nav {
   background: var(--nav-bg);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border-top: 1px solid var(--nav-border);
 }
 
 /* --- Utility Classes --- */
-.text-primary {
-  color: var(--text-primary);
-}
-
-.text-secondary {
-  color: var(--text-secondary);
-}
-
-.text-tertiary {
-  color: var(--text-tertiary);
-}
-
-.text-accent {
-  color: var(--text-accent);
-}
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary  { color: var(--text-tertiary); }
+.text-accent    { color: var(--text-accent); }
 
 /* --- Animations --- */
-@keyframes pulse-glow {
-
-  0%,
-  100% {
-    box-shadow: 0 0 20px var(--accent-glow);
-  }
-
-  50% {
-    box-shadow: 0 0 50px var(--accent-glow);
-  }
-}
-
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Mesh Breathing — slow 20s alive animation */
-@keyframes mesh-breathe {
-  0% {
-    background-position: 0% 0%, 100% 100%, 50% 50%, 70% 70%;
-  }
-
-  25% {
-    background-position: 5% 10%, 95% 90%, 45% 55%, 65% 75%;
-  }
-
-  50% {
-    background-position: 10% 5%, 90% 95%, 55% 45%, 75% 65%;
-  }
-
-  75% {
-    background-position: 5% 10%, 95% 90%, 45% 55%, 65% 75%;
-  }
-
-  100% {
-    background-position: 0% 0%, 100% 100%, 50% 50%, 70% 70%;
-  }
-}
-
-/* Amber Executive Action Pulse — signals that card needs 'Executive Action' */
 @keyframes amber-pulse {
-
-  0%,
-  100% {
-    box-shadow: 0 0 8px rgba(245, 158, 11, 0.2), 0 0 20px rgba(245, 158, 11, 0.1);
+  0%, 100% {
+    box-shadow: var(--neu-raised-xs), 0 0 8px  var(--amber-action-glow);
   }
-
   50% {
-    box-shadow: 0 0 16px rgba(245, 158, 11, 0.45), 0 0 40px rgba(245, 158, 11, 0.2);
+    box-shadow: var(--neu-raised),    0 0 16px var(--amber-action-glow);
   }
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
+.animate-fade-in   { animation: fade-in 0.5s ease-out forwards; }
+.amber-action-glow { animation: amber-pulse 2.5s ease-in-out infinite; }
 
-.animate-fade-in {
-  animation: fade-in 0.5s ease-out forwards;
-}
-
-.amber-action-glow {
-  animation: amber-pulse 2.5s ease-in-out infinite;
-}
-
-/* --- Scrollbar (hidden for native feel) --- */
-::-webkit-scrollbar {
-  display: none;
-}
+/* --- Scrollbar hidden --- */
+::-webkit-scrollbar { display: none; }
 
 /* --- Selection --- */
 ::selection {

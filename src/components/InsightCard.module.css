@@ -1,5 +1,5 @@
 .card {
-    padding: 12px 16px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -7,28 +7,40 @@
     height: 110px;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.4s ease, box-shadow 0.4s ease;
     justify-content: center;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--neu-raised-sm);
+    border-left: 3px solid transparent;
+    transition: box-shadow var(--transition-base), border-color 0.3s ease;
 }
 
-/* Severity accent borders */
+.card:hover {
+    box-shadow: var(--neu-raised);
+}
+
+/* RTL: move severity indicator to right */
+[dir='rtl'] .card {
+    border-left: none;
+    border-right: 3px solid transparent;
+}
+
+/* Severity — left border accent + tinted left padding */
 .critical {
-    border-color: rgba(239, 68, 68, 0.35) !important;
-    box-shadow: inset 0 0 20px rgba(239, 68, 68, 0.06),
-        0 0 16px rgba(239, 68, 68, 0.08);
+    border-left-color: var(--ring-red);
 }
 
 .warning {
-    border-color: rgba(245, 158, 11, 0.3) !important;
-    box-shadow: inset 0 0 20px rgba(245, 158, 11, 0.05),
-        0 0 12px rgba(245, 158, 11, 0.06);
+    border-left-color: var(--ring-amber);
 }
 
 .moderate {
-    border-color: rgba(234, 179, 8, 0.25) !important;
-    box-shadow: inset 0 0 16px rgba(234, 179, 8, 0.04),
-        0 0 8px rgba(234, 179, 8, 0.04);
+    border-left-color: var(--warning);
 }
+
+[dir='rtl'] .critical { border-right-color: var(--ring-red); }
+[dir='rtl'] .warning  { border-right-color: var(--ring-amber); }
+[dir='rtl'] .moderate { border-right-color: var(--warning); }
 
 .header {
     display: flex;
@@ -37,15 +49,15 @@
 }
 
 .icon {
-    font-size: 24px;
+    font-size: 20px;
     flex-shrink: 0;
     line-height: 1;
 }
 
 .label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     flex: 1;
@@ -56,7 +68,6 @@
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--text-tertiary);
-    opacity: 0.7;
 }
 
 .statement {
