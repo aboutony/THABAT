@@ -87,7 +87,7 @@ export default function OnboardingPage() {
                 {/* Header */}
                 <div className={styles.header}>
                     <div className={styles.logoArea}>
-                        <img src="/thabat-logo.png" alt="THABAT" width={36} height={36} style={{ mixBlendMode: 'screen' }} />
+                        <img src="/thabat-logo.png" alt="THABAT" width={36} height={36} />
                         <span className={styles.sapBadge}>🔷 SAP B1</span>
                     </div>
                     <h1 className={styles.wizardTitle}>{t('title')}</h1>

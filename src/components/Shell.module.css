@@ -43,7 +43,8 @@
 }
 
 .logo {
-    mix-blend-mode: screen;
+    border-radius: 10px;
+    box-shadow: var(--neu-raised-xs);
 }
 
 .brandText {

@@ -48,7 +48,7 @@ export default function SignupPage() {
             <div className={styles.authContainer}>
                 {/* Branding */}
                 <div className={styles.brandHeader}>
-                    <img src="/thabat-logo.png" alt="THABAT" className={styles.brandIcon} width={48} height={48} />
+                    <img src="/thabat-logo.png" alt="THABAT" className={styles.brandIcon} width={48} height={48} style={{ borderRadius: '12px' }} />
                     <h1 className={styles.brandTitle}>THABAT</h1>
                     <p className={styles.brandSubtitle}>{t('tagline')}</p>
                 </div>

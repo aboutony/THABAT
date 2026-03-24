@@ -28,7 +28,8 @@
 }
 
 .brandIcon {
-    mix-blend-mode: screen;
+    border-radius: 16px;
+    box-shadow: var(--neu-raised);
 }
 
 .brandTitle {
