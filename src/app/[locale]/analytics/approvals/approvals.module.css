@@ -62,7 +62,7 @@
 .summaryNumber {
     font-size: 18px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
 }
 
@@ -80,7 +80,7 @@
 .summaryDivider {
     width: 1px;
     height: 32px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--border-subtle);
 }
 
 /* ── PO List ── */
@@ -130,7 +130,7 @@
 .poAmount {
     font-size: 18px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
 }
 
@@ -173,7 +173,7 @@
 .approveBtn {
     padding: 10px 18px;
     background: #006C35;
-    color: #E0E0E0;
+    color: var(--bg-primary);
     border: none;
     border-radius: 8px;
     font-size: 12px;
@@ -226,7 +226,7 @@
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(0, 108, 53, 0.4);
     border-radius: 12px;
-    color: #E0E0E0;
+    color: #FFFFFF;
     font-size: 13px;
     font-weight: 600;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 108, 53, 0.3);

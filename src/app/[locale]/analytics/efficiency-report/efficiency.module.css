@@ -203,9 +203,9 @@
 }
 
 .stagePending {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--bg-well);
     color: var(--text-tertiary);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--border-subtle);
 }
 
 .stageConnector {
@@ -214,7 +214,7 @@
     top: 24px;
     width: 2px;
     height: calc(100% - 24px);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--border-subtle);
 }
 
 .connectorDone {
@@ -261,7 +261,7 @@
     flex-direction: column;
     gap: 8px;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .inventoryRow:last-child {
@@ -303,7 +303,7 @@
 .stockBarOuter {
     flex: 1;
     height: 6px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--ring-track);
     border-radius: 3px;
     overflow: hidden;
 }
@@ -355,7 +355,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     background: #006C35;
-    color: #E0E0E0;
+    color: var(--bg-primary);
     backdrop-filter: blur(10px);
     box-shadow: 0 0 15px rgba(0, 108, 53, 0.4);
 }

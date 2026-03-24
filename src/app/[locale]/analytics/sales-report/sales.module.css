@@ -65,7 +65,7 @@
 .pipelineValue {
     font-size: 28px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
     line-height: 1.1;
@@ -126,7 +126,7 @@
     height: 22px;
     border-radius: 50%;
     background: #006C35;
-    border: 2px solid #E0E0E0;
+    border: 2px solid var(--bg-primary);
     box-shadow: 0 0 10px rgba(0, 108, 53, 0.4);
     cursor: pointer;
     transition: box-shadow 0.2s ease;
@@ -141,7 +141,7 @@
     height: 22px;
     border-radius: 50%;
     background: #006C35;
-    border: 2px solid #E0E0E0;
+    border: 2px solid var(--bg-primary);
     box-shadow: 0 0 10px rgba(0, 108, 53, 0.4);
     cursor: pointer;
 }
@@ -166,8 +166,8 @@
     flex-direction: column;
     gap: 2px;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--bg-well);
+    border: 1px solid var(--border-subtle);
     border-radius: 8px;
 }
 
@@ -182,7 +182,7 @@
 .metricVal {
     font-size: 14px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
 }
 
@@ -245,7 +245,7 @@
 .timelineConnector {
     width: 2px;
     height: 20px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--border-subtle);
     margin-left: 5px;
 }
 
@@ -258,7 +258,7 @@
 .nodeDate {
     font-size: 12px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
 }
 
 .nodeLabel {
@@ -273,8 +273,8 @@
     font-size: 10px;
     color: var(--text-tertiary);
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--bg-well);
+    border: 1px solid var(--border-subtle);
     border-radius: 6px;
 }
 
@@ -299,7 +299,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .productRow:last-child {
@@ -340,6 +340,6 @@
 .productTotal {
     font-size: 13px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
 }

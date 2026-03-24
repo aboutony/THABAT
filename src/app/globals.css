@@ -50,7 +50,7 @@ main {
   /* Text */
   --text-primary:   #1A202C;
   --text-secondary: #4A5568;
-  --text-tertiary:  #A0AEC0;
+  --text-tertiary:  #64748B;
   --text-accent:    #B45309;
 
   /* Accent (gold/amber) */
@@ -92,7 +92,7 @@ main {
   --nav-bg:       var(--bg-primary);
   --nav-border:   transparent;
   --nav-active:   #B45309;
-  --nav-inactive: #A0AEC0;
+  --nav-inactive: #64748B;
 
   /* Status */
   --success: #276749;
@@ -102,6 +102,10 @@ main {
   /* Amber action */
   --amber-action:      #D97706;
   --amber-action-glow: rgba(217, 119, 6, 0.25);
+
+  /* Subtle dividers & well backgrounds */
+  --border-subtle: #C8CDD4;
+  --bg-well:       #E0E4E8;
 
   /* Shadows (legacy token names preserved) */
   --shadow-sm:   var(--neu-raised-xs);
@@ -176,6 +180,10 @@ main {
   /* Amber action */
   --amber-action:      #FAB387;
   --amber-action-glow: rgba(250, 179, 135, 0.3);
+
+  /* Subtle dividers & well backgrounds */
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --bg-well:       rgba(255, 255, 255, 0.03);
 
   /* Shadows (legacy names preserved) */
   --shadow-sm:   var(--neu-raised-xs);

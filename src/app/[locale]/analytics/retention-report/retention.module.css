@@ -82,7 +82,7 @@
 .statNum {
     font-size: 16px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
 }
 
@@ -101,7 +101,7 @@
 .statDivider {
     width: 1px;
     height: 28px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--border-subtle);
 }
 
 /* ── Section Title ── */
@@ -170,7 +170,7 @@
 .contractAmount {
     font-size: 14px;
     font-weight: 700;
-    color: #E0E0E0;
+    color: var(--text-primary);
     font-variant-numeric: tabular-nums;
 }
 
@@ -256,7 +256,7 @@
 
 .metaDot {
     font-size: 8px;
-    color: rgba(255, 255, 255, 0.15);
+    color: var(--border-subtle);
 }
 
 /* ── Expanded Section ── */
@@ -264,7 +264,7 @@
     overflow: hidden;
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--border-subtle);
 }
 
 .productsHeader {
@@ -307,7 +307,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     background: #006C35;
-    color: #E0E0E0;
+    color: var(--bg-primary);
     backdrop-filter: blur(10px);
     box-shadow: 0 0 20px rgba(0, 108, 53, 0.4);
     text-transform: uppercase;
