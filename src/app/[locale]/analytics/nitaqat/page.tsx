@@ -44,11 +44,12 @@ const WORKER_ROWS: {
     key: keyof Omit<WorkforceInput, 'totalEmployees'>;
     labelKey: string;
     weight: string;
+    primary: boolean;   // primary rows always visible; secondary collapse on mobile
 }[] = [
-    { key: 'saudiRegular',      labelKey: 'regulars',     weight: '1.0×' },
-    { key: 'saudiLowSalary',    labelKey: 'lowSalary',    weight: '0.5×' },
-    { key: 'saudiStudents',     labelKey: 'students',     weight: '0.5×' },
-    { key: 'saudiSpecialNeeds', labelKey: 'specialNeeds', weight: '4.0×' },
+    { key: 'saudiRegular',      labelKey: 'regulars',     weight: '1.0×', primary: true  },
+    { key: 'saudiLowSalary',    labelKey: 'lowSalary',    weight: '0.5×', primary: false },
+    { key: 'saudiStudents',     labelKey: 'students',     weight: '0.5×', primary: false },
+    { key: 'saudiSpecialNeeds', labelKey: 'specialNeeds', weight: '4.0×', primary: false },
 ];
 
 // ── Visa fee reference from ExpenseWaterfall (Phase 03) ───────────────────
@@ -60,8 +61,9 @@ export default function NitaqatPage() {
     const isAr    = locale === 'ar';
     const t       = useTranslations('nitaqat');
 
-    const [plannedExpats, setPlannedExpats] = useState(0);
-    const [finalized,     setFinalized]     = useState(false);
+    const [plannedExpats,      setPlannedExpats]      = useState(0);
+    const [finalized,          setFinalized]          = useState(false);
+    const [workforceExpanded,  setWorkforceExpanded]  = useState(false);
 
     // ── Current state ──────────────────────────────────────────────────────
     const weightedSaudi  = calcWeightedSaudi(DEMO_WORKFORCE);
@@ -127,17 +129,51 @@ export default function NitaqatPage() {
                 </div>
             </div>
 
+            {/* ── Visa interlink — full-width, high-context after gauge ────── */}
+            <div className={`glass-card ${s.visaCard}`}>
+                <span className={s.visaIcon}>🛂</span>
+                <div className={s.visaText}>
+                    <p className={s.visaTitle}>{t('visaInterlink')}</p>
+                    <p className={s.visaDesc}>{t('visaImpactText', { n: safeWindow })}</p>
+                </div>
+                <Link
+                    href={`/${locale}/analytics/sales-report`}
+                    className={s.visaLink}
+                >
+                    {t('viewWaterfall')} →
+                </Link>
+            </div>
+
             {/* ── Workforce snapshot ──────────────────────────────────────── */}
             <div className={`glass-card ${s.card}`}>
-                <p className={s.cardTitle}>{t('workforce')}</p>
+                <div className={s.cardTitleRow}>
+                    <p className={s.cardTitle}>{t('workforce')}</p>
+                    <button
+                        className={s.expandBtn}
+                        onClick={() => setWorkforceExpanded(e => !e)}
+                        aria-expanded={workforceExpanded}
+                    >
+                        {workforceExpanded
+                            ? (isAr ? '▲ إخفاء' : '▲ Hide')
+                            : (isAr ? '▼ التفاصيل' : '▼ Details')
+                        }
+                    </button>
+                </div>
                 <div className={s.workerGrid}>
-                    {WORKER_ROWS.map(({ key, labelKey, weight }) => {
+                    {WORKER_ROWS.map(({ key, labelKey, weight, primary }) => {
                         const count  = DEMO_WORKFORCE[key];
                         const wValue = key === 'saudiSpecialNeeds'
                             ? Math.min(count, Math.floor(DEMO_WORKFORCE.totalEmployees * 0.10)) * 4.0
                             : count * parseFloat(weight);
                         return (
-                            <div key={key} className={s.workerRow}>
+                            <div
+                                key={key}
+                                className={[
+                                    s.workerRow,
+                                    !primary ? s.workerRowCollapsible : '',
+                                    !primary && workforceExpanded ? s.expanded : '',
+                                ].join(' ')}
+                            >
                                 <span className={s.workerLabel}>{t(labelKey)}</span>
                                 <span className={s.workerCount}>{count}</span>
                                 <span className={s.workerWeight}>{weight}</span>
@@ -157,14 +193,14 @@ export default function NitaqatPage() {
             {/* ── Expansion simulator ─────────────────────────────────────── */}
             <div className={`glass-card ${s.card}`}>
                 <div className={s.simHeader}>
-                    <div>
-                        <p className={s.cardTitle}>{t('simulatorTitle')}</p>
-                        <p className={s.cardSubtitle}>{t('simulatorSubtitle')}</p>
-                    </div>
-                    <div className={s.simValue}>
-                        <span className={s.simCount}>{plannedExpats}</span>
-                        <span className={s.simUnit}>{t('plannedExpats')}</span>
-                    </div>
+                    <p className={s.cardTitle}>{t('simulatorTitle')}</p>
+                    <p className={s.cardSubtitle}>{t('simulatorSubtitle')}</p>
+                </div>
+
+                {/* Counter always above slider so thumb never blocks the number */}
+                <div className={s.simCounterRow}>
+                    <span className={s.simCount}>{plannedExpats}</span>
+                    <span className={s.simUnit}>{t('plannedExpats')}</span>
                 </div>
 
                 {/* Slider */}
@@ -244,7 +280,7 @@ export default function NitaqatPage() {
                 </AnimatePresence>
             </div>
 
-            {/* ── Safe window + visa interlink ────────────────────────────── */}
+            {/* ── Safe expansion window ────────────────────────────────────── */}
             <div className={`glass-card ${s.card}`}>
                 <p className={s.cardTitle}>{t('maxExpatsSafe')}</p>
                 <div className={s.insightRow}>
@@ -255,24 +291,9 @@ export default function NitaqatPage() {
                         <span className={s.insightDesc}>{t('maxExpatsText', { n: safeWindow })}</span>
                     </div>
                 </div>
-
-                {/* Phase 03 interlink: visa fee impact */}
-                <div className={s.visaInterlink}>
-                    <span className={s.visaIcon}>🛂</span>
-                    <div className={s.visaText}>
-                        <p className={s.visaTitle}>{t('visaInterlink')}</p>
-                        <p className={s.visaDesc}>{t('visaImpactText', { n: safeWindow })}</p>
-                    </div>
-                    <Link
-                        href={`/${locale}/analytics/sales-report`}
-                        className={s.visaLink}
-                    >
-                        {t('viewWaterfall')} →
-                    </Link>
-                </div>
             </div>
 
-            {/* ── Finalize button ─────────────────────────────────────────── */}
+            {/* ── Finalize button — sticky on mobile ───────────────────────── */}
             <div className={s.finalizeWrap}>
                 <motion.button
                     className={s.finalizeBtn}

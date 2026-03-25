@@ -31,3 +31,8 @@
         box-shadow: 0 0 24px 6px rgba(250, 179, 135, 0.20);
     }
 }
+
+/* ── SVG fills container width (shell is always ≤390 px) ──────────────────── */
+.shield svg {
+    max-width: 100% !important;
+}

@@ -53,6 +53,13 @@
     gap: 10px;
 }
 
+/* Row that holds cardTitle + expand chevron together */
+.cardTitleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .cardTitle {
     font-size: 11px;
     font-weight: 700;
@@ -67,6 +74,14 @@
     color: var(--text-tertiary);
     margin: 0;
     letter-spacing: 0.03em;
+}
+
+/* ── Visa interlink — standalone full-width card (after gauge on mobile) ─── */
+.visaCard {
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 /* ── Gauge card ──────────────────────────────────────────────────────────── */
@@ -161,20 +176,40 @@
 .workerTotal .workerLabel { font-weight: 600; color: var(--text-primary); }
 .workerTotal .workerWeighted { font-size: 14px; }
 
+/* Flag class — no styles on desktop; used in mobile media query */
+.workerRowCollapsible {}
+.expanded {}
+
+/* Chevron expand button */
+.expandBtn {
+    display: inline-flex;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-tertiary);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 0;
+    align-items: center;
+    gap: 4px;
+    letter-spacing: 0.03em;
+    transition: color 0.15s;
+}
+.expandBtn:hover { color: var(--text-secondary); }
+
 /* ── Simulator ───────────────────────────────────────────────────────────── */
 .simHeader {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.simValue {
+/* Counter row — always shown above the slider */
+.simCounterRow {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 1px;
-    flex-shrink: 0;
+    align-items: baseline;
+    gap: 6px;
+    padding: 2px 0;
 }
 
 .simCount {
@@ -399,12 +434,22 @@
 
 .visaLink:hover { opacity: 0.75; }
 
-/* ── Finalize button ─────────────────────────────────────────────────────── */
+/* ── Finalize button — sticky at bottom of scroll container ──────────────── */
 .finalizeWrap {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+    position: sticky;
+    bottom: 0;
+    margin-left:  -16px;
+    margin-right: -16px;
+    padding: 10px 16px env(safe-area-inset-bottom, 14px);
+    background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border-subtle);
+    z-index: 20;
 }
 
 .finalizeBtn {
@@ -438,3 +483,26 @@
     border: 1px solid rgba(39, 103, 73, 0.25);
     border-radius: var(--radius-sm);
 }
+
+/* ══════════════════════════════════════════════════════════════════════════ */
+/* High-density layout — unconditional (shell is always ≤390 px wide)         */
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Collapsible workforce rows: hidden until expanded ──────────────────────── */
+.workerRowCollapsible {
+    display: none;
+}
+.workerRowCollapsible.expanded {
+    display: grid;
+}
+
+/* ── Slider thumb: 44 × 44 px touch target ──────────────────────────────────── */
+.slider::-webkit-slider-thumb {
+    width: 44px;
+    height: 44px;
+}
+.slider::-moz-range-thumb {
+    width: 44px;
+    height: 44px;
+}
+
