@@ -1,0 +1,300 @@
+'use client';
+
+import { useState }          from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { motion, AnimatePresence }    from 'framer-motion';
+import Link                           from 'next/link';
+
+import NitaqatShield from '@/components/NitaqatShield';
+import {
+    calcWeightedSaudi,
+    calcSaudizationPct,
+    getTier,
+    simulateExpats,
+    calcCorrectionSaudis,
+    maxExpatsBeforeDrop,
+    TIER_COLORS,
+    type WorkforceInput,
+    type NitaqatTier,
+} from '@/lib/nitaqat';
+
+// Local tier-label key map — `as const` lets next-intl infer the exact key literals
+const TIER_KEYS = {
+    platinum:  'tierPlatinum',
+    highGreen: 'tierHighGreen',
+    medGreen:  'tierMedGreen',
+    lowGreen:  'tierLowGreen',
+    red:       'tierRed',
+} as const satisfies Record<NitaqatTier, string>;
+
+import s from './nitaqat.module.css';
+
+// ── UNIMED demo workforce ─────────────────────────────────────────────────
+// weighted = 42×1.0 + 4×0.5 + 5×0.5 + 1×4.0 = 42 + 2 + 2.5 + 4 = 50.5
+// saudizationPct = 50.5 / 120 × 100 = 42.08%  →  Platinum
+const DEMO_WORKFORCE: WorkforceInput = {
+    totalEmployees:    120,
+    saudiRegular:       42,   // weight 1.0
+    saudiLowSalary:      4,   // weight 0.5
+    saudiStudents:       5,   // weight 0.5
+    saudiSpecialNeeds:   1,   // weight 4.0  (cap 10% of 120 = 12)
+};
+
+const WORKER_ROWS: {
+    key: keyof Omit<WorkforceInput, 'totalEmployees'>;
+    labelKey: string;
+    weight: string;
+}[] = [
+    { key: 'saudiRegular',      labelKey: 'regulars',     weight: '1.0×' },
+    { key: 'saudiLowSalary',    labelKey: 'lowSalary',    weight: '0.5×' },
+    { key: 'saudiStudents',     labelKey: 'students',     weight: '0.5×' },
+    { key: 'saudiSpecialNeeds', labelKey: 'specialNeeds', weight: '4.0×' },
+];
+
+// ── Visa fee reference from ExpenseWaterfall (Phase 03) ───────────────────
+// Each expat hire generates a visa renewal cost in the Government / ZATCA waterfall.
+// We surface the safe-window count here as the Nitaqat–Visa interlink.
+
+export default function NitaqatPage() {
+    const locale  = useLocale();
+    const isAr    = locale === 'ar';
+    const t       = useTranslations('nitaqat');
+
+    const [plannedExpats, setPlannedExpats] = useState(0);
+    const [finalized,     setFinalized]     = useState(false);
+
+    // ── Current state ──────────────────────────────────────────────────────
+    const weightedSaudi  = calcWeightedSaudi(DEMO_WORKFORCE);
+    const saudizationPct = calcSaudizationPct(weightedSaudi, DEMO_WORKFORCE.totalEmployees);
+    const currentTier    = getTier(saudizationPct, DEMO_WORKFORCE.totalEmployees);
+    const currentLabel   = t(TIER_KEYS[currentTier]);
+
+    // ── Simulation ────────────────────────────────────────────────────────
+    const sim = simulateExpats(
+        weightedSaudi,
+        DEMO_WORKFORCE.totalEmployees,
+        currentTier,
+        plannedExpats,
+    );
+    const correctionNeeded = (sim.tierDropped && currentTier !== 'red')
+        ? calcCorrectionSaudis(weightedSaudi, sim.newTotal, currentTier)
+        : 0;
+
+    // Max safe expats without dropping from currentTier (if not red)
+    const safeWindow = currentTier !== 'red'
+        ? maxExpatsBeforeDrop(weightedSaudi, DEMO_WORKFORCE.totalEmployees, currentTier)
+        : 0;
+
+    const simLabel = t(TIER_KEYS[sim.newTier]);
+
+    function handleFinalize() {
+        setFinalized(true);
+        setTimeout(() => setFinalized(false), 3000);
+    }
+
+    return (
+        <div className={s.page}>
+            {/* Back link */}
+            <Link href={`/${locale}/analytics`} className={s.backLink}>
+                {isAr ? '←' : '→'}&nbsp;{t('back')}
+            </Link>
+
+            {/* Header */}
+            <div className={s.header}>
+                <h2 className={s.title}>{t('title')}</h2>
+                <p className={s.subtitle}>{t('subtitle')}</p>
+            </div>
+
+            {/* ── Gauge card ──────────────────────────────────────────────── */}
+            <div className={`glass-card ${s.gaugeCard}`}>
+                <NitaqatShield
+                    saudizationPct={plannedExpats > 0 ? sim.newWeightedPct : saudizationPct}
+                    tier={plannedExpats > 0 ? sim.newTier : currentTier}
+                    tierLabel={plannedExpats > 0 ? simLabel : currentLabel}
+                    isAr={isAr}
+                />
+                <div className={s.gaugeMeta}>
+                    <span className={s.gaugeMetaItem}>
+                        <span className={s.metaLabel}>{t('totalEmployees')}</span>
+                        <span className={s.metaVal}>
+                            {plannedExpats > 0 ? sim.newTotal : DEMO_WORKFORCE.totalEmployees}
+                        </span>
+                    </span>
+                    <span className={s.gaugeMetaItem}>
+                        <span className={s.metaLabel}>{t('saudiWeighted')}</span>
+                        <span className={s.metaVal}>{weightedSaudi.toFixed(1)}</span>
+                    </span>
+                </div>
+            </div>
+
+            {/* ── Workforce snapshot ──────────────────────────────────────── */}
+            <div className={`glass-card ${s.card}`}>
+                <p className={s.cardTitle}>{t('workforce')}</p>
+                <div className={s.workerGrid}>
+                    {WORKER_ROWS.map(({ key, labelKey, weight }) => {
+                        const count  = DEMO_WORKFORCE[key];
+                        const wValue = key === 'saudiSpecialNeeds'
+                            ? Math.min(count, Math.floor(DEMO_WORKFORCE.totalEmployees * 0.10)) * 4.0
+                            : count * parseFloat(weight);
+                        return (
+                            <div key={key} className={s.workerRow}>
+                                <span className={s.workerLabel}>{t(labelKey)}</span>
+                                <span className={s.workerCount}>{count}</span>
+                                <span className={s.workerWeight}>{weight}</span>
+                                <span className={s.workerWeighted}>{wValue.toFixed(1)}</span>
+                            </div>
+                        );
+                    })}
+                    <div className={`${s.workerRow} ${s.workerTotal}`}>
+                        <span className={s.workerLabel}>{t('totalEmployees')}</span>
+                        <span className={s.workerCount}>{DEMO_WORKFORCE.totalEmployees}</span>
+                        <span className={s.workerWeight}/>
+                        <span className={s.workerWeighted}>{weightedSaudi.toFixed(1)}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* ── Expansion simulator ─────────────────────────────────────── */}
+            <div className={`glass-card ${s.card}`}>
+                <div className={s.simHeader}>
+                    <div>
+                        <p className={s.cardTitle}>{t('simulatorTitle')}</p>
+                        <p className={s.cardSubtitle}>{t('simulatorSubtitle')}</p>
+                    </div>
+                    <div className={s.simValue}>
+                        <span className={s.simCount}>{plannedExpats}</span>
+                        <span className={s.simUnit}>{t('plannedExpats')}</span>
+                    </div>
+                </div>
+
+                {/* Slider */}
+                <input
+                    type="range"
+                    min={0} max={50} step={1}
+                    value={plannedExpats}
+                    onChange={e => setPlannedExpats(Number(e.target.value))}
+                    className={s.slider}
+                    dir="ltr"
+                />
+                <div className={s.sliderLabels}>
+                    <span>0</span>
+                    <span>25</span>
+                    <span>50</span>
+                </div>
+
+                {/* Simulation result */}
+                <AnimatePresence>
+                    {plannedExpats > 0 && (
+                        <motion.div
+                            className={s.simResult}
+                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                            animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                            transition={{ duration: 0.25 }}
+                        >
+                            {/* Projected tier */}
+                            <div className={s.simResultRow}>
+                                <span className={s.simResultLabel}>{t('projectedTier')}</span>
+                                <span
+                                    className={s.tierBadge}
+                                    style={{
+                                        color:           TIER_COLORS[sim.newTier],
+                                        borderColor:     TIER_COLORS[sim.newTier] + '44',
+                                        backgroundColor: TIER_COLORS[sim.newTier] + '18',
+                                    }}
+                                >
+                                    {simLabel}
+                                </span>
+                            </div>
+
+                            {/* Projected pct */}
+                            <div className={s.simResultRow}>
+                                <span className={s.simResultLabel}>{t('saudizationPct')}</span>
+                                <span className={s.simResultVal}>{sim.newWeightedPct.toFixed(1)}%</span>
+                            </div>
+
+                            {/* Tier drop warning */}
+                            {sim.tierDropped && (
+                                <div className={s.tierDropWarning}>
+                                    <span className={s.warnIcon}>⚠</span>
+                                    <span>{t('tierDrop')}</span>
+                                </div>
+                            )}
+
+                            {/* Correction insight */}
+                            {sim.tierDropped && correctionNeeded > 0 && (
+                                <div className={s.correctionBox}>
+                                    <p className={s.correctionLabel}>{t('correctionInsight')}</p>
+                                    <p className={s.correctionText}>
+                                        {t('correctionText', { n: correctionNeeded, tier: currentLabel })}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Still safe — remaining window */}
+                            {!sim.tierDropped && (
+                                <div className={s.safeNote}>
+                                    {t('stillSafe', { tier: currentLabel })}
+                                    {' · '}
+                                    {t('remainingWindow', { n: Math.max(0, safeWindow - plannedExpats) })}
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* ── Safe window + visa interlink ────────────────────────────── */}
+            <div className={`glass-card ${s.card}`}>
+                <p className={s.cardTitle}>{t('maxExpatsSafe')}</p>
+                <div className={s.insightRow}>
+                    <div className={s.insightStat}>
+                        <span className={s.insightNum} style={{ color: TIER_COLORS[currentTier] }}>
+                            {safeWindow}
+                        </span>
+                        <span className={s.insightDesc}>{t('maxExpatsText', { n: safeWindow })}</span>
+                    </div>
+                </div>
+
+                {/* Phase 03 interlink: visa fee impact */}
+                <div className={s.visaInterlink}>
+                    <span className={s.visaIcon}>🛂</span>
+                    <div className={s.visaText}>
+                        <p className={s.visaTitle}>{t('visaInterlink')}</p>
+                        <p className={s.visaDesc}>{t('visaImpactText', { n: safeWindow })}</p>
+                    </div>
+                    <Link
+                        href={`/${locale}/analytics/sales-report`}
+                        className={s.visaLink}
+                    >
+                        {t('viewWaterfall')} →
+                    </Link>
+                </div>
+            </div>
+
+            {/* ── Finalize button ─────────────────────────────────────────── */}
+            <div className={s.finalizeWrap}>
+                <motion.button
+                    className={s.finalizeBtn}
+                    onClick={handleFinalize}
+                    whileTap={{ scale: 0.97 }}
+                >
+                    {t('finalizeBtn')}
+                </motion.button>
+
+                <AnimatePresence>
+                    {finalized && (
+                        <motion.div
+                            className={s.toast}
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 8 }}
+                        >
+                            {t('finalizeToast')}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+        </div>
+    );
+}
