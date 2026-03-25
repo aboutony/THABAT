@@ -421,6 +421,11 @@
 .calloutGreen { color: var(--success); }
 .calloutAmber { color: var(--warning); }
 
+/* ── Waterfall Card (Phase 03 host) ───────────────────────────────── */
+.waterfallCard {
+    padding: 20px;
+}
+
 /* ── Liquidity Timeline ────────────────────────────────────────────── */
 .timelineCard {
     padding: 20px;

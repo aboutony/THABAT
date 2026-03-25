@@ -7,6 +7,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
 import { getRevenueForecast, formatSARShort, type ForecastResult } from '@/lib/forecast';
+import ExpenseWaterfall from '@/components/ExpenseWaterfall';
 import styles from './sales.module.css';
 
 // ─── NUPCO Purchase Order Data ───────────────────────────────────────────────
@@ -430,6 +431,21 @@ export default function SalesReportPage() {
                             </span>
                         </div>
                     </div>
+                </motion.div>
+
+                {/* ── Executive Expense Waterfall (Phase 03) ── */}
+                <motion.div
+                    className={`glass-card ${styles.waterfallCard}`}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.45, duration: 0.5 }}
+                >
+                    <ExpenseWaterfall
+                        revenue={forecast.revenue}
+                        baseRevenue={NUPCO_PO.baseRevenue}
+                        isAr={isAr}
+                        marginRiskAlert={activeAlert}
+                    />
                 </motion.div>
 
                 {/* ── Liquidity Timeline ── */}
