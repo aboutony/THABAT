@@ -3,6 +3,7 @@ import { getMessages, getLocale } from 'next-intl/server';
 import { Inter, IBM_Plex_Sans_Arabic } from 'next/font/google';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { EntityProvider } from '@/context/EntityContext';
 import '../globals.css';
 
 const inter = Inter({
@@ -71,7 +72,9 @@ export default async function RootLayout({
                 <NextIntlClientProvider messages={messages}>
                     <ThemeProvider>
                         <AuthProvider>
-                            {children}
+                            <EntityProvider>
+                                {children}
+                            </EntityProvider>
                         </AuthProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>

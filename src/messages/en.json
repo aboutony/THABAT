@@ -486,6 +486,10 @@
         "activePlan":            "Active Plan",
         "verifiedBadge":         "Verified"
     },
+    "entity": {
+        "advisingLabel": "Advising",
+        "switchHint":    "Switch entity"
+    },
     "report": {
         "portalTitle":      "Capital Report",
         "portalSubtitle":   "Board-Ready Export",

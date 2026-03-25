@@ -7,6 +7,12 @@
     overflow: hidden;
 }
 
+/* ── Entity switcher row ─────────────────────────────────────────────────── */
+.entityRow {
+    padding: 10px 0 2px;
+    flex-shrink: 0;
+}
+
 /* ---- Stability Ring Anchor: 40px margin-top ---- */
 .ringSection {
     display: flex;

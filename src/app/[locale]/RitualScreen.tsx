@@ -11,6 +11,7 @@ import StockHourglass from '@/components/StockHourglass';
 import OracleBriefing from '@/components/OracleBriefing';
 import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
+import EntitySelector from '@/components/EntitySelector';
 import { generateConsequenceStatement } from '@/lib/scoring';
 import { formatScore, formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
@@ -162,6 +163,11 @@ export default function RitualScreen() {
 
     return (
         <div className={styles.ritual}>
+            {/* ── Entity Switcher ───────────────────────────────────────── */}
+            <div className={styles.entityRow}>
+                <EntitySelector />
+            </div>
+
             {/* ── Scenario Playground overlay ───────────────────────────── */}
             <AnimatePresence>
                 {showScenario && (

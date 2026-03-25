@@ -486,6 +486,10 @@
         "activePlan":            "خطة نشطة",
         "verifiedBadge":         "معتمدة"
     },
+    "entity": {
+        "advisingLabel": "استشارة",
+        "switchHint":    "تبديل الكيان"
+    },
     "report": {
         "portalTitle":      "تقرير رأس المال",
         "portalSubtitle":   "تصدير جاهز للمجلس",

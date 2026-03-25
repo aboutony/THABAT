@@ -10,6 +10,7 @@ import {
 } from '@/lib/generateBriefing';
 import type { BriefingContext, RiskKey, ActionKey } from '@/lib/generateBriefing';
 import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
+import { useEntity } from '@/context/EntityContext';
 import s from './OracleBriefing.module.css';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
@@ -50,8 +51,9 @@ function useSentences(ctx: BriefingContext | null, locale: string) {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function OracleBriefing({ score, scoreBreakdown }: OracleBriefingProps) {
-    const locale = useLocale();
-    const t      = useTranslations('oracle');
+    const locale        = useLocale();
+    const t             = useTranslations('oracle');
+    const { activeEntity } = useEntity();
 
     const [ctx,       setCtx]       = useState<BriefingContext | null>(null);
     const [revealed,  setRevealed]  = useState(0);   // 0 = thinking, 1/2/3 = sentences visible
@@ -96,6 +98,13 @@ export default function OracleBriefing({ score, scoreBreakdown }: OracleBriefing
             <div className={s.header}>
                 <span className={s.oracleIcon}>✦</span>
                 <p className={s.sectionLabel}>{t('section')}</p>
+                {/* Sovereign badge — confirms which entity the Oracle is advising */}
+                <span
+                    className={s.sovereignBadge}
+                    style={{ borderColor: `${activeEntity.accent}44`, color: activeEntity.accent }}
+                >
+                    ⬡&nbsp;{locale === 'ar' ? activeEntity.nameAr : activeEntity.name}
+                </span>
                 <AnimatePresence>
                     {revealed === 0 && (
                         <motion.span

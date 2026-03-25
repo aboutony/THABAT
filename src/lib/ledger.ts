@@ -43,14 +43,19 @@ export interface ScenarioMeta {
     projectedStockRisk:  boolean;
 }
 
-const STORAGE_KEY = 'thabat-action-ledger';
-
 // ── Persistence helpers ───────────────────────────────────────────────────
+// Storage key is namespaced per active entity so data never bleeds between
+// companies. getLedgerStorageKey() is called on every read/write (not cached)
+// so switching entity immediately routes to the correct silo.
+
+import { getLedgerStorageKey } from './entityContext';
 
 export function getLedger(): LedgerEntry[] {
     if (typeof window === 'undefined') return [];
     try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]') as LedgerEntry[];
+        return JSON.parse(
+            localStorage.getItem(getLedgerStorageKey()) ?? '[]'
+        ) as LedgerEntry[];
     } catch {
         return [];
     }
@@ -58,7 +63,7 @@ export function getLedger(): LedgerEntry[] {
 
 function saveLedger(entries: LedgerEntry[]): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    localStorage.setItem(getLedgerStorageKey(), JSON.stringify(entries));
     window.dispatchEvent(new Event('thabat-ledger-updated'));
 }
 
