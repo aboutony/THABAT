@@ -247,6 +247,32 @@ export default function AnalyticsPage() {
                             </Link>
                         </motion.div>
 
+                        {/* Card C: Supply Chain Nerve Center */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.3 }}
+                        >
+                            <Link href={`/${locale}/analytics/supply-chain`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(79, 70, 229, 0.14)', color: '#6366F1' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="1"  y="3"  width="15" height="13" rx="2"/>
+                                        <path d="M16 8h4l3 3v5h-7V8z"/>
+                                        <circle cx="5.5"  cy="18.5" r="2.5"/>
+                                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleSupplyChain')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleSupplyChainDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: '#6366F1', background: 'rgba(79,70,229,0.12)', borderColor: 'rgba(79,70,229,0.28)' }}>Live</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
                     </div>
                 </div>
 

@@ -104,6 +104,8 @@
         "moduleSalesReportDesc": "P&L drill-down with real-time cost leakage alerts",
         "moduleNitaqat": "Nitaqat Compliance",
         "moduleNitaqatDesc": "Saudization monitor — HRSD 2026 Nitaqat 2.0",
+        "moduleSupplyChain": "Supply Chain Nerve Center",
+        "moduleSupplyChainDesc": "Logistics resilience & Saudi customs intelligence",
         "actionLedger": "Executive Action Ledger"
     },
     "integrations": {
@@ -376,6 +378,25 @@
         "actionLog": "Executive Action Log",
         "footerConfidential": "Confidential – UNIMED Internal Use Only",
         "footerGenerated": "Generated via THABAT Stability Intelligence on"
+    },
+    "supplyChain": {
+        "title": "Supply Chain Nerve Center",
+        "subtitle": "Logistics Resilience — Saudi Customs Intelligence",
+        "back": "Back to Analytics",
+        "pulseTitle": "30-Day Shipment Pulse",
+        "pulseSubtitle": "Active transit window with friction markers at Saudi Customs avg (7d)",
+        "avgLeadTime": "Avg Lead Time",
+        "days": "d",
+        "onTimeRate": "On-Time Rate",
+        "frictionDays": "Friction Days",
+        "activeShipments": "Active Shipments",
+        "shipmentsTitle": "Live Shipments",
+        "inTransit": "In Transit",
+        "atCustoms": "At Customs",
+        "delivered": "Delivered",
+        "riskTitle": "Logistics Risk Signals",
+        "riskCustoms": "SHP-2840 approaching 7-day Saudi Customs threshold — immediate clearance action advised",
+        "riskPort": "Hamburg port congestion detected — estimated +3d delay on affected shipments"
     },
     "ledger": {
         "totalRealized":  "Total Value Realized",
