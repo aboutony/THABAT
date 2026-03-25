@@ -65,7 +65,7 @@ export default function NitaqatPage() {
 
     const [plannedExpats,      setPlannedExpats]      = useState(0);
     const [finalized,          setFinalized]          = useState(false);
-    const [celebrating,        setCelebrating]        = useState(false);
+    const [isCelebrating,      setIsCelebrating]      = useState(false);
     const [workforceExpanded,  setWorkforceExpanded]  = useState(false);
 
     // ── Current state ──────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ export default function NitaqatPage() {
             sim.tierDropped,
             safeWindow,
         );
-        addLedgerEntry({
+        const saved = addLedgerEntry({
             plannedExpats,
             currentTier:      currentTier,
             projectedTier:    sim.newTier,
@@ -110,16 +110,33 @@ export default function NitaqatPage() {
             avoidedCost,
         });
 
+        // Belt-and-suspenders: dispatch even if saveLedger already did
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new Event('thabat-ledger-updated'));
+        }
+
+        console.log('Action Saved to Ledger', saved);
+
         // Celebration pulse then toast
-        setCelebrating(true);
-        setTimeout(() => setCelebrating(false), 700);
+        setIsCelebrating(true);
+        setTimeout(() => setIsCelebrating(false), 700);
         setFinalized(true);
         setTimeout(() => setFinalized(false), 3000);
     }
 
     return (
         <Shell>
-        <div className={s.page}>
+        <motion.div
+            className={s.page}
+            animate={isCelebrating ? {
+                scale:     1.02,
+                boxShadow: '0 0 48px 12px rgba(180, 83, 9, 0.28)',
+            } : {
+                scale:     1,
+                boxShadow: '0 0 0px 0px rgba(180, 83, 9, 0)',
+            }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+        >
             {/* Back link */}
             <Link href={`/${locale}/analytics`} className={s.backLink}>
                 {isAr ? '←' : '→'}&nbsp;{t('back')}
@@ -318,7 +335,7 @@ export default function NitaqatPage() {
             </div>
 
             {/* ── Finalize button ──────────────────────────────────────────── */}
-            <div className={`${s.finalizeWrap} ${celebrating ? s.celebrating : ''}`}>
+            <div className={`${s.finalizeWrap} ${isCelebrating ? s.celebrating : ''}`}>
                 <motion.button
                     className={s.finalizeBtn}
                     onClick={handleFinalize}
@@ -340,7 +357,7 @@ export default function NitaqatPage() {
                     )}
                 </AnimatePresence>
             </div>
-        </div>
+        </motion.div>
         </Shell>
     );
 }

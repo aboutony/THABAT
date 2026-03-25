@@ -434,14 +434,26 @@
 
 .visaLink:hover { opacity: 0.75; }
 
-/* ── Celebration burst on finalize ──────────────────────────────────────── */
+/* ── Celebration burst — radiates outward via ::after ───────────────────── */
 @keyframes finalize-burst {
-    0%   { box-shadow: 0 0 0  0px rgba(180, 83, 9, 0.55); }
-    40%  { box-shadow: 0 0 0 18px rgba(180, 83, 9, 0.15); }
-    100% { box-shadow: 0 0 0 30px rgba(180, 83, 9, 0.00); }
+    0%   { transform: scale(1);    opacity: 0.7; }
+    100% { transform: scale(2.2);  opacity: 0;   }
 }
 
-.celebrating .finalizeBtn {
+/* The button needs a positioning context for ::after */
+.finalizeBtn {
+    position: relative;
+    overflow: visible;
+}
+
+.celebrating .finalizeBtn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: 2px solid rgba(180, 83, 9, 0.70);
+    pointer-events: none;
     animation: finalize-burst 0.65s ease-out forwards;
 }
 
