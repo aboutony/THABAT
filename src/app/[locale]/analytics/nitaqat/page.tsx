@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence }    from 'framer-motion';
 import Link                           from 'next/link';
 
+import Shell from '@/components/Shell';
 import NitaqatShield from '@/components/NitaqatShield';
 import {
     calcWeightedSaudi,
@@ -95,6 +96,7 @@ export default function NitaqatPage() {
     }
 
     return (
+        <Shell>
         <div className={s.page}>
             {/* Back link */}
             <Link href={`/${locale}/analytics`} className={s.backLink}>
@@ -317,5 +319,6 @@ export default function NitaqatPage() {
                 </AnimatePresence>
             </div>
         </div>
+        </Shell>
     );
 }
