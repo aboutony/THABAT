@@ -434,22 +434,12 @@
 
 .visaLink:hover { opacity: 0.75; }
 
-/* ── Finalize button — sticky at bottom of scroll container ──────────────── */
+/* ── Finalize button ─────────────────────────────────────────────────────── */
 .finalizeWrap {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
-    position: sticky;
-    bottom: 0;
-    margin-left:  -16px;
-    margin-right: -16px;
-    padding: 10px 16px env(safe-area-inset-bottom, 14px);
-    background: color-mix(in srgb, var(--bg-primary) 82%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-top: 1px solid var(--border-subtle);
-    z-index: 20;
 }
 
 .finalizeBtn {
