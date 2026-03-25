@@ -417,6 +417,31 @@
         "suppliersTitle": "Supplier Intelligence",
         "suppliersSubtitle": "Trust = (on-time × 0.6) + (quality × 0.4) − friction penalty"
     },
+    "oracle": {
+        "section":  "Daily Intelligence Briefing",
+        "tellMore": "Deep Dive",
+        "sent1": {
+            "stockOutRisk":     "Today's focus is supply chain exposure — {n} days of stock remaining against a {lead}-day replenishment cycle.",
+            "nitaqatRisk":      "Today's focus is Nitaqat compliance — current tier warrants an immediate workforce review.",
+            "marginsRisk":      "Today's focus is margin pressure — cost-to-revenue ratio is compressing net profit.",
+            "receivablesRisk":  "Today's focus is receivables velocity — outstanding balances are constraining cash flow.",
+            "liquidityRisk":    "Today's focus is cash runway — available reserves require active monitoring.",
+            "healthy":          "Today's position is strong — all core stability drivers are performing above target."
+        },
+        "sent2": {
+            "pivotedSupplier":   "You recently safeguarded SAR {value} by pivoting to a local supplier.",
+            "finalizedHirePlan": "You recently avoided SAR {value} in compliance costs by finalizing your hire plan.",
+            "noAction":          "No finalized actions recorded yet — the ledger is ready for your first move."
+        },
+        "sent3": {
+            "stockOutRisk":     "Suggesting an emergency reorder review to maintain the 18% Net Profit target.",
+            "nitaqatRisk":      "Suggesting workforce corrections this quarter to protect your compliance standing.",
+            "marginsRisk":      "Suggesting a cost audit of the top expense categories to recover margin.",
+            "receivablesRisk":  "Suggesting priority follow-up on overdue accounts to release working capital.",
+            "liquidityRisk":    "Suggesting accelerating collections to extend cash runway beyond 6 months.",
+            "healthy":          "Suggesting maintaining current trajectory — all targets are within range."
+        }
+    },
     "ledger": {
         "totalRealized":         "Total Value Realized",
         "empty":                 "No finalized actions yet. Run a simulation in Nitaqat Shield and tap Finalize.",

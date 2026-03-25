@@ -7,6 +7,7 @@ import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
 import InsightCard from '@/components/InsightCard';
 import StockHourglass from '@/components/StockHourglass';
+import OracleBriefing from '@/components/OracleBriefing';
 import { generateConsequenceStatement } from '@/lib/scoring';
 import { formatScore, formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
@@ -161,6 +162,12 @@ export default function RitualScreen() {
 
             {/* Scrollable content below the ring */}
             <section className={styles.contentSection}>
+                {/* ── ExecutiveOracle — Daily Briefing ─────────────── */}
+                <OracleBriefing
+                    score={score}
+                    scoreBreakdown={latestData?.score}
+                />
+
                 {/* Executive Insight — Consequence Statement */}
                 {activeInsight && (
                     <InsightCard insight={activeInsight} />
