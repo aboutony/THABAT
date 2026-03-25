@@ -352,6 +352,8 @@
         "tierMedGreen": "Medium Green",
         "tierLowGreen": "Low Green",
         "tierRed": "Red Zone",
+        "supplierLabel": "Primary Supplier",
+        "supplierMarginNote": "Reliability → Margin",
         "regulars": "Saudi Regular (≥ SAR 4,000)",
         "lowSalary": "Saudi Low Salary (< SAR 4,000)",
         "students": "Saudi Students",
@@ -379,6 +381,14 @@
         "footerConfidential": "Confidential – UNIMED Internal Use Only",
         "footerGenerated": "Generated via THABAT Stability Intelligence on"
     },
+    "supplier": {
+        "trustShield": "Supplier Trust Shield",
+        "suppliersTitle": "Supplier Intelligence",
+        "suppliersSubtitle": "Trust = (on-time × 0.6) + (quality × 0.4) − friction penalty",
+        "bandEmerald": "Trusted Partner",
+        "bandGold": "Monitor Required",
+        "bandCrimson": "At Risk"
+    },
     "stockAtRisk": {
         "label": "Stock-at-Risk",
         "daysRemaining": "{n} Days Remaining",
@@ -403,7 +413,9 @@
         "delivered": "Delivered",
         "riskTitle": "Logistics Risk Signals",
         "riskCustoms": "SHP-2840 approaching 7-day Saudi Customs threshold — immediate clearance action advised",
-        "riskPort": "Hamburg port congestion detected — estimated +3d delay on affected shipments"
+        "riskPort": "Hamburg port congestion detected — estimated +3d delay on affected shipments",
+        "suppliersTitle": "Supplier Intelligence",
+        "suppliersSubtitle": "Trust = (on-time × 0.6) + (quality × 0.4) − friction penalty"
     },
     "ledger": {
         "totalRealized":  "Total Value Realized",

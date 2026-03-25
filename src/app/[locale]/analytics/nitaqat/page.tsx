@@ -7,6 +7,8 @@ import Link                           from 'next/link';
 
 import Shell from '@/components/Shell';
 import NitaqatShield from '@/components/NitaqatShield';
+import { ShieldRating } from '@/components/SupplierCard';
+import { PRIMARY_SUPPLIER, TRUST_COLORS } from '@/lib/calculateTrustScore';
 import {
     calcWeightedSaudi,
     calcSaudizationPct,
@@ -126,14 +128,32 @@ export default function NitaqatPage() {
 
     return (
         <Shell>
+        {/* ── Celebration overlay — position:fixed bypasses all overflow clipping ── */}
+        <AnimatePresence>
+            {isCelebrating && (
+                <motion.div
+                    style={{
+                        position:      'fixed',
+                        inset:         0,
+                        pointerEvents: 'none',
+                        zIndex:        50,
+                        background:    'radial-gradient(ellipse at 50% 92%, rgba(180,83,9,0.22) 0%, transparent 68%)',
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                />
+            )}
+        </AnimatePresence>
         <motion.div
             className={s.page}
             animate={isCelebrating ? {
                 scale:     1.02,
-                boxShadow: '0 0 48px 12px rgba(180, 83, 9, 0.28)',
+                boxShadow: 'inset 0 0 52px 10px rgba(180, 83, 9, 0.18)',
             } : {
                 scale:     1,
-                boxShadow: '0 0 0px 0px rgba(180, 83, 9, 0)',
+                boxShadow: 'inset 0 0 0px 0px rgba(180, 83, 9, 0)',
             }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
         >
@@ -169,6 +189,33 @@ export default function NitaqatPage() {
                     </span>
                 </div>
             </div>
+
+            {/* ── Supplier Trust Shield — margin linkage ──────────────────── */}
+            <Link
+                href={`/${locale}/analytics/supply-chain`}
+                className={`glass-card ${s.supplierCard}`}
+            >
+                <div className={s.supplierLeft}>
+                    <p className={s.supplierLabel}>{t('supplierLabel')}</p>
+                    <p className={s.supplierName}>
+                        {isAr ? PRIMARY_SUPPLIER.nameAr : PRIMARY_SUPPLIER.name}
+                    </p>
+                    <ShieldRating
+                        score={PRIMARY_SUPPLIER.trustScore}
+                        color={TRUST_COLORS[PRIMARY_SUPPLIER.band]}
+                        size={13}
+                    />
+                </div>
+                <div className={s.supplierRight}>
+                    <span
+                        className={s.supplierScore}
+                        style={{ color: TRUST_COLORS[PRIMARY_SUPPLIER.band] }}
+                    >
+                        {PRIMARY_SUPPLIER.trustScore.toFixed(1)}<span className={s.supplierOf}>/5</span>
+                    </span>
+                    <span className={s.supplierMargin}>{t('supplierMarginNote')}</span>
+                </div>
+            </Link>
 
             {/* ── Visa interlink — full-width, high-context after gauge ────── */}
             <div className={`glass-card ${s.visaCard}`}>

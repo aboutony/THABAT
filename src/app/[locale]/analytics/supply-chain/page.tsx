@@ -6,6 +6,8 @@ import Link from 'next/link';
 
 import Shell from '@/components/Shell';
 import LeadTimePulse from '@/components/LeadTimePulse';
+import SupplierCard from '@/components/SupplierCard';
+import { DEMO_SUPPLIERS } from '@/lib/calculateTrustScore';
 
 import s from './supply-chain.module.css';
 
@@ -184,6 +186,26 @@ export default function SupplyChainPage() {
                                             : STATUS_LABEL_EN[ship.status]}
                                     </span>
                                 </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.div>
+
+                {/* ── Supplier Intelligence ─────────────────────────────── */}
+                <motion.div {...fadeUp(0.28)} className={`glass-card ${s.card}`}>
+                    <div>
+                        <p className={s.cardTitle}>{t('suppliersTitle')}</p>
+                        <p className={s.cardSubtitle}>{t('suppliersSubtitle')}</p>
+                    </div>
+                    <div className={s.supplierList}>
+                        {DEMO_SUPPLIERS.map((sup, i) => (
+                            <motion.div
+                                key={sup.id}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: 0.32 + i * 0.07 }}
+                            >
+                                <SupplierCard supplier={sup} isAr={isAr} />
                             </motion.div>
                         ))}
                     </div>
