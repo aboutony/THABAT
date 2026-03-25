@@ -1,0 +1,20 @@
+.wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── At-risk: danger glow pulse on the SVG element ──────────────────────── */
+.atRisk svg {
+    animation: hg-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes hg-pulse {
+    0%, 100% { filter: drop-shadow(0 0 0px  rgba(220, 38, 38, 0));    }
+    50%       { filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.55)); }
+}
+
+/* Compact size adjustments (compact class is informational — sizing
+   is handled via the SVG width/height props directly) */
+.compact {}

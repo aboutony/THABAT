@@ -79,3 +79,73 @@
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
 }
+
+/* ── Stock-at-Risk widget ────────────────────────────────────────────────── */
+.sarWidget {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.15s;
+}
+
+.sarWidget:hover { opacity: 0.85; }
+
+.sarCritical {
+    background: rgba(220, 38, 38, 0.07);
+    border: 1px solid rgba(220, 38, 38, 0.22);
+    animation: sar-pulse 2.4s ease-in-out infinite;
+}
+
+.sarSafe {
+    background: rgba(39, 103, 73, 0.07);
+    border: 1px solid rgba(39, 103, 73, 0.20);
+}
+
+@keyframes sar-pulse {
+    0%, 100% { box-shadow: 0 0 0   0px rgba(220, 38, 38, 0);    }
+    50%       { box-shadow: 0 0 0   6px rgba(220, 38, 38, 0.10); }
+}
+
+.sarBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+}
+
+.sarLabel {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-tertiary);
+}
+
+.sarValue {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.sarCritical .sarValue { color: var(--danger); }
+.sarSafe     .sarValue { color: var(--success); }
+
+.sarSub {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sarArrow {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}

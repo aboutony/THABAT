@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import Link from 'next/link';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
 import InsightCard from '@/components/InsightCard';
+import StockHourglass from '@/components/StockHourglass';
 import { generateConsequenceStatement } from '@/lib/scoring';
 import { formatScore, formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
+import { calculateStockGap, DEMO_STOCK_GAP_INPUT, DEMO_NEXT_SHIPMENT_DAYS } from '@/lib/stockGap';
 import type { ScoreBreakdown, RawMetrics, ConsequenceInsight } from '@/lib/scoring';
 import styles from './RitualScreen.module.css';
 
@@ -21,8 +24,9 @@ interface LatestScore {
 }
 
 export default function RitualScreen() {
-    const t  = useTranslations('drivers');
-    const tL = useTranslations('ledger');
+    const t   = useTranslations('drivers');
+    const tL  = useTranslations('ledger');
+    const tSR = useTranslations('stockAtRisk');
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
     const locale = useLocale();
@@ -69,6 +73,9 @@ export default function RitualScreen() {
 
     const score = latestData?.score.overall ?? DEMO_SCORE;
     const trend = latestData?.score.trend ?? DEMO_TREND;
+
+    // ── Stock-at-Risk ─────────────────────────────────────────────────────────
+    const stockGap = calculateStockGap(DEMO_STOCK_GAP_INPUT);
 
     const [totalAvoided, setTotalAvoided] = useState(0);
     useEffect(() => {
@@ -168,6 +175,30 @@ export default function RitualScreen() {
                         ))}
                     </div>
                 </div>
+
+                {/* ── Stock-at-Risk alert widget ───────────────────────── */}
+                <Link
+                    href={`/${locale}/analytics/supply-chain`}
+                    className={`${styles.sarWidget} ${stockGap.isAtRisk ? styles.sarCritical : styles.sarSafe}`}
+                >
+                    <StockHourglass
+                        stockDays={stockGap.stockDays}
+                        maxStockDays={30}
+                        isAtRisk={stockGap.isAtRisk}
+                        velocityFactor={0.65}
+                        compact
+                    />
+                    <div className={styles.sarBody}>
+                        <span className={styles.sarLabel}>{tSR('label')}</span>
+                        <span className={styles.sarValue}>
+                            {tSR('daysRemaining', { n: stockGap.stockDays })}
+                        </span>
+                        <span className={styles.sarSub}>
+                            {tSR('nextShipment', { n: DEMO_NEXT_SHIPMENT_DAYS })}
+                        </span>
+                    </div>
+                    <span className={styles.sarArrow}>›</span>
+                </Link>
 
                 {/* ── Impact Scoreboard ─────────────────────────────────── */}
                 {totalAvoided > 0 && (

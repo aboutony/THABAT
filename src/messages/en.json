@@ -379,6 +379,13 @@
         "footerConfidential": "Confidential – UNIMED Internal Use Only",
         "footerGenerated": "Generated via THABAT Stability Intelligence on"
     },
+    "stockAtRisk": {
+        "label": "Stock-at-Risk",
+        "daysRemaining": "{n} Days Remaining",
+        "nextShipment": "Next shipment due in {n} days",
+        "safe": "Stock Healthy",
+        "safeDesc": "Inventory covers lead time"
+    },
     "supplyChain": {
         "title": "Supply Chain Nerve Center",
         "subtitle": "Logistics Resilience — Saudi Customs Intelligence",
