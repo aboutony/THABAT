@@ -32,7 +32,3 @@
     }
 }
 
-/* ── SVG fills container width (shell is always ≤390 px) ──────────────────── */
-.shield svg {
-    max-width: 100% !important;
-}
