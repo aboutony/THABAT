@@ -22,7 +22,9 @@
         "retention": "Client Retention",
         "retentionDesc": "Retention rate above target",
         "efficiency": "Operational Efficiency",
-        "efficiencyDesc": "Cost optimization on track"
+        "efficiencyDesc": "Cost optimization on track",
+        "compliance": "Compliance Status",
+        "complianceDesc": "Nitaqat Saudization standing — HRSD 2026"
     },
     "theme": {
         "light": "Light",
@@ -96,7 +98,12 @@
         "title": "Manual Data Entry",
         "subtitle": "Feed the Stability Engine with today's financials",
         "latestScore": "Latest Stability Score",
-        "keyDrivers": "Key Drivers"
+        "keyDrivers": "Key Drivers",
+        "moduleHub": "Intelligence Modules",
+        "moduleSalesReport": "Expense Waterfall",
+        "moduleSalesReportDesc": "P&L drill-down with real-time cost leakage alerts",
+        "moduleNitaqat": "Nitaqat Compliance",
+        "moduleNitaqatDesc": "Saudization monitor — HRSD 2026 Nitaqat 2.0"
     },
     "integrations": {
         "title": "Integration Hub",

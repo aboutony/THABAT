@@ -17,6 +17,126 @@
     scrollbar-width: none;
 }
 
+/* ── Intelligence Module Hub ──────────────────────────────────────────────── */
+.moduleHub {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px;
+}
+
+.moduleHubTitle {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-tertiary);
+    margin: 0;
+    padding-inline-start: 2px;
+}
+
+.moduleList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Each module card is a full-width link */
+.moduleCard {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    box-shadow: var(--neu-raised-xs);
+    border: 1px solid var(--border-subtle);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+    cursor: pointer;
+}
+
+.moduleCard:hover {
+    box-shadow: var(--neu-raised-sm);
+    transform: translateY(-1px);
+}
+
+.moduleCard:active {
+    transform: translateY(0);
+    box-shadow: var(--neu-raised-xs);
+}
+
+/* Icon box */
+.moduleIcon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Text body */
+.moduleBody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.moduleTitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.moduleDesc {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin: 0;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Right meta: badge + arrow */
+.moduleMeta {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.moduleBadge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.moduleArrow {
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--text-tertiary);
+    line-height: 1;
+}
+
+[dir='rtl'] .moduleArrow {
+    transform: scaleX(-1);
+    display: inline-block;
+}
+
 /* Stability Ring container */
 .ringContainer {
     display: flex;

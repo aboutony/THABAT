@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THABAT — V5 Soft Neumorphic · Dark Mode</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #1E2130;
+  --bg-alt:  #252A3E;
+  --raised:  8px 8px 18px #14172A, -8px -8px 18px #282C42;
+  --raised-sm: 5px 5px 12px #14172A, -5px -5px 12px #282C42;
+  --raised-xs: 3px 3px 8px  #14172A, -3px -3px 8px  #282C42;
+  --inset:   inset 4px 4px 10px #14172A, inset -4px -4px 10px #282C42;
+  --inset-sm:inset 2px 2px 6px  #14172A, inset -2px -2px 6px  #282C42;
+  --text:    #CDD6F4;
+  --text-dim:#6C7896;
+  --text-muted:#3E4560;
+  --gold:    #C99A2E;
+  --gold-dim:rgba(201,154,46,.15);
+  --gold-border:rgba(201,154,46,.3);
+  --green:   #A6E3A1;
+  --red:     #F38BA8;
+  --amber:   #FAB387;
+  --border:  rgba(255,255,255,.04);
+}
+
+body {
+  background: var(--bg);
+  font-family: 'Nunito', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── top bar ── */
+.topbar-mode {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  position: sticky; top: 0; z-index: 100;
+}
+.tb-title { font-size: 13px; font-weight: 700; color: var(--text-dim); letter-spacing: .05em; }
+.tb-title span { color: var(--gold); }
+.tb-tag {
+  background: var(--gold-dim); border: 1px solid var(--gold-border);
+  color: var(--gold); font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 800;
+}
+
+/* ── shell ── */
+.shell { display: flex; height: calc(100vh - 49px); }
+
+/* ── sidebar ── */
+.sb {
+  width: 230px; flex-shrink: 0;
+  background: var(--bg); padding: 20px 14px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.sb-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; padding: 0 4px; }
+.logo-ico {
+  width: 44px; height: 44px; border-radius: 14px; background: var(--bg);
+  box-shadow: var(--raised-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; font-weight: 900; color: var(--gold);
+}
+.logo-txt { font-size: 18px; font-weight: 900; color: var(--text); letter-spacing: .04em; }
+
+.sb-sec { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--text-muted); padding: 10px 8px 4px; }
+.sb-item {
+  padding: 11px 14px; border-radius: 12px; font-size: 13px;
+  color: var(--text-dim); display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: all .2s; font-weight: 700;
+}
+.sb-item:hover { color: var(--text); box-shadow: var(--inset-sm); }
+.sb-item.on {
+  color: var(--text); font-weight: 800;
+  box-shadow: var(--inset);
+}
+.sb-item.on .dot { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); flex-shrink: 0; transition: all .2s; }
+.badge {
+  margin-left: auto; background: rgba(243,139,168,.15);
+  border: 1px solid rgba(243,139,168,.3);
+  color: var(--red); font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 800;
+}
+
+/* ── main ── */
+.main { flex: 1; overflow: auto; background: var(--bg); }
+.header {
+  background: var(--bg); padding: 18px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 3px 10px rgba(0,0,0,.25);
+}
+.pg-title { font-size: 22px; font-weight: 900; color: var(--text); }
+.pg-sub { font-size: 12px; color: var(--text-dim); font-weight: 600; margin-top: 2px; }
+.hd-right { display: flex; gap: 10px; }
+.neu-btn {
+  background: var(--bg); border: none; border-radius: 12px;
+  padding: 8px 16px; font-size: 12px; color: var(--text-dim);
+  cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 700;
+  box-shadow: var(--raised-xs); transition: all .2s;
+}
+.neu-btn:hover { color: var(--text); }
+.neu-btn:active { box-shadow: var(--inset-sm); }
+.neu-btn.gold { color: var(--gold); }
+
+/* ── body ── */
+.body { padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
+
+/* KPI row */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.kpi {
+  background: var(--bg); border-radius: 18px; padding: 20px;
+  box-shadow: var(--raised);
+  cursor: pointer; transition: all .2s;
+}
+.kpi:hover { box-shadow: 10px 10px 22px #13162A, -10px -10px 22px #292E44; }
+.kpi:active { box-shadow: var(--inset); }
+.kpi-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); margin-bottom: 10px; font-weight: 800; }
+.kpi-num { font-size: 30px; font-weight: 900; color: var(--text); line-height: 1; }
+.kpi-chg { font-size: 12px; margin-top: 7px; font-weight: 700; }
+.up   { color: var(--green); }
+.dn   { color: var(--red); }
+.flat { color: var(--text-dim); }
+
+/* Center grid */
+.center { display: grid; grid-template-columns: 290px 1fr; gap: 18px; }
+
+/* Score panel */
+.score-panel {
+  background: var(--bg); border-radius: 22px; padding: 32px 24px;
+  box-shadow: var(--raised);
+  display: flex; flex-direction: column; align-items: center;
+}
+.score-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--text-muted); margin-bottom: 24px; font-weight: 800; }
+
+.ring-wrap {
+  position: relative; width: 160px; height: 160px;
+  background: var(--bg); border-radius: 50%;
+  box-shadow: var(--raised);
+}
+.ring-wrap svg { width: 160px; height: 160px; transform: rotate(-90deg); }
+.ring-wrap .rbg { fill: none; stroke: rgba(255,255,255,.04); stroke-width: 13; }
+.ring-wrap .rfg {
+  fill: none; stroke: var(--gold); stroke-width: 13; stroke-linecap: round;
+  stroke-dasharray: 440; stroke-dashoffset: 110;
+  filter: drop-shadow(0 0 8px rgba(201,154,46,.5));
+}
+.ring-wrap .rc { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ring-wrap .rc-num { font-size: 38px; font-weight: 900; color: var(--text); }
+.ring-wrap .rc-sub { font-size: 11px; color: var(--text-muted); letter-spacing: .08em; font-weight: 700; }
+
+.p-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; justify-content: center; }
+.p-tag {
+  background: var(--bg); border-radius: 20px; padding: 5px 13px;
+  font-size: 11px; color: var(--text-dim); font-weight: 800;
+  box-shadow: var(--raised-xs);
+}
+.p-tag.gold { color: var(--gold); }
+.p-tag.warn { color: var(--amber); }
+
+/* Drivers panel */
+.drivers-panel {
+  background: var(--bg); border-radius: 22px; padding: 24px;
+  box-shadow: var(--raised);
+}
+.dp-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--text-muted); margin-bottom: 20px; font-weight: 800; }
+.d-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.d-card {
+  background: var(--bg); border-radius: 16px; padding: 16px;
+  box-shadow: var(--raised-sm);
+  cursor: pointer; transition: all .2s;
+}
+.d-card:hover { box-shadow: 7px 7px 16px #14172A, -7px -7px 16px #282C42; }
+.d-card:active { box-shadow: var(--inset-sm); }
+.d-lbl { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.d-val { font-size: 24px; font-weight: 900; color: var(--text); }
+.d-chg { font-size: 12px; margin-top: 4px; font-weight: 700; }
+.d-bar {
+  height: 5px; border-radius: 3px; margin-top: 12px; overflow: hidden;
+  box-shadow: inset 1px 1px 3px #14172A, inset -1px -1px 3px #282C42;
+}
+.d-fill { height: 100%; border-radius: 3px; }
+
+/* Insights row */
+.insights-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.insight {
+  background: var(--bg); border-radius: 16px; padding: 18px;
+  box-shadow: var(--raised-sm); display: flex; align-items: flex-start; gap: 14px;
+  cursor: pointer; transition: all .2s;
+}
+.insight:hover { box-shadow: 7px 7px 16px #14172A, -7px -7px 16px #282C42; }
+.ins-ico {
+  width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+  background: var(--bg); box-shadow: var(--raised-xs);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.ins-body {}
+.ins-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.ins-sub { font-size: 12px; color: var(--text-dim); font-weight: 600; line-height: 1.5; }
+
+/* Integration bar */
+.integ-bar {
+  background: var(--bg); border-radius: 16px; padding: 16px 20px;
+  box-shadow: var(--raised-sm);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.integ-left { font-size: 12px; color: var(--text-dim); font-weight: 700; }
+.integ-left span { color: var(--text); }
+.integ-chips { display: flex; gap: 10px; }
+.integ-chip {
+  background: var(--bg); border-radius: 20px; padding: 5px 14px;
+  font-size: 11px; font-weight: 800; box-shadow: var(--raised-xs);
+  display: flex; align-items: center; gap: 5px;
+}
+.integ-chip.ok  { color: var(--green); }
+.integ-chip.warn{ color: var(--amber); }
+.conn-dot { width: 6px; height: 6px; border-radius: 50%; }
+.integ-chip.ok  .conn-dot { background: var(--green);  box-shadow: 0 0 6px var(--green); }
+.integ-chip.warn .conn-dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+</style>
+</head>
+<body>
+
+<div class="topbar-mode">
+  <span class="tb-title">THABAT · Variant 5 · <span>Dark Neumorphic</span></span>
+  <span class="tb-tag">Dark Mode Preview</span>
+</div>
+
+<div class="shell">
+  <!-- Sidebar -->
+  <aside class="sb">
+    <div class="sb-logo">
+      <div class="logo-ico">T</div>
+      <span class="logo-txt">THABAT</span>
+    </div>
+
+    <span class="sb-sec">Monitor</span>
+    <div class="sb-item on"><div class="dot"></div> Dashboard</div>
+    <div class="sb-item"><div class="dot"></div> Alerts <span class="badge">2</span></div>
+
+    <span class="sb-sec">Analytics</span>
+    <div class="sb-item"><div class="dot"></div> Sales</div>
+    <div class="sb-item"><div class="dot"></div> Receivables</div>
+    <div class="sb-item"><div class="dot"></div> Efficiency</div>
+    <div class="sb-item"><div class="dot"></div> Retention</div>
+    <div class="sb-item"><div class="dot"></div> Approvals</div>
+
+    <span class="sb-sec">Settings</span>
+    <div class="sb-item"><div class="dot"></div> Integrations</div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="header">
+      <div>
+        <div class="pg-title">Dashboard</div>
+        <div class="pg-sub">Q1 2026 · Al-Noor Holdings</div>
+      </div>
+      <div class="hd-right">
+        <button class="neu-btn">🌙 Dark</button>
+        <button class="neu-btn">عربي</button>
+        <button class="neu-btn gold">Al-Noor ▾</button>
+      </div>
+    </div>
+
+    <div class="body">
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-lbl">Revenue</div>
+          <div class="kpi-num">4.2M</div>
+          <div class="kpi-chg up">↑ +8.3% QoQ</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">DSO</div>
+          <div class="kpi-num">38d</div>
+          <div class="kpi-chg dn">↑ +3d — alert</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">Approval Rate</div>
+          <div class="kpi-num">91%</div>
+          <div class="kpi-chg up">↑ +2pp</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-lbl">Retention</div>
+          <div class="kpi-num">87%</div>
+          <div class="kpi-chg flat">→ Stable</div>
+        </div>
+      </div>
+
+      <!-- Score + Drivers -->
+      <div class="center">
+        <div class="score-panel">
+          <div class="score-lbl">Stability Score</div>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 160 160">
+              <circle class="rbg" cx="80" cy="80" r="70"/>
+              <circle class="rfg" cx="80" cy="80" r="70"/>
+            </svg>
+            <div class="rc">
+              <div class="rc-num">75</div>
+              <div class="rc-sub">/ 100</div>
+            </div>
+          </div>
+          <div class="p-tags">
+            <span class="p-tag">P75 Overall</span>
+            <span class="p-tag warn">P50 DSO</span>
+            <span class="p-tag gold">P80 Revenue</span>
+          </div>
+        </div>
+
+        <div class="drivers-panel">
+          <div class="dp-lbl">Key Drivers</div>
+          <div class="d-grid">
+            <div class="d-card">
+              <div class="d-lbl">Revenue Growth</div>
+              <div class="d-val">8.3%</div>
+              <div class="d-chg up">↑ Strong — P80</div>
+              <div class="d-bar"><div class="d-fill" style="width:83%;background:var(--green)"></div></div>
+            </div>
+            <div class="d-card">
+              <div class="d-lbl">DSO</div>
+              <div class="d-val">38d</div>
+              <div class="d-chg dn">↑ Watch — P50</div>
+              <div class="d-bar"><div class="d-fill" style="width:55%;background:var(--amber)"></div></div>
+            </div>
+            <div class="d-card">
+              <div class="d-lbl">Gross Margin</div>
+              <div class="d-val">42%</div>
+              <div class="d-chg flat">→ Stable — P60</div>
+              <div class="d-bar"><div class="d-fill" style="width:42%;background:var(--gold)"></div></div>
+            </div>
+            <div class="d-card">
+              <div class="d-lbl">Approval Rate</div>
+              <div class="d-val">91%</div>
+              <div class="d-chg up">↑ Strong — P85</div>
+              <div class="d-bar"><div class="d-fill" style="width:91%;background:var(--green)"></div></div>
+            </div>
+            <div class="d-card">
+              <div class="d-lbl">Churn Rate</div>
+              <div class="d-val">2.1%</div>
+              <div class="d-chg up">↑ Good — P78</div>
+              <div class="d-bar"><div class="d-fill" style="width:79%;background:var(--green)"></div></div>
+            </div>
+            <div class="d-card">
+              <div class="d-lbl">Efficiency</div>
+              <div class="d-val">78%</div>
+              <div class="d-chg flat">→ Stable — P70</div>
+              <div class="d-bar"><div class="d-fill" style="width:78%;background:var(--text-dim)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div class="insights-row">
+        <div class="insight">
+          <div class="ins-ico">⚠</div>
+          <div class="ins-body">
+            <div class="ins-title" style="color:var(--amber)">DSO Alert</div>
+            <div class="ins-sub">2 clients approaching the 45-day collection threshold</div>
+          </div>
+        </div>
+        <div class="insight">
+          <div class="ins-ico">📈</div>
+          <div class="ins-body">
+            <div class="ins-title">Revenue Record</div>
+            <div class="ins-sub">Best quarter since Q3 2024 — +8.3% QoQ growth</div>
+          </div>
+        </div>
+        <div class="insight">
+          <div class="ins-ico">✓</div>
+          <div class="ins-body">
+            <div class="ins-title" style="color:var(--green)">Approvals Strong</div>
+            <div class="ins-sub">91% rate, 6pp above sector median for Q1</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Integrations -->
+      <div class="integ-bar">
+        <span class="integ-left">Data sources · <span>Last sync: 2 min ago</span></span>
+        <div class="integ-chips">
+          <span class="integ-chip ok"><div class="conn-dot"></div> SAP</span>
+          <span class="integ-chip ok"><div class="conn-dot"></div> Odoo</span>
+          <span class="integ-chip warn"><div class="conn-dot"></div> Dynamics</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

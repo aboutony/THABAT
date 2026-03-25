@@ -297,7 +297,7 @@ export default function SalesReportPage() {
     return (
         <Shell>
             <div className={styles.page}>
-                <Link href={`/${locale}`} className={styles.backLink}>
+                <Link href={`/${locale}/analytics`} className={styles.backLink}>
                     {isAr ? '→' : '←'} {t('back')}
                 </Link>
 

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import MetricsEntry from '@/components/MetricsEntry';
 import PageHeader from '@/components/PageHeader';
 import PercentileBadge from '@/components/PercentileBadge';
@@ -190,6 +191,63 @@ export default function AnalyticsPage() {
                         )}
                     </motion.div>
                 )}
+
+                {/* ── Intelligence Module Hub ───────────────────────────── */}
+                <div className={styles.moduleHub}>
+                    <p className={styles.moduleHubTitle}>{t('moduleHub')}</p>
+                    <div className={styles.moduleList}>
+
+                        {/* Card A: Expense Waterfall */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.1 }}
+                        >
+                            <Link href={`/${locale}/analytics/sales-report`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(0, 108, 53, 0.14)', color: '#22c55e' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="2"  y="3"  width="5" height="18" rx="1.5"/>
+                                        <rect x="9"  y="7"  width="5" height="14" rx="1.5"/>
+                                        <rect x="16" y="11" width="5" height="10" rx="1.5"/>
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleSalesReport')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleSalesReportDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: 'var(--success)', background: 'rgba(39,103,73,0.12)', borderColor: 'rgba(39,103,73,0.25)' }}>Live</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                        {/* Card B: Nitaqat Compliance */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.2 }}
+                        >
+                            <Link href={`/${locale}/analytics/nitaqat`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(212, 175, 55, 0.14)', color: '#D4AF37' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/>
+                                        <path d="M9 12l2 2 4-4"/>
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleNitaqat')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleNitaqatDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: '#D4AF37', background: 'rgba(212,175,55,0.12)', borderColor: 'rgba(212,175,55,0.3)' }}>Platinum</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                    </div>
+                </div>
 
                 {/* Metrics Entry Form */}
                 <MetricsEntry onSubmit={handleSubmit} loading={loading} />
