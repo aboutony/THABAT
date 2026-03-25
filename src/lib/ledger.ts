@@ -1,22 +1,35 @@
-// ── Action Ledger — THABAT Phase 05 ──────────────────────────────────────
-// Stores finalized recruitment plans and tracks their real-world outcome.
+// ── Action Ledger — THABAT Phase 05 + 06 ─────────────────────────────────
+// Stores finalized recruitment plans and supply-chain pivots, tracking
+// their real-world outcome.
 // Persisted to localStorage; dispatches 'thabat-ledger-updated' so all
 // open components can sync without a full re-render.
 
-export type NitaqatTierKey = 'platinum' | 'highGreen' | 'medGreen' | 'lowGreen' | 'red';
-export type LedgerStatus   = 'pending' | 'realized';
+export type NitaqatTierKey  = 'platinum' | 'highGreen' | 'medGreen' | 'lowGreen' | 'red';
+export type LedgerStatus    = 'pending' | 'realized';
+export type LedgerActionType = 'NITAQAT' | 'SUPPLY_CHAIN_PIVOT';
+
+export interface SupplyChainMeta {
+    original:    string;   // original supplier name
+    alternative: string;   // pivoted-to supplier name
+    units:       number;   // shortfall units averted
+    description: string;   // human-readable action description
+}
 
 export interface LedgerEntry {
     id:                string;
-    date:              string;           // ISO timestamp
-    plannedExpats:     number;
-    currentTier:       NitaqatTierKey;
-    projectedTier:     NitaqatTierKey;
-    tierDropped:       boolean;
-    correctionNeeded:  number;
-    safeWindow:        number;
-    avoidedCost:       number;           // SAR
+    date:              string;               // ISO timestamp
+    actionType:        LedgerActionType;
+    avoidedCost:       number;               // SAR
     status:            LedgerStatus;
+    // Nitaqat-specific (undefined for SUPPLY_CHAIN_PIVOT)
+    plannedExpats?:    number;
+    currentTier?:      NitaqatTierKey;
+    projectedTier?:    NitaqatTierKey;
+    tierDropped?:      boolean;
+    correctionNeeded?: number;
+    safeWindow?:       number;
+    // Supply-chain-specific (undefined for NITAQAT)
+    meta?:             SupplyChainMeta;
 }
 
 const STORAGE_KEY = 'thabat-action-ledger';

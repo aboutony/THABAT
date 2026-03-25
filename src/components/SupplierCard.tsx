@@ -4,6 +4,8 @@ import { useState, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TRUST_COLORS, SAUDI_ALTERNATIVES } from '@/lib/calculateTrustScore';
 import type { Supplier, TrustBand } from '@/lib/calculateTrustScore';
+import { addLedgerEntry } from '@/lib/ledger';
+import { DEMO_SAFEGUARD_VALUE, DEMO_SHORTFALL_UNITS } from '@/lib/calculateSafeguardValue';
 import s from './SupplierCard.module.css';
 
 // ── Band label maps ───────────────────────────────────────────────────────────
@@ -75,12 +77,34 @@ export function ShieldRating({ score, color, size = 14 }: {
 }
 
 // ── Alternative supplier mini-row (inside Local Sourcing overlay) ─────────────
-function AltRow({ supplier, isAr }: { supplier: Supplier; isAr: boolean }) {
+function AltRow({ supplier, isAr, originalName }: {
+    supplier:     Supplier;
+    isAr:         boolean;
+    originalName: string;
+}) {
     const [requested, setRequested] = useState(false);
+    const [pulsing,   setPulsing]   = useState(false);
     const color = TRUST_COLORS[supplier.band];
 
+    function handleQuote() {
+        if (requested) return;
+        setRequested(true);
+        setPulsing(true);
+        setTimeout(() => setPulsing(false), 700);
+        addLedgerEntry({
+            actionType:  'SUPPLY_CHAIN_PIVOT',
+            avoidedCost: DEMO_SAFEGUARD_VALUE,
+            meta: {
+                original:    originalName,
+                alternative: supplier.name,
+                units:       DEMO_SHORTFALL_UNITS,
+                description: `Pivoted to Local Sourcing to prevent ${DEMO_SHORTFALL_UNITS}-unit production halt.`,
+            },
+        });
+    }
+
     return (
-        <div className={s.altRow}>
+        <div className={`${s.altRow} ${pulsing ? s.altPulse : ''}`}>
             <span className={s.altFlag}>🇸🇦</span>
             <div className={s.altBody}>
                 <span className={s.altName}>{isAr ? supplier.nameAr : supplier.name}</span>
@@ -93,7 +117,7 @@ function AltRow({ supplier, isAr }: { supplier: Supplier; isAr: boolean }) {
                 </span>
                 <button
                     className={`${s.quoteBtn} ${requested ? s.quoteSent : ''}`}
-                    onClick={() => setRequested(true)}
+                    onClick={handleQuote}
                     disabled={requested}
                 >
                     {requested
@@ -220,7 +244,7 @@ export default function SupplierCard({ supplier, isAr = false }: SupplierCardPro
                                     : 'Saudi-Registered Alternatives — Higher Trust Score'}
                             </p>
                             {SAUDI_ALTERNATIVES.map(alt => (
-                                <AltRow key={alt.id} supplier={alt} isAr={isAr} />
+                                <AltRow key={alt.id} supplier={alt} isAr={isAr} originalName={supplier.name} />
                             ))}
                         </div>
                     </motion.div>

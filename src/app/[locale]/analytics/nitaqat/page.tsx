@@ -103,6 +103,7 @@ export default function NitaqatPage() {
             safeWindow,
         );
         const saved = addLedgerEntry({
+            actionType:       'NITAQAT',
             plannedExpats,
             currentTier:      currentTier,
             projectedTier:    sim.newTier,

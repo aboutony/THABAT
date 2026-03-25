@@ -418,13 +418,15 @@
         "suppliersSubtitle": "Trust = (on-time × 0.6) + (quality × 0.4) − friction penalty"
     },
     "ledger": {
-        "totalRealized":  "Total Value Realized",
-        "empty":          "No finalized actions yet. Run a simulation in Nitaqat Shield and tap Finalize.",
-        "planTitle":      "Hire plan: {n} expat(s)",
-        "realized":       "Realized",
-        "markRealized":   "Mark Realized",
-        "avoided":        "avoided",
-        "correctionNote": "Would have required {n} corrective Saudi hire(s) to maintain tier.",
-        "actionLedger":   "Executive Action Ledger"
+        "totalRealized":         "Total Value Realized",
+        "empty":                 "No finalized actions yet. Run a simulation in Nitaqat Shield and tap Finalize.",
+        "planTitle":             "Hire plan: {n} expat(s)",
+        "realized":              "Realized",
+        "markRealized":          "Mark Realized",
+        "avoided":               "avoided",
+        "safeguarded":           "safeguarded",
+        "correctionNote":        "Would have required {n} corrective Saudi hire(s) to maintain tier.",
+        "actionLedger":          "Executive Action Ledger",
+        "supplyChainPivotTitle": "Supply Chain Pivot"
     }
 }

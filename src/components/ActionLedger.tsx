@@ -80,7 +80,11 @@ export default function ActionLedger() {
                         {/* ── Timeline spine ───────────────────────────── */}
                         <div className={s.spine}>
                             <div
-                                className={`${s.dot} ${entry.status === 'realized' ? s.dotGreen : s.dotAmber}`}
+                                className={`${s.dot} ${
+                                    entry.status === 'realized'  ? s.dotGreen  :
+                                    entry.actionType === 'SUPPLY_CHAIN_PIVOT' ? s.dotIndigo :
+                                    s.dotAmber
+                                }`}
                             />
                             {i < entries.length - 1 && <div className={s.connector} />}
                         </div>
@@ -105,31 +109,52 @@ export default function ActionLedger() {
                             </div>
 
                             {/* Action title */}
-                            <p className={s.title}>
-                                {t('planTitle', { n: entry.plannedExpats })}
-                            </p>
+                            {entry.actionType === 'SUPPLY_CHAIN_PIVOT' ? (
+                                <p className={s.title}>
+                                    <span className={s.titleIcon}>🚚</span>
+                                    {entry.meta?.description ?? t('supplyChainPivotTitle')}
+                                </p>
+                            ) : (
+                                <p className={s.title}>
+                                    {t('planTitle', { n: entry.plannedExpats ?? 0 })}
+                                </p>
+                            )}
 
-                            {/* Tier + avoided cost chips */}
+                            {/* Chips */}
                             <div className={s.chips}>
-                                <span
-                                    className={s.chip}
-                                    style={{ color: TIER_COLORS[entry.currentTier] ?? 'var(--text-secondary)' }}
-                                >
-                                    {entry.currentTier}
-                                    {entry.tierDropped
-                                        ? <> → <span style={{ color: TIER_COLORS[entry.projectedTier] }}>{entry.projectedTier}</span> ⚠</>
-                                        : ' ✓'
-                                    }
-                                </span>
-                                <span className={`${s.chip} ${s.chipGreen}`}>
-                                    {formatSAR(entry.avoidedCost)}&nbsp;{t('avoided')}
-                                </span>
+                                {entry.actionType === 'SUPPLY_CHAIN_PIVOT' ? (
+                                    <>
+                                        <span className={`${s.chip} ${s.chipIndigo}`}>
+                                            {entry.meta?.original} → {entry.meta?.alternative}
+                                        </span>
+                                        <span className={`${s.chip} ${s.chipGreen}`}>
+                                            {formatSAR(entry.avoidedCost)}&nbsp;{t('safeguarded')}
+                                        </span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span
+                                            className={s.chip}
+                                            style={{ color: TIER_COLORS[entry.currentTier ?? ''] ?? 'var(--text-secondary)' }}
+                                        >
+                                            {entry.currentTier}
+                                            {entry.tierDropped
+                                                ? <> → <span style={{ color: TIER_COLORS[entry.projectedTier ?? ''] }}>{entry.projectedTier}</span> ⚠</>
+                                                : ' ✓'
+                                            }
+                                        </span>
+                                        <span className={`${s.chip} ${s.chipGreen}`}>
+                                            {formatSAR(entry.avoidedCost)}&nbsp;{t('avoided')}
+                                        </span>
+                                    </>
+                                )}
                             </div>
 
-                            {/* Correction note when tier would have dropped */}
-                            {entry.tierDropped && entry.correctionNeeded > 0 && (
+                            {/* Correction note when tier would have dropped (Nitaqat only) */}
+                            {entry.actionType !== 'SUPPLY_CHAIN_PIVOT' &&
+                             entry.tierDropped && (entry.correctionNeeded ?? 0) > 0 && (
                                 <p className={s.correctionNote}>
-                                    {t('correctionNote', { n: entry.correctionNeeded })}
+                                    {t('correctionNote', { n: entry.correctionNeeded ?? 0 })}
                                 </p>
                             )}
                         </div>

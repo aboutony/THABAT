@@ -191,6 +191,7 @@
 
 /* ── Alternative supplier row ────────────────────────────────────────────── */
 .altRow {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -198,6 +199,22 @@
     background: var(--bg-tertiary);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+@keyframes alt-pulse {
+    0%   { opacity: 0.20; }
+    100% { opacity: 0; }
+}
+
+.altPulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(21, 128, 61, 0.20);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    animation: alt-pulse 0.7s ease-out forwards;
 }
 
 .altFlag { font-size: 16px; flex-shrink: 0; }
