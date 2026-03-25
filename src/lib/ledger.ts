@@ -6,7 +6,7 @@
 
 export type NitaqatTierKey  = 'platinum' | 'highGreen' | 'medGreen' | 'lowGreen' | 'red';
 export type LedgerStatus    = 'pending' | 'realized';
-export type LedgerActionType = 'NITAQAT' | 'SUPPLY_CHAIN_PIVOT' | 'SCENARIO_PLAN';
+export type LedgerActionType = 'NITAQAT' | 'SUPPLY_CHAIN_PIVOT' | 'SCENARIO_PLAN' | 'VERIFIED_STRATEGY';
 
 export interface SupplyChainMeta {
     original:    string;   // original supplier name

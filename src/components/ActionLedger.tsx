@@ -81,6 +81,7 @@ export default function ActionLedger() {
                         <div className={s.spine}>
                             <div
                                 className={`${s.dot} ${
+                                    entry.actionType === 'VERIFIED_STRATEGY' ? s.dotEmeraldVerified :
                                     entry.status === 'realized'              ? s.dotGreen  :
                                     entry.actionType === 'SUPPLY_CHAIN_PIVOT'? s.dotIndigo :
                                     entry.actionType === 'SCENARIO_PLAN'     ? s.dotViolet :
@@ -95,7 +96,11 @@ export default function ActionLedger() {
                             {/* Header row */}
                             <div className={s.cardHeader}>
                                 <span className={s.date}>{formatDate(entry.date)}</span>
-                                {entry.status === 'realized' ? (
+                                {entry.actionType === 'VERIFIED_STRATEGY' ? (
+                                    <span className={s.badgeVerified}>
+                                        ✓&nbsp;{t('verifiedBadge')}
+                                    </span>
+                                ) : entry.status === 'realized' ? (
                                     <span className={s.badgeRealized}>
                                         ✓&nbsp;{t('realized')}
                                     </span>
@@ -119,6 +124,11 @@ export default function ActionLedger() {
                                 <p className={s.title}>
                                     <span className={s.titleIcon}>🎯</span>
                                     {t('scenarioPlanTitle')}
+                                </p>
+                            ) : entry.actionType === 'VERIFIED_STRATEGY' ? (
+                                <p className={s.title}>
+                                    <span className={s.titleIcon}>🧭</span>
+                                    {t('verifiedStrategyTitle')}
                                 </p>
                             ) : (
                                 <p className={s.title}>
@@ -146,6 +156,15 @@ export default function ActionLedger() {
                                             {formatSAR(entry.avoidedCost)}&nbsp;{t('projected')}
                                         </span>
                                     </>
+                                ) : entry.actionType === 'VERIFIED_STRATEGY' ? (
+                                    <>
+                                        <span className={`${s.chip} ${s.chipEmeraldVerified}`}>
+                                            ✓&nbsp;{t('activePlan')}
+                                        </span>
+                                        <span className={`${s.chip} ${s.chipEmeraldVerified}`}>
+                                            {formatSAR(entry.avoidedCost)}&nbsp;{t('projected')}
+                                        </span>
+                                    </>
                                 ) : (
                                     <>
                                         <span
@@ -167,7 +186,8 @@ export default function ActionLedger() {
 
                             {/* Correction note when tier would have dropped (Nitaqat only) */}
                             {entry.actionType !== 'SUPPLY_CHAIN_PIVOT' &&
-                             entry.actionType !== 'SCENARIO_PLAN' &&
+                             entry.actionType !== 'SCENARIO_PLAN'     &&
+                             entry.actionType !== 'VERIFIED_STRATEGY' &&
                              entry.tierDropped && (entry.correctionNeeded ?? 0) > 0 && (
                                 <p className={s.correctionNote}>
                                     {t('correctionNote', { n: entry.correctionNeeded ?? 0 })}

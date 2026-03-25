@@ -357,3 +357,136 @@
     background: #166534;
     box-shadow: 0 0 16px rgba(74, 222, 128, 0.3);
 }
+
+/* ── Panel with open drawer — add padding so body isn't hidden ───────────── */
+.panelDrawerOpen .body {
+    padding-bottom: 260px;
+}
+
+/* ── Section header (label + optimizer widget row) ───────────────────────── */
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* ── Optimized lever highlight ───────────────────────────────────────────── */
+.leverRowSparked {
+    border-color: rgba(74, 222, 128, 0.38);
+    background: rgba(74, 222, 128, 0.05);
+    animation: lever-spark 1.4s ease-in-out 1;
+}
+
+@keyframes lever-spark {
+    0%   { box-shadow: 0 0 0   0px rgba(74, 222, 128, 0.0); }
+    30%  { box-shadow: 0 0 0  8px rgba(74, 222, 128, 0.25); }
+    100% { box-shadow: 0 0 0   0px rgba(74, 222, 128, 0.0); }
+}
+
+/* ── Reasoning drawer (bottom-sheet inside panel) ────────────────────────── */
+.reasoningDrawer {
+    position: absolute;
+    bottom: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    background: #0D0F1E;
+    border-top: 1px solid rgba(99, 102, 241, 0.22);
+    border-radius: 16px 16px 0 0;
+    padding: 8px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.55);
+    z-index: 10;
+}
+
+.drawerHandle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    width: 48px;
+    flex-shrink: 0;
+}
+
+.drawerHandleBar {
+    display: block;
+    width: 32px;
+    height: 4px;
+    background: rgba(99, 102, 241, 0.30);
+    border-radius: 2px;
+    transition: background 0.15s;
+}
+.drawerHandle:hover .drawerHandleBar {
+    background: rgba(99, 102, 241, 0.55);
+}
+
+.drawerTitle {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6366F1;
+    margin: 0;
+    padding-inline-start: 2px;
+}
+
+/* ── Reasoning points list ────────────────────────────────────────────────── */
+.reasoningList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reasoningPoint {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.reasoningIcon {
+    font-size: 14px;
+    flex-shrink: 0;
+    line-height: 1.45;
+}
+
+.reasoningText {
+    font-size: 11px;
+    color: #8896B3;
+    margin: 0;
+    line-height: 1.55;
+}
+
+/* ── Adopt Strategy CTA ───────────────────────────────────────────────────── */
+.adoptBtn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ADE80;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid rgba(74, 222, 128, 0.30);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.2s;
+    font-family: inherit;
+    margin-top: 4px;
+}
+.adoptBtn:hover {
+    background: rgba(74, 222, 128, 0.19);
+    box-shadow: 0 0 18px rgba(74, 222, 128, 0.25);
+}
+.adoptBtn:disabled { opacity: 0.55; cursor: default; }
+
+.adoptBtnDone {
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.18);
+    color: #4ADE80;
+    box-shadow: none;
+}

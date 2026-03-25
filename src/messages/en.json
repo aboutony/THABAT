@@ -481,6 +481,21 @@
         "supplyChainPivotTitle": "Supply Chain Pivot",
         "scenarioPlanTitle":     "Strategic Scenario Plan",
         "futureBadge":           "◇ Future",
-        "projected":             "projected"
+        "projected":             "projected",
+        "verifiedStrategyTitle": "Verified Optimal Strategy",
+        "activePlan":            "Active Plan",
+        "verifiedBadge":         "Verified"
+    },
+    "optimizer": {
+        "sparkLabel":   "Optimize",
+        "drawerTitle":  "Why This Strategy Works",
+        "adoptBtn":     "Adopt Strategy",
+        "adoptedBtn":   "Strategy Adopted",
+        "reason": {
+            "growth":   "Target {pct}% sales growth adds SAR {revenue} in revenue.",
+            "expats":   "Hire {n} expat(s) — {remaining} below the Platinum ceiling, avoiding SAR {penalty} in penalties.",
+            "material": "Cut material costs by {pct}% to save SAR {savings} annually.",
+            "outcome":  "Net margin improves to {margin}% ({delta}pp), unlocking SAR {impact} annual impact."
+        }
     }
 }

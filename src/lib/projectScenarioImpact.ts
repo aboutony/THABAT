@@ -72,10 +72,14 @@ export function projectScenarioImpact(levers: ScenarioLevers): ScenarioProjectio
     );
 
     // ── 3. Stock-at-Risk ─────────────────────────────────────────────────────
-    const currentGap = calculateStockGap(DEMO_STOCK_GAP_INPUT);
-    const projGap    = calculateStockGap({
+    // Project stockDays from onHandUnits ÷ projected velocity (not static input)
+    const currentGap    = calculateStockGap(DEMO_STOCK_GAP_INPUT);
+    const projVelocity  = Math.max(0.5, BASE_VELOCITY * (1 + salesGrowthPct / 100));
+    const projStockDays = DEMO_STOCK_GAP_INPUT.onHandUnits / projVelocity;
+    const projGap       = calculateStockGap({
         ...DEMO_STOCK_GAP_INPUT,
-        dailySalesVelocity: Math.max(0.5, BASE_VELOCITY * (1 + salesGrowthPct / 100)),
+        stockDays:          projStockDays,
+        dailySalesVelocity: projVelocity,
     });
 
     // ── 4. Estimated annual impact ───────────────────────────────────────────

@@ -481,6 +481,21 @@
         "supplyChainPivotTitle": "تحويل سلسلة التوريد",
         "scenarioPlanTitle":     "خطة السيناريو الاستراتيجي",
         "futureBadge":           "◇ مستقبلي",
-        "projected":             "متوقع"
+        "projected":             "متوقع",
+        "verifiedStrategyTitle": "الاستراتيجية المثلى المعتمدة",
+        "activePlan":            "خطة نشطة",
+        "verifiedBadge":         "معتمدة"
+    },
+    "optimizer": {
+        "sparkLabel":   "تحسين",
+        "drawerTitle":  "لماذا تنجح هذه الاستراتيجية",
+        "adoptBtn":     "اعتماد الاستراتيجية",
+        "adoptedBtn":   "تم اعتماد الاستراتيجية",
+        "reason": {
+            "growth":   "استهداف نمو مبيعات {pct}% يُضيف {revenue} ريال إلى الإيرادات.",
+            "expats":   "توظيف {n} وافد — {remaining} أقل من حد البلاتيني، مع تفادي {penalty} ريال في الغرامات.",
+            "material": "خفض تكاليف المواد بنسبة {pct}% يوفّر {savings} ريال سنوياً.",
+            "outcome":  "يرتفع هامش الربح الصافي إلى {margin}% ({delta} نقطة)، مما يُحرر {impact} ريال تأثيراً سنوياً."
+        }
     }
 }
