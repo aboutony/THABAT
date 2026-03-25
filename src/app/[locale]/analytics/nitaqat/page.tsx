@@ -18,6 +18,7 @@ import {
     type WorkforceInput,
     type NitaqatTier,
 } from '@/lib/nitaqat';
+import { addLedgerEntry, calcAvoidedCost } from '@/lib/ledger';
 
 // Local tier-label key map — `as const` lets next-intl infer the exact key literals
 const TIER_KEYS = {
@@ -64,6 +65,7 @@ export default function NitaqatPage() {
 
     const [plannedExpats,      setPlannedExpats]      = useState(0);
     const [finalized,          setFinalized]          = useState(false);
+    const [celebrating,        setCelebrating]        = useState(false);
     const [workforceExpanded,  setWorkforceExpanded]  = useState(false);
 
     // ── Current state ──────────────────────────────────────────────────────
@@ -91,6 +93,26 @@ export default function NitaqatPage() {
     const simLabel = t(TIER_KEYS[sim.newTier]);
 
     function handleFinalize() {
+        // Post simulation snapshot to the Action Ledger
+        const avoidedCost = calcAvoidedCost(
+            plannedExpats,
+            correctionNeeded,
+            sim.tierDropped,
+            safeWindow,
+        );
+        addLedgerEntry({
+            plannedExpats,
+            currentTier:      currentTier,
+            projectedTier:    sim.newTier,
+            tierDropped:      sim.tierDropped,
+            correctionNeeded,
+            safeWindow,
+            avoidedCost,
+        });
+
+        // Celebration pulse then toast
+        setCelebrating(true);
+        setTimeout(() => setCelebrating(false), 700);
         setFinalized(true);
         setTimeout(() => setFinalized(false), 3000);
     }
@@ -295,8 +317,8 @@ export default function NitaqatPage() {
                 </div>
             </div>
 
-            {/* ── Finalize button — sticky on mobile ───────────────────────── */}
-            <div className={s.finalizeWrap}>
+            {/* ── Finalize button ──────────────────────────────────────────── */}
+            <div className={`${s.finalizeWrap} ${celebrating ? s.celebrating : ''}`}>
                 <motion.button
                     className={s.finalizeBtn}
                     onClick={handleFinalize}

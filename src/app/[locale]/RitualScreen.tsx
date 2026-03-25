@@ -7,6 +7,7 @@ import DriverCard from '@/components/DriverCard';
 import InsightCard from '@/components/InsightCard';
 import { generateConsequenceStatement } from '@/lib/scoring';
 import { formatScore, formatPercent } from '@/lib/locale-utils';
+import { getTotalAvoided } from '@/lib/ledger';
 import type { ScoreBreakdown, RawMetrics, ConsequenceInsight } from '@/lib/scoring';
 import styles from './RitualScreen.module.css';
 
@@ -20,7 +21,8 @@ interface LatestScore {
 }
 
 export default function RitualScreen() {
-    const t = useTranslations('drivers');
+    const t  = useTranslations('drivers');
+    const tL = useTranslations('ledger');
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
     const locale = useLocale();
@@ -67,6 +69,14 @@ export default function RitualScreen() {
 
     const score = latestData?.score.overall ?? DEMO_SCORE;
     const trend = latestData?.score.trend ?? DEMO_TREND;
+
+    const [totalAvoided, setTotalAvoided] = useState(0);
+    useEffect(() => {
+        setTotalAvoided(getTotalAvoided());
+        const sync = () => setTotalAvoided(getTotalAvoided());
+        window.addEventListener('thabat-ledger-updated', sync);
+        return () => window.removeEventListener('thabat-ledger-updated', sync);
+    }, []);
 
     // Generate demo insight if no real data
     const demoInsight: ConsequenceInsight | null = !insight ? {
@@ -158,6 +168,18 @@ export default function RitualScreen() {
                         ))}
                     </div>
                 </div>
+
+                {/* ── Impact Scoreboard ─────────────────────────────────── */}
+                {totalAvoided > 0 && (
+                    <div className={`glass-card ${styles.valueWidget}`}>
+                        <span className={styles.valueLabel}>
+                            {tL('totalRealized')}
+                        </span>
+                        <span className={styles.valueAmount}>
+                            SAR {totalAvoided.toLocaleString('en-SA')}
+                        </span>
+                    </div>
+                )}
             </section>
         </div>
     );

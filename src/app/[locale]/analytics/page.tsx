@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import MetricsEntry from '@/components/MetricsEntry';
+import ActionLedger from '@/components/ActionLedger';
 import PageHeader from '@/components/PageHeader';
 import PercentileBadge from '@/components/PercentileBadge';
 import StabilityRing from '@/components/StabilityRing';
@@ -247,6 +248,12 @@ export default function AnalyticsPage() {
                         </motion.div>
 
                     </div>
+                </div>
+
+                {/* ── Executive Action Ledger ───────────────────────────── */}
+                <div className={styles.moduleHub}>
+                    <p className={styles.moduleHubTitle}>{t('actionLedger')}</p>
+                    <ActionLedger />
                 </div>
 
                 {/* Metrics Entry Form */}

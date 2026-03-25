@@ -103,7 +103,8 @@
         "moduleSalesReport": "Expense Waterfall",
         "moduleSalesReportDesc": "P&L drill-down with real-time cost leakage alerts",
         "moduleNitaqat": "Nitaqat Compliance",
-        "moduleNitaqatDesc": "Saudization monitor — HRSD 2026 Nitaqat 2.0"
+        "moduleNitaqatDesc": "Saudization monitor — HRSD 2026 Nitaqat 2.0",
+        "actionLedger": "Executive Action Ledger"
     },
     "integrations": {
         "title": "Integration Hub",
@@ -375,5 +376,15 @@
         "actionLog": "Executive Action Log",
         "footerConfidential": "Confidential – UNIMED Internal Use Only",
         "footerGenerated": "Generated via THABAT Stability Intelligence on"
+    },
+    "ledger": {
+        "totalRealized":  "Total Value Realized",
+        "empty":          "No finalized actions yet. Run a simulation in Nitaqat Shield and tap Finalize.",
+        "planTitle":      "Hire plan: {n} expat(s)",
+        "realized":       "Realized",
+        "markRealized":   "Mark Realized",
+        "avoided":        "avoided",
+        "correctionNote": "Would have required {n} corrective Saudi hire(s) to maintain tier.",
+        "actionLedger":   "Executive Action Ledger"
     }
 }

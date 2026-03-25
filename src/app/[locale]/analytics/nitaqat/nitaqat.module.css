@@ -434,6 +434,17 @@
 
 .visaLink:hover { opacity: 0.75; }
 
+/* ── Celebration burst on finalize ──────────────────────────────────────── */
+@keyframes finalize-burst {
+    0%   { box-shadow: 0 0 0  0px rgba(180, 83, 9, 0.55); }
+    40%  { box-shadow: 0 0 0 18px rgba(180, 83, 9, 0.15); }
+    100% { box-shadow: 0 0 0 30px rgba(180, 83, 9, 0.00); }
+}
+
+.celebrating .finalizeBtn {
+    animation: finalize-burst 0.65s ease-out forwards;
+}
+
 /* ── Finalize button ─────────────────────────────────────────────────────── */
 .finalizeWrap {
     display: flex;
