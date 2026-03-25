@@ -417,6 +417,32 @@
         "suppliersTitle": "Supplier Intelligence",
         "suppliersSubtitle": "Trust = (on-time × 0.6) + (quality × 0.4) − friction penalty"
     },
+    "scenario": {
+        "triggerBtn":    "Simulate Scenario",
+        "title":         "Scenario Lab",
+        "leversTitle":   "Levers",
+        "matrixTitle":   "Impact Matrix",
+        "tagNow":        "Now",
+        "tagEst":        "Est.",
+        "metricMargin":  "Net Profit Margin",
+        "metricNitaqat": "Nitaqat Tier",
+        "metricStock":   "Stock Buffer",
+        "annualImpact":  "Est. Annual Impact",
+        "saveBtn":       "Save as Strategic Plan",
+        "savedBtn":      "Plan Saved",
+        "lever": {
+            "salesGrowthPct":    "Sales Growth",
+            "expatsHired":       "Expat Hires",
+            "materialCostDelta": "Material Cost Change"
+        },
+        "tier": {
+            "platinum":  "Platinum",
+            "highGreen": "High Green",
+            "medGreen":  "Med Green",
+            "lowGreen":  "Low Green",
+            "red":       "Red Zone"
+        }
+    },
     "oracle": {
         "section":  "Daily Intelligence Briefing",
         "tellMore": "Deep Dive",
@@ -452,6 +478,9 @@
         "safeguarded":           "safeguarded",
         "correctionNote":        "Would have required {n} corrective Saudi hire(s) to maintain tier.",
         "actionLedger":          "Executive Action Ledger",
-        "supplyChainPivotTitle": "Supply Chain Pivot"
+        "supplyChainPivotTitle": "Supply Chain Pivot",
+        "scenarioPlanTitle":     "Strategic Scenario Plan",
+        "futureBadge":           "◇ Future",
+        "projected":             "projected"
     }
 }

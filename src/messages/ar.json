@@ -417,6 +417,32 @@
         "suppliersTitle": "ذكاء الموردين",
         "suppliersSubtitle": "الثقة = (الالتزام بالمواعيد × 0.6) + (الجودة × 0.4) − عقوبة الاحتكاك"
     },
+    "scenario": {
+        "triggerBtn":    "محاكاة السيناريو",
+        "title":         "مختبر السيناريوهات",
+        "leversTitle":   "المتغيرات",
+        "matrixTitle":   "مصفوفة التأثير",
+        "tagNow":        "الآن",
+        "tagEst":        "تقدير",
+        "metricMargin":  "هامش الربح الصافي",
+        "metricNitaqat": "مستوى نطاقات",
+        "metricStock":   "احتياطي المخزون",
+        "annualImpact":  "التأثير السنوي المتوقع",
+        "saveBtn":       "حفظ كخطة استراتيجية",
+        "savedBtn":      "تم حفظ الخطة",
+        "lever": {
+            "salesGrowthPct":    "نمو المبيعات",
+            "expatsHired":       "توظيف وافدين",
+            "materialCostDelta": "تغيير تكلفة المواد"
+        },
+        "tier": {
+            "platinum":  "بلاتيني",
+            "highGreen": "أخضر مرتفع",
+            "medGreen":  "أخضر متوسط",
+            "lowGreen":  "أخضر منخفض",
+            "red":       "المنطقة الحمراء"
+        }
+    },
     "oracle": {
         "section":  "تقرير الذكاء اليومي",
         "tellMore": "تعمق أكثر",
@@ -452,6 +478,9 @@
         "safeguarded":           "محمية",
         "correctionNote":        "كان سيتطلب {n} توظيف سعودي تصحيحي للحفاظ على المستوى.",
         "actionLedger":          "سجل الإجراءات التنفيذية",
-        "supplyChainPivotTitle": "تحويل سلسلة التوريد"
+        "supplyChainPivotTitle": "تحويل سلسلة التوريد",
+        "scenarioPlanTitle":     "خطة السيناريو الاستراتيجي",
+        "futureBadge":           "◇ مستقبلي",
+        "projected":             "متوقع"
     }
 }

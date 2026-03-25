@@ -81,8 +81,9 @@ export default function ActionLedger() {
                         <div className={s.spine}>
                             <div
                                 className={`${s.dot} ${
-                                    entry.status === 'realized'  ? s.dotGreen  :
-                                    entry.actionType === 'SUPPLY_CHAIN_PIVOT' ? s.dotIndigo :
+                                    entry.status === 'realized'              ? s.dotGreen  :
+                                    entry.actionType === 'SUPPLY_CHAIN_PIVOT'? s.dotIndigo :
+                                    entry.actionType === 'SCENARIO_PLAN'     ? s.dotViolet :
                                     s.dotAmber
                                 }`}
                             />
@@ -114,6 +115,11 @@ export default function ActionLedger() {
                                     <span className={s.titleIcon}>🚚</span>
                                     {entry.meta?.description ?? t('supplyChainPivotTitle')}
                                 </p>
+                            ) : entry.actionType === 'SCENARIO_PLAN' ? (
+                                <p className={s.title}>
+                                    <span className={s.titleIcon}>🎯</span>
+                                    {t('scenarioPlanTitle')}
+                                </p>
                             ) : (
                                 <p className={s.title}>
                                     {t('planTitle', { n: entry.plannedExpats ?? 0 })}
@@ -129,6 +135,15 @@ export default function ActionLedger() {
                                         </span>
                                         <span className={`${s.chip} ${s.chipGreen}`}>
                                             {formatSAR(entry.avoidedCost)}&nbsp;{t('safeguarded')}
+                                        </span>
+                                    </>
+                                ) : entry.actionType === 'SCENARIO_PLAN' ? (
+                                    <>
+                                        <span className={`${s.chip} ${s.chipViolet}`}>
+                                            {t('futureBadge')}
+                                        </span>
+                                        <span className={`${s.chip} ${s.chipViolet}`}>
+                                            {formatSAR(entry.avoidedCost)}&nbsp;{t('projected')}
                                         </span>
                                     </>
                                 ) : (
@@ -152,6 +167,7 @@ export default function ActionLedger() {
 
                             {/* Correction note when tier would have dropped (Nitaqat only) */}
                             {entry.actionType !== 'SUPPLY_CHAIN_PIVOT' &&
+                             entry.actionType !== 'SCENARIO_PLAN' &&
                              entry.tierDropped && (entry.correctionNeeded ?? 0) > 0 && (
                                 <p className={s.correctionNote}>
                                     {t('correctionNote', { n: entry.correctionNeeded ?? 0 })}

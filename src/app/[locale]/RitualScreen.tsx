@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Link from 'next/link';
+import { AnimatePresence } from 'framer-motion';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
 import InsightCard from '@/components/InsightCard';
 import StockHourglass from '@/components/StockHourglass';
 import OracleBriefing from '@/components/OracleBriefing';
+import ScenarioPlayground from '@/components/ScenarioPlayground';
 import { generateConsequenceStatement } from '@/lib/scoring';
 import { formatScore, formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
@@ -28,8 +30,10 @@ export default function RitualScreen() {
     const t   = useTranslations('drivers');
     const tL  = useTranslations('ledger');
     const tSR = useTranslations('stockAtRisk');
+    const tSC = useTranslations('scenario');
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
+    const [showScenario, setShowScenario] = useState(false);
     const locale = useLocale();
 
     // Fetch latest score from the API
@@ -155,6 +159,12 @@ export default function RitualScreen() {
 
     return (
         <div className={styles.ritual}>
+            {/* ── Scenario Playground overlay ───────────────────────────── */}
+            <AnimatePresence>
+                {showScenario && (
+                    <ScenarioPlayground onClose={() => setShowScenario(false)} />
+                )}
+            </AnimatePresence>
             {/* Stability Ring — sticky visual anchor */}
             <section className={styles.ringSection}>
                 <StabilityRing score={score} trend={trend} locale={locale} />
@@ -218,6 +228,15 @@ export default function RitualScreen() {
                         </span>
                     </div>
                 )}
+
+                {/* ── Scenario Lab trigger ──────────────────────────────── */}
+                <button
+                    className={styles.simBtn}
+                    onClick={() => setShowScenario(true)}
+                >
+                    <span className={styles.simBtnIcon}>⚗</span>
+                    {tSC('triggerBtn')}
+                </button>
             </section>
         </div>
     );

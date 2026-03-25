@@ -73,6 +73,11 @@
     box-shadow: 0 0 8px rgba(79, 70, 229, 0.45), 0 0 0 3px var(--bg-primary);
 }
 
+.dotViolet {
+    background: #7C3AED;
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.45), 0 0 0 3px var(--bg-primary);
+}
+
 .connector {
     width: 1.5px;
     flex: 1;
@@ -182,6 +187,12 @@
     color: #818CF8 !important;
     background: rgba(79, 70, 229, 0.08);
     border-color: rgba(79, 70, 229, 0.22);
+}
+
+.chipViolet {
+    color: #A78BFA !important;
+    background: rgba(124, 58, 237, 0.08);
+    border-color: rgba(124, 58, 237, 0.22);
 }
 
 /* Correction footnote */

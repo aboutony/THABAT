@@ -6,7 +6,7 @@
 
 export type NitaqatTierKey  = 'platinum' | 'highGreen' | 'medGreen' | 'lowGreen' | 'red';
 export type LedgerStatus    = 'pending' | 'realized';
-export type LedgerActionType = 'NITAQAT' | 'SUPPLY_CHAIN_PIVOT';
+export type LedgerActionType = 'NITAQAT' | 'SUPPLY_CHAIN_PIVOT' | 'SCENARIO_PLAN';
 
 export interface SupplyChainMeta {
     original:    string;   // original supplier name
@@ -30,6 +30,17 @@ export interface LedgerEntry {
     safeWindow?:       number;
     // Supply-chain-specific (undefined for NITAQAT)
     meta?:             SupplyChainMeta;
+    // Scenario-specific (undefined for other types)
+    scenarioMeta?:     ScenarioMeta;
+}
+
+export interface ScenarioMeta {
+    salesGrowthPct:      number;
+    expatsHired:         number;
+    materialCostDelta:   number;
+    projectedMarginPct:  number;
+    projectedTier:       NitaqatTierKey;
+    projectedStockRisk:  boolean;
 }
 
 const STORAGE_KEY = 'thabat-action-ledger';
