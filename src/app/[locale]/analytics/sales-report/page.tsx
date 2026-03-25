@@ -41,12 +41,17 @@ function AlertBar({ severity, forecast, volumeMultiplier, onDismiss, t, locale }
         severity === 'critical' ? 'alertCritical' :
         severity === 'warning'  ? 'alertWarning'  : 'alertInfo';
 
-    const interpolations =
-        severity === 'critical'
-            ? { volume: formatNumber(volumeMultiplier, locale), month: forecast.months.find(m => m.marginRisk)?.monthLabel ?? '' }
-            : severity === 'warning'
-            ? { volume: formatNumber(volumeMultiplier, locale), risk: formatNumber(riskCount, locale) }
-            : { months: formatNumber(riskCount, locale) };
+    const getInterpolations = (): Record<string, string> => {
+        if (severity === 'critical') return {
+            volume: String(formatNumber(volumeMultiplier, locale)),
+            month:  forecast.months.find(m => m.marginRisk)?.monthLabel ?? '',
+        };
+        if (severity === 'warning') return {
+            volume: String(formatNumber(volumeMultiplier, locale)),
+            risk:   String(formatNumber(riskCount, locale)),
+        };
+        return { months: String(formatNumber(riskCount, locale)) };
+    };
 
     const icons = {
         critical: (
@@ -79,7 +84,7 @@ function AlertBar({ severity, forecast, volumeMultiplier, onDismiss, t, locale }
         >
             <span className={styles.alertIcon}>{icons[severity]}</span>
             <span className={styles.alertText}>
-                {t(messageKey, interpolations as Record<string, string | number>)}
+                {t(messageKey, getInterpolations())}
             </span>
             <button className={styles.alertDismiss} onClick={onDismiss} aria-label={t('dismiss')}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" width="14" height="14">
@@ -94,10 +99,9 @@ function AlertBar({ severity, forecast, volumeMultiplier, onDismiss, t, locale }
 interface ForecastChartProps {
     forecast: ForecastResult;
     isAr: boolean;
-    locale: string;
 }
 
-function ForecastChart({ forecast, isAr, locale }: ForecastChartProps) {
+function ForecastChart({ forecast, isAr }: ForecastChartProps) {
     const { months } = forecast;
     const W = 320, H = 130;
     const PAD = { top: 14, right: 10, bottom: 30, left: 46 };
@@ -151,7 +155,7 @@ function ForecastChart({ forecast, isAr, locale }: ForecastChartProps) {
             <polygon
                 points={[
                     ...months.map((m, i) => `${xPos(i).toFixed(1)},${yPos(m.bear).toFixed(1)}`),
-                    ...months.map((m, i) => `${xPos(months.length - 1 - i).toFixed(1)},${yPos(months[months.length - 1 - i].base).toFixed(1)}`),
+                    ...months.map((_m, i) => `${xPos(months.length - 1 - i).toFixed(1)},${yPos(months[months.length - 1 - i].base).toFixed(1)}`),
                 ].join(' ')}
                 fill="var(--danger)"
                 fillOpacity="0.06"
@@ -161,7 +165,7 @@ function ForecastChart({ forecast, isAr, locale }: ForecastChartProps) {
             <polygon
                 points={[
                     ...months.map((m, i) => `${xPos(i).toFixed(1)},${yPos(m.base).toFixed(1)}`),
-                    ...months.map((m, i) => `${xPos(months.length - 1 - i).toFixed(1)},${yPos(months[months.length - 1 - i].bull).toFixed(1)}`),
+                    ...months.map((_m, i) => `${xPos(months.length - 1 - i).toFixed(1)},${yPos(months[months.length - 1 - i].bull).toFixed(1)}`),
                 ].join(' ')}
                 fill="var(--success)"
                 fillOpacity="0.07"
@@ -386,7 +390,7 @@ export default function SalesReportPage() {
                         </span>
                     </div>
 
-                    <ForecastChart forecast={revenueForecast} isAr={isAr} locale={locale} />
+                    <ForecastChart forecast={revenueForecast} isAr={isAr} />
 
                     {/* Legend */}
                     <div className={styles.chartLegend}>
