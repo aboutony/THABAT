@@ -200,7 +200,22 @@
         "deliveryComplete": "اكتمال التسليم",
         "cashArrival": "وصول النقد (شروط {days} يومًا)",
         "cashNote": "سوق نوبكو: صافي {days} يومًا من تأكيد التسليم",
-        "productBreakdown": "تفصيل المنتجات"
+        "productBreakdown": "تفصيل المنتجات",
+        "forecastTitle": "التراكب التنبؤي للإيرادات",
+        "scenariosLabel": "سيناريوهات التوقعات لـ 6 أشهر",
+        "legendBase": "التوقع الأساسي",
+        "legendBull": "التفاؤلي",
+        "legendBear": "المتشائم",
+        "trendImproving": "تحسّن",
+        "trendFlat": "مستقر",
+        "trendDeclining": "تراجع",
+        "peakBull": "الذروة (تفاؤلي)",
+        "worstBear": "الحد الأدنى (متشائم)",
+        "marginRiskWarning": "{months} شهر/أشهر في خطر على الهامش",
+        "alertCritical": "حرج: الحجم عند {volume}% سيضغط الهوامش دون العتبة التشغيلية — يبدأ التعرض النقدي في {month}",
+        "alertWarning": "تحذير: عند حجم {volume}%، يُظهر {risk} شهرًا من التوقعات ضغطًا على الهامش. فكّر في تسريع التحصيلات.",
+        "alertInfo": "ذكاء اصطناعي: يرصد السيناريو المتشائم خطر الهامش في {months} شهر/أشهر من التوقعات. راقب الحجم عن كثب.",
+        "dismiss": "إغلاق"
     },
     "approvals": {
         "back": "العودة للإعدادات",

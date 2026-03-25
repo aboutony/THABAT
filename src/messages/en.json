@@ -200,7 +200,22 @@
         "deliveryComplete": "Delivery Complete",
         "cashArrival": "Cash Arrival ({days}-day terms)",
         "cashNote": "NUPCO Marketplace: Net {days} days from delivery confirmation",
-        "productBreakdown": "Product Breakdown"
+        "productBreakdown": "Product Breakdown",
+        "forecastTitle": "Predictive Revenue Overlay",
+        "scenariosLabel": "6-Month Forecast Scenarios",
+        "legendBase": "Base Projection",
+        "legendBull": "Optimistic",
+        "legendBear": "Adverse",
+        "trendImproving": "Improving",
+        "trendFlat": "Stable",
+        "trendDeclining": "Declining",
+        "peakBull": "Peak (Bull)",
+        "worstBear": "Floor (Bear)",
+        "marginRiskWarning": "{months} month(s) at margin risk",
+        "alertCritical": "Critical: Volume at {volume}% will compress margins below operational threshold — cash exposure begins {month}",
+        "alertWarning": "Warning: At {volume}% volume, {risk} forecast months show margin pressure. Consider accelerating collections.",
+        "alertInfo": "Intelligence: Bear scenario detects margin risk in {months} forecast month(s). Monitor volume closely.",
+        "dismiss": "Dismiss"
     },
     "approvals": {
         "back": "Back to Settings",
