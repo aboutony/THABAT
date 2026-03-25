@@ -10,6 +10,7 @@ import InsightCard from '@/components/InsightCard';
 import StockHourglass from '@/components/StockHourglass';
 import OracleBriefing from '@/components/OracleBriefing';
 import ScenarioPlayground from '@/components/ScenarioPlayground';
+import ExportPortal from '@/components/ExportPortal';
 import { generateConsequenceStatement } from '@/lib/scoring';
 import { formatScore, formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
@@ -31,9 +32,11 @@ export default function RitualScreen() {
     const tL  = useTranslations('ledger');
     const tSR = useTranslations('stockAtRisk');
     const tSC = useTranslations('scenario');
+    const tR  = useTranslations('report');
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
     const [showScenario, setShowScenario] = useState(false);
+    const [showExport,   setShowExport]   = useState(false);
     const locale = useLocale();
 
     // Fetch latest score from the API
@@ -164,6 +167,12 @@ export default function RitualScreen() {
                 {showScenario && (
                     <ScenarioPlayground onClose={() => setShowScenario(false)} />
                 )}
+                {showExport && (
+                    <ExportPortal
+                        healthScore={score}
+                        onClose={() => setShowExport(false)}
+                    />
+                )}
             </AnimatePresence>
             {/* Stability Ring — sticky visual anchor */}
             <section className={styles.ringSection}>
@@ -229,14 +238,23 @@ export default function RitualScreen() {
                     </div>
                 )}
 
-                {/* ── Scenario Lab trigger ──────────────────────────────── */}
-                <button
-                    className={styles.simBtn}
-                    onClick={() => setShowScenario(true)}
-                >
-                    <span className={styles.simBtnIcon}>⚗</span>
-                    {tSC('triggerBtn')}
-                </button>
+                {/* ── Action row: Scenario Lab + Export ────────────────── */}
+                <div className={styles.actionRow}>
+                    <button
+                        className={styles.simBtn}
+                        onClick={() => setShowScenario(true)}
+                    >
+                        <span className={styles.simBtnIcon}>⚗</span>
+                        {tSC('triggerBtn')}
+                    </button>
+                    <button
+                        className={styles.exportBtn}
+                        onClick={() => setShowExport(true)}
+                        aria-label={tR('portalTitle')}
+                    >
+                        ↗
+                    </button>
+                </div>
             </section>
         </div>
     );

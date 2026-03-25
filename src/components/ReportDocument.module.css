@@ -1,0 +1,287 @@
+/* ── ReportDocument — Cinematic dark PDF capture target ──────────────────────
+   Rendered off-screen; captured by html2canvas at scale 2.
+   Width fixed to 794px (A4 at 96dpi). All colours hardcoded dark.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.document {
+    width: 794px;
+    min-height: 1123px;
+    background: #070910;
+    padding: 52px 56px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    font-family: 'Inter', 'IBM Plex Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+    color: #C8CDD4;
+}
+
+/* ── Background watermark ──────────────────────────────────────────────────── */
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 120px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: rgba(99, 102, 241, 0.04);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+/* ── All inner content above watermark ────────────────────────────────────── */
+.document > *:not(.watermark) {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+}
+
+.headerBrand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brandMark {
+    font-size: 22px;
+    color: #6366F1;
+    line-height: 1;
+}
+
+.brandName {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: #E8EAF0;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.brandSub {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: #3E4560;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.headerMeta {
+    text-align: end;
+}
+
+.reportType {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6366F1;
+    margin: 0 0 2px;
+}
+
+.reportDate {
+    font-size: 12px;
+    font-weight: 600;
+    color: #8896B3;
+    margin: 0 0 1px;
+}
+
+.reportPeriod {
+    font-size: 9px;
+    color: #3E4560;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* ── Divider ──────────────────────────────────────────────────────────────── */
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(99,102,241,0.35) 0%, rgba(99,102,241,0.05) 100%);
+    margin: 20px 0;
+}
+
+/* ── Section ──────────────────────────────────────────────────────────────── */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sectionLabel {
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6366F1;
+    margin: 0;
+}
+
+/* ── KPI row ─────────────────────────────────────────────────────────────── */
+.kpiRow {
+    display: flex;
+    gap: 0;
+}
+
+.kpi {
+    flex: 1;
+    padding: 14px 0;
+    border-inline-end: 1px solid rgba(99,102,241,0.12);
+}
+.kpi:first-child { padding-inline-start: 0; }
+.kpi:last-child  { border-inline-end: none; }
+
+.kpiVal {
+    font-size: 24px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #E8EAF0;
+    margin: 0 0 2px;
+    letter-spacing: -0.02em;
+}
+
+.kpiLabel {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: #3E4560;
+    margin: 0;
+}
+
+/* ── Compliance block ────────────────────────────────────────────────────── */
+.complianceBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tierBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    background: rgba(99,102,241,0.07);
+    border: 1px solid rgba(99,102,241,0.20);
+    border-radius: 20px;
+    width: fit-content;
+}
+
+.tierDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.tierDot[data-tier='platinum']  { background: #D4AF37; box-shadow: 0 0 6px rgba(212,175,55,0.6); }
+.tierDot[data-tier='highGreen'] { background: #4ADE80; }
+.tierDot[data-tier='medGreen']  { background: #86EFAC; }
+.tierDot[data-tier='lowGreen']  { background: #BEF264; }
+.tierDot[data-tier='red']       { background: #F87171; }
+
+.tierText {
+    font-size: 11px;
+    font-weight: 700;
+    color: #C8CDD4;
+    letter-spacing: 0.04em;
+}
+
+/* ── Body text ───────────────────────────────────────────────────────────── */
+.bodyText {
+    font-size: 11px;
+    color: #8896B3;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ── Evidence rows (supply chain) ────────────────────────────────────────── */
+.evidenceRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 10px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(99,102,241,0.10);
+    border-radius: 6px;
+}
+
+.evidenceIcon { font-size: 13px; flex-shrink: 0; line-height: 1.4; }
+.evidenceText { font-size: 10px; color: #8896B3; margin: 0; line-height: 1.5; }
+
+/* ── Scenario grid ───────────────────────────────────────────────────────── */
+.scenarioGrid {
+    display: flex;
+    gap: 12px;
+}
+
+.scenarioCell {
+    flex: 1;
+    padding: 10px 12px;
+    background: rgba(74,222,128,0.04);
+    border: 1px solid rgba(74,222,128,0.14);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.scenarioCellVal {
+    font-size: 18px;
+    font-weight: 700;
+    color: #4ADE80;
+    font-variant-numeric: tabular-nums;
+    margin: 0 0 2px;
+    letter-spacing: -0.01em;
+}
+
+.scenarioCellLabel {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: #3E4560;
+    margin: 0;
+}
+
+.impactLine {
+    font-size: 11px;
+    color: #4ADE80;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.footer {
+    margin-top: auto;
+    padding-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid rgba(99,102,241,0.10);
+}
+
+.footerText {
+    font-size: 8px;
+    color: #3E4560;
+    letter-spacing: 0.06em;
+    margin: 0;
+}
+
+.footerWatermark {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    color: rgba(99,102,241,0.25);
+    margin: 0;
+    text-transform: uppercase;
+}
