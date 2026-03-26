@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
     generateBriefing,
@@ -13,8 +14,12 @@ import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
 import { hasRetentionRisk } from '@/lib/calculateClientHealth';
 import { useEntity } from '@/context/EntityContext';
 import { useVoiceOracle } from '@/hooks/useVoiceOracle';
+import { processVoiceIntent, INTENT_ROUTE } from '@/lib/processVoiceIntent';
+import type { VoiceIntent } from '@/lib/processVoiceIntent';
+import { generateVocalResponse } from '@/lib/generateVocalResponse';
 import VoiceTrigger from './VoiceTrigger';
 import SonicWave from './SonicWave';
+import VocalResponseOverlay from './VocalResponseOverlay';
 import s from './OracleBriefing.module.css';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
@@ -76,8 +81,39 @@ export default function OracleBriefing({
     const t                = useTranslations('oracle');
     const { activeEntity } = useEntity();
     const isAr             = locale === 'ar';
+    const router           = useRouter();
 
-    const { listening, supported, toggle } = useVoiceOracle(locale);
+    const { listening, supported, toggle, finalTranscript, clearTranscript } = useVoiceOracle(locale);
+
+    // ── Voice intent state ──────────────────────────────────────────────────
+    const [vocalResponse,  setVocalResponse]  = useState<string | null>(null);
+    const [activeIntent,   setActiveIntent]   = useState<VoiceIntent | null>(null);
+
+    const dismissOverlay = useCallback(() => {
+        setVocalResponse(null);
+        setActiveIntent(null);
+        clearTranscript();
+    }, [clearTranscript]);
+
+    // Process final transcript → intent → response → navigation warp
+    useEffect(() => {
+        if (!finalTranscript) return;
+
+        const intent   = processVoiceIntent(finalTranscript);
+        const response = generateVocalResponse(intent, locale, score);
+
+        setActiveIntent(intent);
+        setVocalResponse(response);
+
+        // Navigation warp — after 1.8 s to let the user read the first line
+        const route = INTENT_ROUTE[intent];
+        if (route) {
+            const navTimer = setTimeout(() => {
+                router.push(`/${locale}${route}`);
+            }, 1800);
+            return () => clearTimeout(navTimer);
+        }
+    }, [finalTranscript, locale, score, router]);
 
     const [ctx,      setCtx]      = useState<BriefingContext | null>(null);
     const [revealed, setRevealed] = useState(0);   // 0=thinking, 1/2/3=sentences visible
@@ -118,6 +154,7 @@ export default function OracleBriefing({
     const dashOffset = oeeOffset(oeePercent);
 
     return (
+        <>
         <div className={`glass-card ${s.card} ${glow}`}>
 
             {/* Sonic wave while mic is active; scan line while text is revealing */}
@@ -263,5 +300,14 @@ export default function OracleBriefing({
             </AnimatePresence>
 
         </div>
+
+        {/* ── Vocal response overlay — rendered outside the card so it  */}
+        {/* sits fixed at the bottom of the viewport                     */}
+        <VocalResponseOverlay
+            text={vocalResponse}
+            intent={activeIntent}
+            onDismiss={dismissOverlay}
+        />
+        </>
     );
 }
