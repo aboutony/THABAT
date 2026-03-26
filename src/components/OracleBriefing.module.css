@@ -2,12 +2,13 @@
 
 .card {
     position: relative;
-    padding: 14px 16px 12px;
+    width: 100%;
+    padding: 20px 22px 18px;
     border-radius: var(--radius-sm);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 /* ── Atmospheric glow backgrounds ──────────────────────────────────────────── */
@@ -107,19 +108,20 @@
 .body {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    min-height: 52px; /* reserve space while text is revealing */
+    gap: 7px;
+    min-height: 68px; /* reserve space while text is revealing */
 }
 
 .sentence {
-    font-size: 12px;
-    line-height: 1.55;
+    font-size: 14px;
+    line-height: 1.6;
     color: var(--text-secondary);
     margin: 0;
 }
 
 .sentence:first-child {
     font-weight: 600;
+    font-size: 15px;
     color: var(--text-primary);
 }
 

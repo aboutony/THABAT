@@ -4,13 +4,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import MetricsEntry from '@/components/MetricsEntry';
 import ActionLedger from '@/components/ActionLedger';
 import PageHeader from '@/components/PageHeader';
 import PercentileBadge from '@/components/PercentileBadge';
 import StabilityRing from '@/components/StabilityRing';
 import Shell from '@/components/Shell';
-import { useAuth } from '@/context/AuthContext';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './analytics.module.css';
 
@@ -35,8 +33,6 @@ export default function AnalyticsPage() {
     const ts = useTranslations('scoring');
     const tb = useTranslations('benchmark');
     const [score, setScore] = useState<ScoreResult | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [ringLoading, setRingLoading] = useState(false);
     const [fetchingLatest, setFetchingLatest] = useState(true);
     const locale = useLocale();
 
@@ -64,37 +60,6 @@ export default function AnalyticsPage() {
 
     useEffect(() => { fetchLatest(); }, [fetchLatest]);
 
-    const handleSubmit = async (data: {
-        date: string;
-        cash: number;
-        revenue: number;
-        expenses: number;
-        receivables: number;
-        payables: number;
-    }) => {
-        setLoading(true);
-        setRingLoading(true);
-        try {
-            const res = await fetch('/api/metrics', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-
-            if (res.ok) {
-                const result = await res.json();
-                // Hold the shimmer for a moment to emphasize 'Engine Calculation'
-                await new Promise(r => setTimeout(r, 1800));
-                setScore(result.score);
-            }
-        } catch (err) {
-            console.error('Failed to submit metrics:', err);
-        } finally {
-            setRingLoading(false);
-            setLoading(false);
-        }
-    };
-
     const getScoreColor = (s: number) => {
         if (s >= 70) return 'var(--success)';
         if (s >= 40) return 'var(--warning)';
@@ -104,13 +69,28 @@ export default function AnalyticsPage() {
     return (
         <Shell>
             <div className={styles.page}>
-                <PageHeader title={t('title')} subtitle={t('subtitle')} />
+                <PageHeader
+                    title={t('title')}
+                    subtitle={t('subtitle')}
+                    rightAction={
+                        <Link
+                            href={`/${locale}/settings/integrations`}
+                            className={styles.dataSettingsBtn}
+                            aria-label="Data Settings"
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                        </Link>
+                    }
+                />
 
                 {/* Industry Percentile Badge */}
                 <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: locale === 'ar' ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
 
                 {/* Stability Ring — with shimmer on compute */}
-                {(ringLoading || score) && (
+                {score && (
                     <motion.div
                         className={styles.ringContainer}
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -121,7 +101,6 @@ export default function AnalyticsPage() {
                             score={score?.overall ?? 0}
                             trend={(score?.trend as 'strengthening' | 'stable' | 'weakening') ?? 'stable'}
                             locale={locale}
-                            loading={ringLoading}
                         />
                     </motion.div>
                 )}
@@ -282,8 +261,6 @@ export default function AnalyticsPage() {
                     <ActionLedger />
                 </div>
 
-                {/* Metrics Entry Form */}
-                <MetricsEntry onSubmit={handleSubmit} loading={loading} />
             </div>
         </Shell>
     );

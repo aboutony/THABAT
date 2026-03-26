@@ -490,3 +490,114 @@
     color: #4ADE80;
     box-shadow: none;
 }
+
+/* ── Light mode overrides ─────────────────────────────────────────────────── */
+:global(.light) .backdrop {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+:global(.light) .panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+:global(.light) .topBar {
+    border-bottom-color: rgba(99, 102, 241, 0.22);
+}
+
+:global(.light) .labTitle {
+    color: #4F46E5;
+}
+
+:global(.light) .closeBtn {
+    color: #4B5563;
+    border-color: rgba(99, 102, 241, 0.22);
+}
+:global(.light) .closeBtn:hover {
+    color: #1F2937;
+    border-color: rgba(99, 102, 241, 0.45);
+}
+
+:global(.light) .sectionLabel {
+    color: #9CA3AF;
+}
+
+:global(.light) .card {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(99, 102, 241, 0.22);
+    box-shadow: inset 0 0 20px rgba(99, 102, 241, 0.03);
+}
+
+:global(.light) .leverRow {
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(99, 102, 241, 0.18);
+}
+
+:global(.light) .leverName {
+    color: #4B5563;
+}
+
+:global(.light) .leverValNeu {
+    color: #1F2937;
+}
+
+:global(.light) .leverRange {
+    color: #9CA3AF;
+}
+
+/* Ghost bars: semi-transparent Indigo instead of Neon for light mode visibility */
+:global(.light) .track {
+    background: rgba(99, 102, 241, 0.10);
+}
+
+:global(.light) .barFill {
+    background: rgba(99, 102, 241, 0.55) !important;
+}
+
+:global(.light) .barTag {
+    color: #6B7280;
+}
+
+:global(.light) .barVal {
+    color: #374151;
+}
+
+:global(.light) .delta {
+    color: #374151;
+}
+
+:global(.light) .tierName {
+    color: #1F2937;
+}
+
+:global(.light) .tierArrow {
+    color: #9CA3AF;
+}
+
+:global(.light) .impactSummary {
+    background: rgba(99, 102, 241, 0.07);
+    border-color: rgba(99, 102, 241, 0.20);
+}
+
+:global(.light) .impactSummaryLabel {
+    color: #6366F1;
+}
+
+:global(.light) .reasoningDrawer {
+    background: rgba(245, 245, 252, 0.95);
+    border-top-color: rgba(99, 102, 241, 0.22);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+}
+
+:global(.light) .drawerTitle {
+    color: #4F46E5;
+}
+
+:global(.light) .drawerHandleBar {
+    background: rgba(99, 102, 241, 0.25);
+}
+
+:global(.light) .reasoningText {
+    color: #4B5563;
+}

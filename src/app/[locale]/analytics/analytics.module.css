@@ -1,3 +1,22 @@
+/* ── Data Settings gear button (top-right of header) ─────────────────────── */
+.dataSettingsBtn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.dataSettingsBtn:hover {
+    background: var(--glass-bg);
+    color: var(--accent-primary);
+}
+
 .page {
     display: flex;
     flex-direction: column;
