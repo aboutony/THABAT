@@ -3,7 +3,7 @@
 import { useState, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
-import { generateBoardReport, type BoardReport } from '@/lib/generateBoardReport';
+import { generateBoardReport, type BoardReport, type SessionSimulation } from '@/lib/generateBoardReport';
 import ReportDocument from './ReportDocument';
 import s from './ExportPortal.module.css';
 
@@ -16,9 +16,16 @@ export default function ExportPortal({ onClose, healthScore }: ExportPortalProps
     const t      = useTranslations('report');
     const locale = useLocale();
 
+    const sessionLevers = useMemo<SessionSimulation | undefined>(() => {
+        try {
+            const raw = sessionStorage.getItem('thabat-session-levers');
+            return raw ? (JSON.parse(raw) as SessionSimulation) : undefined;
+        } catch { return undefined; }
+    }, []);
+
     const report = useMemo<BoardReport>(
-        () => generateBoardReport(healthScore),
-        [healthScore],
+        () => generateBoardReport(healthScore, sessionLevers),
+        [healthScore, sessionLevers],
     );
 
     const captureRef  = useRef<HTMLDivElement>(null);

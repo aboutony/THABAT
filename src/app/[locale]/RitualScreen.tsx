@@ -7,7 +7,6 @@ import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
 import InsightCard from '@/components/InsightCard';
 import OracleBriefing from '@/components/OracleBriefing';
-import ClientConstellation from '@/components/ClientConstellation';
 import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
 import EntitySelector from '@/components/EntitySelector';
@@ -240,9 +239,6 @@ export default function RitualScreen() {
                         </span>
                     </div>
                 )}
-
-                {/* ── Relationship Constellation ───────────────────────── */}
-                <ClientConstellation />
 
                 {/* ── Action row: Scenario Lab + Export ────────────────── */}
                 <div className={styles.actionRow}>
