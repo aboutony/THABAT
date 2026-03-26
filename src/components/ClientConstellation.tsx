@@ -99,13 +99,14 @@ export default function ClientConstellation() {
 
                 {/* Decorative background stars */}
                 {BG_STARS.map((bs, i) => (
-                    <circle key={i} cx={bs.x} cy={bs.y} r="1"
+                    <circle key={i} className={s.bgStar} cx={bs.x} cy={bs.y} r="1"
                         fill="rgba(165,180,252,0.25)" />
                 ))}
 
                 {/* Constellation lines */}
                 {CONSTELLATION_LINES.map(([a, b], i) => (
                     <line key={i}
+                        className={s.constellationLine}
                         x1={clients[a].starX} y1={clients[a].starY}
                         x2={clients[b].starX} y2={clients[b].starY}
                         stroke="rgba(165,180,252,0.12)"
