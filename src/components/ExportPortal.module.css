@@ -318,92 +318,57 @@
     opacity: 0;
 }
 
-/* ── Light mode — Frosted Pearl ──────────────────────────────────────────── */
+/* ── Light mode — Frosted Pearl + Slate-200 ──────────────────────────────── */
 :global(.light) .backdrop {
-    background: rgba(0, 0, 0, 0.28);
+    background: rgba(0, 0, 0, 0.25);
 }
 
 :global(.light) .panel {
-    background: rgba(255, 255, 255, 0.84);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 }
 
-:global(.light) .topBar {
-    border-bottom-color: rgba(99, 102, 241, 0.20);
-}
-
-:global(.light) .topTitle {
-    color: #4F46E5;
-}
-
-:global(.light) .topSub {
-    color: #9CA3AF;
-}
+:global(.light) .topBar   { border-bottom-color: #E2E8F0; }
+:global(.light) .topTitle { color: #4F46E5; }
+:global(.light) .topSub   { color: #9CA3AF; }
 
 :global(.light) .closeBtn {
     color: #4B5563;
-    border-color: rgba(99, 102, 241, 0.22);
+    border-color: #E2E8F0;
 }
-
 :global(.light) .closeBtn:hover {
     color: #1F2937;
-    border-color: rgba(99, 102, 241, 0.50);
+    border-color: #CBD5E1;
 }
 
-:global(.light) .previewLabel {
-    color: #9CA3AF;
-}
+:global(.light) .previewLabel { color: #9CA3AF; }
 
 :global(.light) .previewCard {
     background: rgba(255, 255, 255, 0.65);
-    border-color: rgba(99, 102, 241, 0.18);
+    border-color: #E2E8F0;
 }
-
-:global(.light) .previewCardTitle {
-    color: #4F46E5;
-}
-
-:global(.light) .previewCardHdr {
-    background: rgba(99, 102, 241, 0.20);
-}
-
-:global(.light) .previewLine {
-    background: rgba(99, 102, 241, 0.10);
-}
-
-:global(.light) .previewKpi {
-    color: #16A34A;
-}
+:global(.light) .previewCardTitle { color: #4F46E5; }
+:global(.light) .previewCardHdr   { background: rgba(79, 70, 229, 0.15); }
+:global(.light) .previewLine      { background: rgba(226, 232, 240, 0.9); }
+:global(.light) .previewKpi       { color: #16A34A; }
 
 :global(.light) .summaryCell {
-    background: rgba(99, 102, 241, 0.06);
-    border-color: rgba(99, 102, 241, 0.16);
+    background: rgba(79, 70, 229, 0.04);
+    border-color: #E2E8F0;
 }
-
-:global(.light) .summaryCellVal {
-    color: #1A1A1A;
-}
-
-:global(.light) .summaryCellLabel {
-    color: #9CA3AF;
-}
+:global(.light) .summaryCellVal   { color: #1A1A1A; }
+:global(.light) .summaryCellLabel { color: #9CA3AF; }
 
 :global(.light) .shareBtn {
     color: #4B5563;
-    border-color: rgba(99, 102, 241, 0.25);
+    border-color: #E2E8F0;
 }
-
 :global(.light) .shareBtn:hover {
     color: #1F2937;
-    border-color: rgba(99, 102, 241, 0.50);
-    background: rgba(99, 102, 241, 0.06);
+    border-color: #CBD5E1;
+    background: rgba(79, 70, 229, 0.04);
 }
 
-:global(.light) .investorLinkText {
-    color: #9CA3AF;
-}
-
-:global(.light) .investorLinkUrl {
-    color: #4F46E5;
-}
+:global(.light) .investorLinkText { color: #9CA3AF; }
+:global(.light) .investorLinkUrl  { color: #4F46E5; }
