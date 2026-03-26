@@ -205,3 +205,9 @@
 :global(.light) .detailRatio  { color: #475569; }
 
 :global(.light) .waterfallLink { background: rgba(245, 158, 11, 0.08); }
+
+/* Radar fill + sweep elements — light mode */
+:global(.light) .radarBgCircle { fill: rgba(99, 102, 241, 0.04) !important; }
+:global(.light) .sweepTrail    { fill: rgba(79, 70, 229, 0.06)  !important; }
+:global(.light) .centreDot     { fill: rgba(99, 102, 241, 0.25) !important; stroke: rgba(79, 70, 229, 0.45) !important; }
+:global(.light) .sweepTip      { fill: rgba(79, 70, 229, 0.55)  !important; }

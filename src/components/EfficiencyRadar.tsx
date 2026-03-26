@@ -105,7 +105,7 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                 </defs>
 
                 {/* Background fill */}
-                <circle cx={CX} cy={CY} r={R} fill="url(#radarBg)" />
+                <circle className={s.radarBgCircle} cx={CX} cy={CY} r={R} fill="url(#radarBg)" />
 
                 {/* Concentric rings */}
                 {RINGS.map((r, i) => (
@@ -140,7 +140,7 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                 ))}
 
                 {/* Centre dot */}
-                <circle cx={CX} cy={CY} r="3"
+                <circle className={s.centreDot} cx={CX} cy={CY} r="3"
                     fill="rgba(16,185,129,0.25)" stroke="rgba(16,185,129,0.5)" strokeWidth="1" />
 
                 {/* ── Sweep ───────────────────────────────────────── */}
@@ -150,7 +150,7 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                     style={{ transformOrigin: `${CX}px ${CY}px` }}
                 >
                     {/* Trailing sector glow */}
-                    <path d={SWEEP_TRAIL} fill="rgba(16,185,129,0.09)" />
+                    <path className={s.sweepTrail} d={SWEEP_TRAIL} fill="rgba(16,185,129,0.09)" />
                     {/* Scan line */}
                     <line
                         className={s.sweepLine}
@@ -159,7 +159,7 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                         strokeLinecap="round"
                     />
                     {/* Tip glow */}
-                    <circle cx={CX} cy={CY - R} r="3"
+                    <circle className={s.sweepTip} cx={CX} cy={CY - R} r="3"
                         fill="rgba(16,185,129,0.8)"
                         filter="url(#sweepGlow)"
                     />
