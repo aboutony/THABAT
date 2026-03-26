@@ -144,20 +144,6 @@
 }
 
 /* ── Light mode ──────────────────────────────────────────────────────────── */
-:global(.light) .tooltip {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(0, 0, 0, 0.10);
-}
-
-:global(.light) .tooltipName {
-    color: #1A1A1A;
-}
-
-:global(.light) .svg line {
-    stroke: #94A3B8 !important;
-    opacity: 0.9;
-}
-
 :global(.light) .wrapper {
     background: rgba(255, 255, 255, 0.75);
     backdrop-filter: blur(12px);
@@ -165,6 +151,27 @@
     border-color: rgba(0, 0, 0, 0.08);
 }
 
-:global(.light) .label {
-    color: #374151;
+/* Connective lines — Slate-400 at 60% so structure is visible without neon */
+:global(.light) .svg line {
+    stroke: #94A3B8 !important;
+    stroke-opacity: 0.6;
+    opacity: 1;
 }
+
+/* Background decoration dots — darken to Slate-300 so the grid reads clearly */
+:global(.light) .svg circle[r="1"] {
+    fill: #CBD5E1 !important;
+}
+
+/* Labels — Slate-800 for maximum legibility on frosted white */
+:global(.light) .label     { color: #1E293B; }
+:global(.light) .riskBadge { color: #1E293B; }
+:global(.light) .icon      { color: #64748B; }
+:global(.light) .arrow     { color: #64748B; }
+
+:global(.light) .tooltip {
+    background: rgba(255, 255, 255, 0.90);
+    border-color: rgba(0, 0, 0, 0.10);
+}
+:global(.light) .tooltipName  { color: #1E293B; }
+:global(.light) .tooltipLabel { color: #64748B; }

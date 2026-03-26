@@ -324,7 +324,7 @@
 }
 
 :global(.light) .panel {
-    background: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.90);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }
@@ -357,7 +357,7 @@
     background: rgba(79, 70, 229, 0.04);
     border-color: #E2E8F0;
 }
-:global(.light) .summaryCellVal   { color: #1A1A1A; }
+:global(.light) .summaryCellVal   { color: #0F172A; }
 :global(.light) .summaryCellLabel { color: #9CA3AF; }
 
 :global(.light) .shareBtn {

@@ -497,7 +497,7 @@
 }
 
 :global(.light) .panel {
-    background: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.90);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
 }
@@ -530,9 +530,9 @@
     border-color: #E2E8F0;
 }
 
-:global(.light) .leverName    { color: #4B5563; }
-:global(.light) .leverValNeu  { color: #1F2937; }
-:global(.light) .leverRange   { color: #9CA3AF; }
+:global(.light) .leverName    { color: #0F172A; }
+:global(.light) .leverValNeu  { color: #0F172A; }
+:global(.light) .leverRange   { color: #475569; }
 
 /* Slider track — Deep Indigo for maximum legibility on frosted white */
 :global(.light) .slider {
@@ -551,21 +551,21 @@
     box-shadow: 0 0 10px rgba(79, 70, 229, 0.40);
 }
 
-/* Ghost bars — Slate track instead of neon */
+/* Ghost bars — Slate track, Slate-900 text for maximum legibility */
 :global(.light) .track   { background: rgba(226, 232, 240, 0.85); }
-:global(.light) .barTag  { color: #6B7280; }
-:global(.light) .barVal  { color: #374151; }
-:global(.light) .delta   { color: #374151; }
+:global(.light) .barTag  { color: #0F172A; }
+:global(.light) .barVal  { color: #0F172A; }
+:global(.light) .delta   { color: #0F172A; }
 
-:global(.light) .tierName  { color: #1F2937; }
-:global(.light) .tierArrow { color: #9CA3AF; }
+:global(.light) .tierName  { color: #0F172A; }
+:global(.light) .tierArrow { color: #64748B; }
 
 :global(.light) .impactSummary {
     background: rgba(79, 70, 229, 0.05);
     border-color: #E2E8F0;
 }
 :global(.light) .impactSummaryLabel { color: #4F46E5; }
-:global(.light) .impactSummaryVal   { color: #1F2937; }
+:global(.light) .impactSummaryVal   { color: #0F172A; }
 
 :global(.light) .reasoningDrawer {
     background: rgba(255, 255, 255, 0.93);
@@ -574,4 +574,4 @@
 }
 :global(.light) .drawerTitle       { color: #4F46E5; }
 :global(.light) .drawerHandleBar   { background: #CBD5E1; }
-:global(.light) .reasoningText     { color: #4B5563; }
+:global(.light) .reasoningText     { color: #0F172A; }

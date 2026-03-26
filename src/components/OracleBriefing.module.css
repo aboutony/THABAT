@@ -5,7 +5,7 @@
     top: 0;
     z-index: 10;
     width: 100%;
-    padding: 18px 20px 28px;
+    padding: 18px 20px 32px;
     position: relative; /* explicit containing block for scan-line height: 100% */
     border-radius: var(--radius-sm);
     overflow: visible;
