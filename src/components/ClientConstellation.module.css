@@ -151,22 +151,22 @@
     border-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Connective lines — Slate-400, 1.5px so the map structure is unmissable */
+/* Connective lines — Steel Blue / Slate-500, clearly visible at 1.5px */
 :global(.light) .svg line {
-    stroke: #94A3B8 !important;
+    stroke: #64748B !important;
     stroke-width: 1.5px !important;
-    stroke-opacity: 0.6;
+    stroke-opacity: 0.7;
     opacity: 1;
 }
 
-/* Background decoration dots — Slate-200 for depth without noise */
+/* Background decoration dots — Slate-300, visible structure without competing with stars */
 :global(.light) .svg circle[r="1"] {
-    fill: #E2E8F0 !important;
+    fill: #CBD5E1 !important;
 }
 
 /* Labels — Slate-800 for maximum legibility on frosted white */
 :global(.light) .label     { color: #1E293B; }
-:global(.light) .riskBadge { color: #1E293B; }
+:global(.light) .riskBadge { color: #B45309; } /* Deep Amber — visible on white */
 :global(.light) .icon      { color: #64748B; }
 :global(.light) .arrow     { color: #64748B; }
 

@@ -5,7 +5,7 @@
     top: 0;
     z-index: 10;
     width: 100%;
-    padding: 18px 20px 40px;
+    padding: 18px 20px 48px;
     position: relative; /* explicit containing block for scan-line height: 100% */
     border-radius: var(--radius-sm);
     overflow: visible;
@@ -112,17 +112,16 @@
 
 /* ── Briefing body ───────────────────────────────────────────────────────────── */
 .body {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    height: auto;
+    display: block;
+    overflow: visible;
+    height: auto !important;
 }
 
 .sentence {
     font-size: 14px;
     line-height: 1.6;
     color: var(--text-secondary);
-    margin: 0;
+    margin: 0 0 7px;
 }
 
 .sentence:first-child {
