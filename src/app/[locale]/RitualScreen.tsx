@@ -38,7 +38,25 @@ export default function RitualScreen() {
     const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);
+    const [now, setNow] = useState(() => new Date());
     const locale = useLocale();
+
+    // Live clock — refresh every minute
+    useEffect(() => {
+        const id = setInterval(() => setNow(new Date()), 60_000);
+        return () => clearInterval(id);
+    }, []);
+
+    // Time-aware greeting
+    const hour = now.getHours();
+    const greetingWord =
+        locale === 'ar'
+            ? (hour < 12 ? 'صباح الخير' : hour < 18 ? 'نهاركم سعيد' : 'مساء الخير')
+            : (hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening');
+    const greetingFull = locale === 'ar' ? `${greetingWord}، القائد` : `${greetingWord}, Commander`;
+    const timeString   = now.toLocaleTimeString(locale === 'ar' ? 'ar-SA' : 'en-US', {
+        hour: '2-digit', minute: '2-digit', hour12: locale !== 'ar',
+    });
 
     // Fetch latest score from the API
     useEffect(() => {
@@ -187,11 +205,31 @@ export default function RitualScreen() {
 
             {/* Scrollable content below the ring */}
             <section className={styles.contentSection}>
-                {/* ── ExecutiveOracle — Daily Briefing ─────────────── */}
-                <OracleBriefing
-                    score={score}
-                    scoreBreakdown={latestData?.score}
-                />
+                {/* ── Executive Greeting ───────────────────────────── */}
+                <div className={styles.greeting}>
+                    <span className={styles.greetingText}>{greetingFull}</span>
+                    <span className={styles.greetingTime}>{timeString}</span>
+                </div>
+
+                {/* ── Oracle Briefing + OEE micro-ring ─────────────── */}
+                <div className={styles.oracleRow}>
+                    <OracleBriefing
+                        score={score}
+                        scoreBreakdown={latestData?.score}
+                    />
+                    <Link
+                        href={`/${locale}/analytics/efficiency-report`}
+                        className={styles.oeeWidget}
+                        aria-label="Overall Equipment Effectiveness"
+                    >
+                        <svg viewBox="0 0 44 44" className={styles.oeeSvg} aria-hidden="true">
+                            <circle cx="22" cy="22" r="18" className={styles.oeeTrack} />
+                            <circle cx="22" cy="22" r="18" className={styles.oeeFill} />
+                        </svg>
+                        <span className={styles.oeeValue}>84%</span>
+                        <span className={styles.oeeLabel}>OEE</span>
+                    </Link>
+                </div>
 
                 {/* Executive Insight — Consequence Statement */}
                 {activeInsight && (
@@ -243,6 +281,20 @@ export default function RitualScreen() {
                         </span>
                     </div>
                 )}
+
+                {/* ── Relationship Constellation placeholder ───────────── */}
+                <div className={styles.constellation}>
+                    <div className={styles.constellationStars} aria-hidden="true" />
+                    <div className={styles.constellationInner}>
+                        <span className={styles.constellationIcon}>⬡</span>
+                        <span className={styles.constellationTitle}>
+                            {locale === 'ar' ? 'كوكبة العملاء' : 'Client Constellation'}
+                        </span>
+                        <span className={styles.constellationSub}>
+                            {locale === 'ar' ? 'المرحلة ١٢ — قريباً' : 'Phase 12 — Coming Soon'}
+                        </span>
+                    </div>
+                </div>
 
                 {/* ── Action row: Scenario Lab + Export ────────────────── */}
                 <div className={styles.actionRow}>
