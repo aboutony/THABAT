@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
 import { projectScenarioImpact } from '@/lib/projectScenarioImpact';
@@ -50,7 +50,7 @@ function GhostBars({
                 <span className={s.barTag}>{tagEst}</span>
                 <div className={s.track}>
                     <motion.div
-                        className={s.barFill}
+                        className={`${s.barFill} ${s.barFillProjected}`}
                         style={{ background: projectedColor, opacity: 0.45 }}
                         animate={{ width: `${Math.max(2, projectedPct)}%` }}
                         transition={{ duration: 0.35, ease: 'easeOut' }}
@@ -93,6 +93,21 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
     const [adopted,        setAdopted]        = useState(false);
 
     const projection = useMemo(() => projectScenarioImpact(levers), [levers]);
+
+    // Persist current lever state to sessionStorage so ExportPortal can include
+    // live What-If values in the Capital Report even without saving to ledger.
+    useEffect(() => {
+        try {
+            sessionStorage.setItem('thabat-session-levers', JSON.stringify({
+                salesGrowthPct:        levers.salesGrowthPct,
+                expatsHired:           levers.expatsHired,
+                materialCostDelta:     levers.materialCostDelta,
+                projectedMarginPct:    projection.projectedMarginPct,
+                projectedTier:         projection.projectedTier,
+                estimatedAnnualImpact: projection.estimatedAnnualImpact,
+            }));
+        } catch { /* sessionStorage unavailable */ }
+    }, [levers, projection]);
 
     function handleSlider(key: LeverKey, val: number) {
         setLevers(prev => ({ ...prev, [key]: val }));

@@ -162,6 +162,54 @@ const ReportDocument = forwardRef<HTMLDivElement, ReportDocumentProps>(
                     )}
                 </div>
 
+                {/* ── 05 Requested Simulation Analysis ────────────────── */}
+                {report.sessionSimulation && (
+                    <>
+                        <div className={s.divider} />
+                        <div className={s.section}>
+                            <p className={s.sectionLabel}>05 — Requested Simulation Analysis</p>
+                            <p className={s.bodyText}>
+                                The following What-If configuration was active during this report session.
+                            </p>
+                            <div className={s.scenarioGrid}>
+                                <div className={s.scenarioCell}>
+                                    <p className={s.scenarioCellVal}>
+                                        {report.sessionSimulation.salesGrowthPct > 0 ? '+' : ''}
+                                        {report.sessionSimulation.salesGrowthPct}%
+                                    </p>
+                                    <p className={s.scenarioCellLabel}>Sales Growth</p>
+                                </div>
+                                <div className={s.scenarioCell}>
+                                    <p className={s.scenarioCellVal}>
+                                        {report.sessionSimulation.expatsHired}
+                                    </p>
+                                    <p className={s.scenarioCellLabel}>Expat Hires</p>
+                                </div>
+                                <div className={s.scenarioCell}>
+                                    <p className={s.scenarioCellVal}>
+                                        {report.sessionSimulation.materialCostDelta > 0 ? '+' : ''}
+                                        {report.sessionSimulation.materialCostDelta}%
+                                    </p>
+                                    <p className={s.scenarioCellLabel}>Material Δ</p>
+                                </div>
+                            </div>
+                            <p className={s.bodyText} style={{ marginTop: 8 }}>
+                                Projected net margin: {report.sessionSimulation.projectedMarginPct}%.
+                                Projected Nitaqat standing: {report.sessionSimulation.projectedTier}.
+                            </p>
+                            {report.sessionSimulation.estimatedAnnualImpact !== 0 && (
+                                <p className={s.impactLine}>
+                                    Estimated annual impact:{' '}
+                                    <strong>
+                                        {report.sessionSimulation.estimatedAnnualImpact > 0 ? '+' : ''}
+                                        SAR {Math.abs(report.sessionSimulation.estimatedAnnualImpact).toLocaleString('en-SA')}
+                                    </strong>
+                                </p>
+                            )}
+                        </div>
+                    </>
+                )}
+
                 {/* ── Footer ──────────────────────────────────────────── */}
                 <div className={s.footer}>
                     <p className={s.footerText}>

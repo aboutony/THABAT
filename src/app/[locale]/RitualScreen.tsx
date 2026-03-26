@@ -2,22 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
-import InsightCard from '@/components/InsightCard';
-import StockHourglass from '@/components/StockHourglass';
 import OracleBriefing from '@/components/OracleBriefing';
-import ClientConstellation from '@/components/ClientConstellation';
 import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
 import EntitySelector from '@/components/EntitySelector';
-import { generateConsequenceStatement } from '@/lib/scoring';
-import { formatScore, formatPercent } from '@/lib/locale-utils';
+import { formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
-import { calculateStockGap, DEMO_STOCK_GAP_INPUT, DEMO_NEXT_SHIPMENT_DAYS } from '@/lib/stockGap';
-import type { ScoreBreakdown, RawMetrics, ConsequenceInsight } from '@/lib/scoring';
+import type { ScoreBreakdown, RawMetrics } from '@/lib/scoring';
 import styles from './RitualScreen.module.css';
 
 // Fallback demo data when no real metrics exist
@@ -32,11 +26,9 @@ interface LatestScore {
 export default function RitualScreen() {
     const t   = useTranslations('drivers');
     const tL  = useTranslations('ledger');
-    const tSR = useTranslations('stockAtRisk');
     const tSC = useTranslations('scenario');
     const tR  = useTranslations('report');
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
-    const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);
     const [now, setNow] = useState(() => new Date());
@@ -89,7 +81,6 @@ export default function RitualScreen() {
                         };
 
                         setLatestData({ score: scoreBreakdown, metrics: rawMetrics });
-                        setInsight(generateConsequenceStatement(scoreBreakdown, rawMetrics));
                     }
                 }
             } catch {
@@ -102,9 +93,6 @@ export default function RitualScreen() {
     const score = latestData?.score.overall ?? DEMO_SCORE;
     const trend = latestData?.score.trend ?? DEMO_TREND;
 
-    // ── Stock-at-Risk ─────────────────────────────────────────────────────────
-    const stockGap = calculateStockGap(DEMO_STOCK_GAP_INPUT);
-
     const [totalAvoided, setTotalAvoided] = useState(0);
     useEffect(() => {
         setTotalAvoided(getTotalAvoided());
@@ -112,17 +100,6 @@ export default function RitualScreen() {
         window.addEventListener('thabat-ledger-updated', sync);
         return () => window.removeEventListener('thabat-ledger-updated', sync);
     }, []);
-
-    // Generate demo insight if no real data
-    const demoInsight: ConsequenceInsight | null = !insight ? {
-        metricKey: 'scoring.costs',
-        consequenceKey: 'insight.consequence.costs',
-        severity: 'moderate',
-        impactValue: '74.2%',
-        score: 62,
-    } : null;
-
-    const activeInsight = insight || demoInsight;
 
     const drivers = [
         {
@@ -151,7 +128,7 @@ export default function RitualScreen() {
             description: t('retentionDesc'),
             value: latestData ? formatPercent(latestData.score.receivables, locale) : formatPercent(94.2, locale),
             trend: 'up' as const,
-            href: `/${locale}/analytics/receivables-report`,
+            href: `/${locale}/analytics/retention`,
         },
         {
             icon: (
@@ -212,30 +189,14 @@ export default function RitualScreen() {
                     <span className={styles.greetingTime}>{timeString}</span>
                 </div>
 
-                {/* ── Oracle Briefing + OEE micro-ring ─────────────── */}
-                <div className={styles.oracleRow}>
-                    <OracleBriefing
-                        score={score}
-                        scoreBreakdown={latestData?.score}
-                    />
-                    <Link
-                        href={`/${locale}/analytics/efficiency-report`}
-                        className={styles.oeeWidget}
-                        aria-label="Overall Equipment Effectiveness"
-                    >
-                        <svg viewBox="0 0 44 44" className={styles.oeeSvg} aria-hidden="true">
-                            <circle cx="22" cy="22" r="18" className={styles.oeeTrack} />
-                            <circle cx="22" cy="22" r="18" className={styles.oeeFill} />
-                        </svg>
-                        <span className={styles.oeeValue}>84%</span>
-                        <span className={styles.oeeLabel}>OEE</span>
-                    </Link>
-                </div>
-
-                {/* Executive Insight — Consequence Statement */}
-                {activeInsight && (
-                    <InsightCard insight={activeInsight} />
-                )}
+                {/* ── Oracle Briefing — Floating Command Header ────── */}
+                <OracleBriefing
+                    score={score}
+                    scoreBreakdown={latestData?.score}
+                    oeeHref={`/${locale}/analytics/efficiency-report`}
+                    oeeValue="84%"
+                    oeePercent={84}
+                />
 
                 {/* Top 3 Drivers */}
                 <div className={styles.driversBlock}>
@@ -246,30 +207,6 @@ export default function RitualScreen() {
                         ))}
                     </div>
                 </div>
-
-                {/* ── Stock-at-Risk alert widget ───────────────────────── */}
-                <Link
-                    href={`/${locale}/analytics/supply-chain`}
-                    className={`${styles.sarWidget} ${stockGap.isAtRisk ? styles.sarCritical : styles.sarSafe}`}
-                >
-                    <StockHourglass
-                        stockDays={stockGap.stockDays}
-                        maxStockDays={30}
-                        isAtRisk={stockGap.isAtRisk}
-                        velocityFactor={0.65}
-                        compact
-                    />
-                    <div className={styles.sarBody}>
-                        <span className={styles.sarLabel}>{tSR('label')}</span>
-                        <span className={styles.sarValue}>
-                            {tSR('daysRemaining', { n: stockGap.stockDays })}
-                        </span>
-                        <span className={styles.sarSub}>
-                            {tSR('nextShipment', { n: DEMO_NEXT_SHIPMENT_DAYS })}
-                        </span>
-                    </div>
-                    <span className={styles.sarArrow}>›</span>
-                </Link>
 
                 {/* ── Impact Scoreboard ─────────────────────────────────── */}
                 {totalAvoided > 0 && (
@@ -282,9 +219,6 @@ export default function RitualScreen() {
                         </span>
                     </div>
                 )}
-
-                {/* ── Relationship Constellation ───────────────────────── */}
-                <ClientConstellation />
 
                 {/* ── Action row: Scenario Lab + Export ────────────────── */}
                 <div className={styles.actionRow}>

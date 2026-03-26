@@ -1,156 +1,202 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
-import { useRouter, usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import PageHeader from '@/components/PageHeader';
 import Shell from '@/components/Shell';
+import StockHourglass from '@/components/StockHourglass';
 import { useAuth } from '@/context/AuthContext';
-import { localizeActionType, localizeActionNote, getScoreBandLabel, formatNumber } from '@/lib/locale-utils';
-import styles from './pilot.module.css';
+import { calculateStockGap, DEMO_STOCK_GAP_INPUT, DEMO_NEXT_SHIPMENT_DAYS } from '@/lib/stockGap';
+import { DEMO_NITAQAT_TIER } from '@/lib/generateBriefing';
+import { hasRetentionRisk, getAtRiskClients } from '@/lib/calculateClientHealth';
 
-interface KPIData {
-    totalOrgs: number;
-    activeThisWeek: number;
-    daer: number;
-    retentionRate: number;
-    totalMetricsEntries: number;
-    avgScore: number;
-    scoreDistribution: { label: string; count: number; color: string }[];
-    trajectoryDistribution: { strengthening: number; stable: number; weakening: number };
-    recentActions: { type: string; note: string; date: string }[];
+// Receivables risk threshold: score below 70 triggers a vault warning
+const DEMO_RECEIVABLES_SCORE = 62;
+import styles from './vault.module.css';
+
+// ── Warning card definition ────────────────────────────────────────────────
+
+interface WarningCard {
+    id:      string;
+    titleEn: string;
+    titleAr: string;
+    bodyEn:  string;
+    bodyAr:  string;
+    href:    string;
+    color:   string;
 }
 
-export default function PilotDashboard() {
-    const t = useTranslations('pilot');
-    const router = useRouter();
-    const currentPathname = usePathname();
-    const { user, loading: authLoading } = useAuth();
-    const [data, setData] = useState<KPIData | null>(null);
-    const [loading, setLoading] = useState(true);
-    const locale = useLocale();
+// ── Page ──────────────────────────────────────────────────────────────────
 
-    // Admin guard — redirect non-admin users to home
+export default function ExecutiveVault() {
+    const { user, loading: authLoading } = useAuth();
+    const router  = useRouter();
+    const locale  = useLocale();
+    const isAr    = locale === 'ar';
+
+    // Admin guard
     useEffect(() => {
         if (!authLoading && user && user.role !== 'admin') {
-            const loc = currentPathname.startsWith('/ar') ? 'ar' : 'en';
-            router.push(`/${loc}`);
+            router.push(`/${locale}`);
         }
-    }, [user, authLoading, router, currentPathname]);
+    }, [user, authLoading, router, locale]);
 
-    const fetchKPIs = useCallback(async () => {
-        try {
-            const res = await fetch('/api/pilot/kpis');
-            if (res.ok) setData(await res.json());
-        } catch { /* empty state */ } finally { setLoading(false); }
-    }, []);
+    // ── Risk computation ─────────────────────────────────────────────────
+    const stockGap           = calculateStockGap(DEMO_STOCK_GAP_INPUT);
+    const hasNitaqatDanger   = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
+    const retentionRisk      = hasRetentionRisk();
+    const atRiskCount        = retentionRisk ? getAtRiskClients().length : 0;
+    const hasReceivablesRisk = DEMO_RECEIVABLES_SCORE < 70;
 
-    useEffect(() => { fetchKPIs(); }, [fetchKPIs]);
+    // ── Build warning cards ──────────────────────────────────────────────
+    const warnings: WarningCard[] = [];
 
-    if (loading) {
-        return <div className={styles.page}><div className={styles.loading}>{t('loading')}</div></div>;
+    if (stockGap.isAtRisk) {
+        warnings.push({
+            id:      'stock',
+            titleEn: 'Stock-Out Risk',
+            titleAr: 'خطر نفاد المخزون',
+            bodyEn:  `${stockGap.stockDays} days of inventory remaining — reorder window exceeded by ${Math.round(stockGap.gapDays)} days.`,
+            bodyAr:  `${stockGap.stockDays} أيام من المخزون — تجاوزت نافذة إعادة الطلب بـ ${Math.round(stockGap.gapDays)} يوماً.`,
+            href:    `/${locale}/analytics/supply-chain`,
+            color:   '#F87171',
+        });
     }
 
-    const kpis = data || {
-        totalOrgs: 0, activeThisWeek: 0, daer: 0, retentionRate: 0,
-        totalMetricsEntries: 0, avgScore: 0, scoreDistribution: [],
-        trajectoryDistribution: { strengthening: 0, stable: 0, weakening: 0 },
-        recentActions: [],
-    };
+    if (hasNitaqatDanger) {
+        warnings.push({
+            id:      'nitaqat',
+            titleEn: 'Nitaqat Tier Drop',
+            titleAr: 'تراجع مستوى نطاقات',
+            bodyEn:  'Current Nitaqat tier requires workforce corrections to avoid penalties.',
+            bodyAr:  'المستوى الحالي لنطاقات يستلزم تصحيحات في القوى العاملة لتفادي الغرامات.',
+            href:    `/${locale}/analytics/nitaqat`,
+            color:   '#F59E0B',
+        });
+    }
 
-    const cards = [
-        { label: t('totalOrgs'), value: kpis.totalOrgs, icon: '🏢', color: 'var(--accent-primary)' },
-        { label: t('activeWeek'), value: kpis.activeThisWeek, icon: '📊', color: 'var(--success)' },
-        { label: t('daer'), value: `${kpis.daer}%`, icon: '⚡', color: 'var(--warning)' },
-        { label: t('retention'), value: `${kpis.retentionRate}%`, icon: '🔒', color: 'var(--accent-secondary)' },
-        { label: t('totalEntries'), value: kpis.totalMetricsEntries, icon: '📝', color: 'var(--text-secondary)' },
-        { label: t('avgScore'), value: kpis.avgScore, icon: '🎯', color: 'var(--success)' },
-    ];
+    if (retentionRisk) {
+        warnings.push({
+            id:      'retention',
+            titleEn: 'Client Retention Alert',
+            titleAr: 'تنبيه استبقاء العملاء',
+            bodyEn:  `${atRiskCount} client${atRiskCount !== 1 ? 's' : ''} showing churn signals — proactive outreach recommended.`,
+            bodyAr:  `${atRiskCount} عميل يُظهر إشارات مخاطر — يُنصح بالتواصل الاستباقي.`,
+            href:    `/${locale}/analytics/retention`,
+            color:   '#FB7185',
+        });
+    }
 
-    const traj = kpis.trajectoryDistribution;
+    if (hasReceivablesRisk) {
+        warnings.push({
+            id:      'receivables',
+            titleEn: 'Receivables Under Pressure',
+            titleAr: 'ضغط على المستحقات',
+            bodyEn:  `Receivables score ${DEMO_RECEIVABLES_SCORE}/100 — elevated overdue exposure detected. Review financial position.`,
+            bodyAr:  `نقاط المستحقات ${DEMO_RECEIVABLES_SCORE}/100 — تم رصد ارتفاع في التعرض للمتأخرات. راجع الوضع المالي.`,
+            href:    `/${locale}/analytics/sales-report`,
+            color:   '#F59E0B',
+        });
+    }
 
     return (
         <Shell>
             <div className={styles.page}>
-                <PageHeader title={t('title')} subtitle={t('subtitle')} />
 
-                {/* KPI Cards */}
-                <div className={styles.kpiGrid}>
-                    {cards.map((kpi, i) => (
-                        <motion.div
-                            key={kpi.label}
-                            className={`glass-card ${styles.kpiCard}`}
-                            initial={{ opacity: 0, y: 12 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 + i * 0.06, duration: 0.35 }}
+                {/* ── Page header ──────────────────────────────────────── */}
+                <div className={styles.pageHeader}>
+                    <h1 className={styles.pageTitle}>
+                        {isAr ? 'الخزينة التنفيذية' : 'Executive Vault'}
+                    </h1>
+                    <p className={styles.pageSubtitle}>
+                        {isAr
+                            ? 'مراقبة المخاطر الحية · إجراءات فورية'
+                            : 'Live risk monitoring · immediate action'}
+                    </p>
+                </div>
+
+                {/* ── Sand Watch — Stock-at-Risk ───────────────────────── */}
+                <div className={styles.sectionLabel}>
+                    {isAr ? 'ساعة الرمل' : 'Sand Watch'}
+                </div>
+
+                <Link
+                    href={`/${locale}/analytics/supply-chain`}
+                    className={`${styles.sandWatch} ${stockGap.isAtRisk ? styles.sandWatchCritical : styles.sandWatchSafe}`}
+                >
+                    <StockHourglass
+                        stockDays={stockGap.stockDays}
+                        maxStockDays={30}
+                        isAtRisk={stockGap.isAtRisk}
+                        velocityFactor={0.65}
+                        compact
+                    />
+                    <div className={styles.sandWatchBody}>
+                        <span className={styles.sandWatchLabel}>
+                            {isAr ? 'المخزون المتبقي' : 'Stock-at-Risk'}
+                        </span>
+                        <span
+                            className={styles.sandWatchValue}
+                            style={{ color: stockGap.isAtRisk ? '#F87171' : '#4ADE80' }}
                         >
-                            <div className={styles.kpiIcon} style={{ color: kpi.color }}>{kpi.icon}</div>
-                            <div className={styles.kpiValue} style={{ color: kpi.color }}>{formatNumber(kpi.value, locale)}</div>
-                            <div className={styles.kpiLabel}>{kpi.label}</div>
-                        </motion.div>
-                    ))}
-                </div>
-
-                {/* Trajectory Distribution */}
-                <div className={`glass-card ${styles.distribution}`}>
-                    <h3 className={styles.sectionTitle}>{t('trajectory')}</h3>
-                    <div className={styles.trajGrid}>
-                        <div className={styles.trajItem}>
-                            <span className={styles.trajDot} style={{ background: 'var(--success)' }} />
-                            <span className={styles.trajLabel}>{t('strengthening')}</span>
-                            <span className={styles.trajCount}>{formatNumber(traj.strengthening, locale)}</span>
-                        </div>
-                        <div className={styles.trajItem}>
-                            <span className={styles.trajDot} style={{ background: 'var(--warning)' }} />
-                            <span className={styles.trajLabel}>{t('stableLabel')}</span>
-                            <span className={styles.trajCount}>{formatNumber(traj.stable, locale)}</span>
-                        </div>
-                        <div className={styles.trajItem}>
-                            <span className={styles.trajDot} style={{ background: 'var(--danger)' }} />
-                            <span className={styles.trajLabel}>{t('weakening')}</span>
-                            <span className={styles.trajCount}>{formatNumber(traj.weakening, locale)}</span>
-                        </div>
+                            {isAr
+                                ? `${stockGap.stockDays} أيام متبقية`
+                                : `${stockGap.stockDays} days remaining`}
+                        </span>
+                        <span className={styles.sandWatchSub}>
+                            {isAr
+                                ? `الشحنة القادمة خلال ${DEMO_NEXT_SHIPMENT_DAYS} أيام`
+                                : `Next shipment in ${DEMO_NEXT_SHIPMENT_DAYS} days`}
+                        </span>
                     </div>
+                    <span className={styles.sandWatchArrow}>›</span>
+                </Link>
+
+                {/* ── Oracle Warnings ──────────────────────────────────── */}
+                <div className={styles.sectionLabel}>
+                    {isAr ? 'تحذيرات الأوراكل' : 'Oracle Warnings'}
                 </div>
 
-                {/* Score Distribution */}
-                {kpis.scoreDistribution.length > 0 && (
-                    <div className={`glass-card ${styles.distribution}`}>
-                        <h3 className={styles.sectionTitle}>{t('distribution')}</h3>
-                        <div className={styles.bars}>
-                            {kpis.scoreDistribution.map((band) => (
-                                <div key={band.label} className={styles.barRow}>
-                                    <span className={styles.barLabel}>{getScoreBandLabel(band.label, locale)}</span>
-                                    <div className={styles.barTrack}>
-                                        <motion.div
-                                            className={styles.barFill}
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${Math.min(band.count * 20, 100)}%` }}
-                                            transition={{ duration: 0.6 }}
-                                            style={{ background: band.color }}
-                                        />
-                                    </div>
-                                    <span className={styles.barCount}>{formatNumber(band.count, locale)}</span>
+                {warnings.length === 0 ? (
+                    <div className={styles.allClear}>
+                        <span className={styles.allClearIcon}>✓</span>
+                        <span className={styles.allClearText}>
+                            {isAr ? 'جميع الأنظمة تعمل بشكل طبيعي' : 'All systems nominal'}
+                        </span>
+                    </div>
+                ) : (
+                    warnings.map((w, i) => (
+                        <motion.div
+                            key={w.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.08 }}
+                        >
+                            <Link
+                                href={w.href}
+                                className={styles.warningCard}
+                                style={{ borderColor: `${w.color}30` }}
+                            >
+                                <span
+                                    className={styles.warningDot}
+                                    style={{ background: w.color, boxShadow: `0 0 6px ${w.color}` }}
+                                />
+                                <div className={styles.warningBody}>
+                                    <span className={styles.warningTitle} style={{ color: w.color }}>
+                                        {isAr ? w.titleAr : w.titleEn}
+                                    </span>
+                                    <span className={styles.warningText}>
+                                        {isAr ? w.bodyAr : w.bodyEn}
+                                    </span>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
+                                <span className={styles.warningArrow}>›</span>
+                            </Link>
+                        </motion.div>
+                    ))
                 )}
 
-                {/* Recent Activity */}
-                {kpis.recentActions.length > 0 && (
-                    <div className={`glass-card ${styles.activity}`}>
-                        <h3 className={styles.sectionTitle}>{t('recentActivity')}</h3>
-                        {kpis.recentActions.map((action, i) => (
-                            <div key={i} className={styles.actionRow}>
-                                <span className={styles.actionType}>{localizeActionType(action.type, locale)}</span>
-                                <span className={styles.actionNote}>{localizeActionNote(action.note, locale)}</span>
-                                <span className={styles.actionDate}>{formatNumber(action.date, locale)}</span>
-                            </div>
-                        ))}
-                    </div>
-                )}
             </div>
         </Shell>
     );

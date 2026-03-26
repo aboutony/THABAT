@@ -105,12 +105,13 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                 </defs>
 
                 {/* Background fill */}
-                <circle cx={CX} cy={CY} r={R} fill="url(#radarBg)" />
+                <circle className={s.radarBgCircle} cx={CX} cy={CY} r={R} fill="url(#radarBg)" />
 
                 {/* Concentric rings */}
                 {RINGS.map((r, i) => (
                     <circle
                         key={i}
+                        className={s.ring}
                         cx={CX} cy={CY} r={r}
                         fill="none"
                         stroke="rgba(16,185,129,0.12)"
@@ -132,13 +133,14 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                 {/* Quadrant axes */}
                 {AXES.map((ax, i) => (
                     <line key={i}
+                        className={s.axisLine}
                         x1={ax.x1} y1={ax.y1} x2={ax.x2} y2={ax.y2}
                         stroke="rgba(16,185,129,0.14)" strokeWidth="1"
                     />
                 ))}
 
                 {/* Centre dot */}
-                <circle cx={CX} cy={CY} r="3"
+                <circle className={s.centreDot} cx={CX} cy={CY} r="3"
                     fill="rgba(16,185,129,0.25)" stroke="rgba(16,185,129,0.5)" strokeWidth="1" />
 
                 {/* ── Sweep ───────────────────────────────────────── */}
@@ -148,15 +150,16 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                     style={{ transformOrigin: `${CX}px ${CY}px` }}
                 >
                     {/* Trailing sector glow */}
-                    <path d={SWEEP_TRAIL} fill="rgba(16,185,129,0.09)" />
+                    <path className={s.sweepTrail} d={SWEEP_TRAIL} fill="rgba(16,185,129,0.09)" />
                     {/* Scan line */}
                     <line
+                        className={s.sweepLine}
                         x1={CX} y1={CY} x2={CX} y2={CY - R}
                         stroke="rgba(16,185,129,0.75)" strokeWidth="1.5"
                         strokeLinecap="round"
                     />
                     {/* Tip glow */}
-                    <circle cx={CX} cy={CY - R} r="3"
+                    <circle className={s.sweepTip} cx={CX} cy={CY - R} r="3"
                         fill="rgba(16,185,129,0.8)"
                         filter="url(#sweepGlow)"
                     />

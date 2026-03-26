@@ -178,20 +178,36 @@
     border-color: rgba(16, 185, 129, 0.25);
 }
 
-:global(.light) .detailName  { color: #1F2937; }
-:global(.light) .detailLabel { color: #9CA3AF; }
-:global(.light) .detailVal   { color: #374151; }
-:global(.light) .detailDelta { color: #DC2626; }
-:global(.light) .detailRatio { color: #6B7280; }
+/* Grid: concentric rings → Slate-300 */
+:global(.light) .ring { stroke: #CBD5E1 !important; }
 
-:global(.light) .detail {
-    background: rgba(255, 255, 255, 0.60);
-}
+/* Dashed quadrant axes → Slate-400 for clear structural lines */
+:global(.light) .axisLine { stroke: #94A3B8 !important; }
 
-:global(.light) .waterfallLink {
-    background: rgba(245, 158, 11, 0.08);
-}
+/* Sweep scan line → Deep Indigo at 30% */
+:global(.light) .sweepLine { stroke: rgba(79, 70, 229, 0.30) !important; }
 
-:global(.light) .legendItem  { color: #6B7280; }
+/* Quadrant labels (SALES, LEGAL, MFG, LOGISTICS) → Slate-900 */
+:global(.light) .quadLabel { fill: #0F172A !important; }
 
-:global(.light) .quadLabel   { fill: rgba(0, 0, 0, 0.35) !important; }
+/* Ring friction percentage labels → Slate-900 */
+:global(.light) .ringLabel { fill: #0F172A !important; }
+
+/* Legend text — Slate-700 */
+:global(.light) .legendItem { color: #334155; }
+
+/* Detail panel — all text → Slate-900 */
+:global(.light) .detail       { background: rgba(255, 255, 255, 0.60); }
+:global(.light) .detailName   { color: #0F172A; }
+:global(.light) .detailLabel  { color: #475569; }
+:global(.light) .detailVal    { color: #0F172A; }
+:global(.light) .detailDelta  { color: #DC2626; }
+:global(.light) .detailRatio  { color: #475569; }
+
+:global(.light) .waterfallLink { background: rgba(245, 158, 11, 0.08); }
+
+/* Radar fill + sweep elements — light mode */
+:global(.light) .radarBgCircle { fill: rgba(99, 102, 241, 0.04) !important; }
+:global(.light) .sweepTrail    { fill: rgba(79, 70, 229, 0.06)  !important; }
+:global(.light) .centreDot     { fill: rgba(99, 102, 241, 0.25) !important; stroke: rgba(79, 70, 229, 0.45) !important; }
+:global(.light) .sweepTip      { fill: rgba(79, 70, 229, 0.55)  !important; }

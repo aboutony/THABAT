@@ -1,0 +1,31 @@
+/* ── SonicWave — Phase 13 ────────────────────────────────────────────────── */
+/* Positions over the Oracle card exactly like the scan line.                */
+
+.wave {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 14px;
+    pointer-events: none;
+    z-index: 3;
+    overflow: hidden;
+}
+
+.bar {
+    flex: 1;
+    height: 24px;
+    max-width: 7px;
+    border-radius: 3px;
+    background: rgba(139, 92, 246, 0.50);   /* violet */
+    transform-origin: center;
+}
+
+/* ── Light mode — Deep Indigo stroke ─────────────────────────────────────── */
+:global(.light) .bar {
+    background: rgba(79, 70, 229, 0.55);
+}

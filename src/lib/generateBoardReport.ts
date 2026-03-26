@@ -21,6 +21,15 @@ const TIER_SCORE: Record<NitaqatTierKey, number> = {
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
+export interface SessionSimulation {
+    salesGrowthPct:        number;
+    expatsHired:           number;
+    materialCostDelta:     number;
+    projectedMarginPct:    number;
+    projectedTier:         string;
+    estimatedAnnualImpact: number;
+}
+
 export interface BoardReport {
     generatedAt:  string;   // ISO
     periodFrom:   string;   // ISO (30 days ago)
@@ -49,11 +58,14 @@ export interface BoardReport {
 
     // Health context
     healthScore: number;
+
+    // Live session simulation (What-If sliders, not yet saved to ledger)
+    sessionSimulation: SessionSimulation | null;
 }
 
 // ── Aggregator ────────────────────────────────────────────────────────────
 
-export function generateBoardReport(healthScore: number): BoardReport {
+export function generateBoardReport(healthScore: number, sessionLevers?: SessionSimulation): BoardReport {
     const now       = new Date();
     const thirtyAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
@@ -99,5 +111,6 @@ export function generateBoardReport(healthScore: number): BoardReport {
         topStrategyImpact,
         scenarioSnapshot,
         healthScore,
+        sessionSimulation: sessionLevers ?? null,
     };
 }

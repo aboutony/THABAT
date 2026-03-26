@@ -491,113 +491,92 @@
     box-shadow: none;
 }
 
-/* ── Light mode overrides ─────────────────────────────────────────────────── */
+/* ── Light mode — Frosted Pearl + Slate-200 ──────────────────────────────── */
 :global(.light) .backdrop {
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.28);
 }
 
 :global(.light) .panel {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 }
 
 :global(.light) .topBar {
-    border-bottom-color: rgba(99, 102, 241, 0.22);
+    border-bottom-color: #E2E8F0;
 }
 
-:global(.light) .labTitle {
-    color: #4F46E5;
-}
+:global(.light) .labTitle { color: #4F46E5; }
 
 :global(.light) .closeBtn {
     color: #4B5563;
-    border-color: rgba(99, 102, 241, 0.22);
+    border-color: #E2E8F0;
 }
 :global(.light) .closeBtn:hover {
     color: #1F2937;
-    border-color: rgba(99, 102, 241, 0.45);
+    border-color: #CBD5E1;
 }
 
-:global(.light) .sectionLabel {
-    color: #9CA3AF;
-}
+:global(.light) .sectionLabel { color: #9CA3AF; }
 
 :global(.light) .card {
-    background: rgba(255, 255, 255, 0.5);
-    border-color: rgba(99, 102, 241, 0.22);
-    box-shadow: inset 0 0 20px rgba(99, 102, 241, 0.03);
+    background: rgba(255, 255, 255, 0.55);
+    border-color: #E2E8F0;
+    box-shadow: none;
 }
 
 :global(.light) .leverRow {
-    background: rgba(255, 255, 255, 0.45);
-    border-color: rgba(99, 102, 241, 0.18);
+    background: rgba(255, 255, 255, 0.50);
+    border-color: #E2E8F0;
 }
 
-:global(.light) .leverName {
-    color: #4B5563;
+:global(.light) .leverName    { color: #0F172A; }
+:global(.light) .leverValNeu  { color: #0F172A; }
+:global(.light) .leverRange   { color: #475569; }
+
+/* Slider track — Deep Indigo for maximum legibility on frosted white */
+:global(.light) .slider {
+    background: linear-gradient(90deg, rgba(79, 70, 229, 0.35), rgba(79, 70, 229, 0.75));
 }
 
-:global(.light) .leverValNeu {
-    color: #1F2937;
+:global(.light) .slider::-webkit-slider-thumb {
+    border-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.40), 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+:global(.light) .slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 18px rgba(79, 70, 229, 0.60), 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+:global(.light) .slider::-moz-range-thumb {
+    border-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 10px rgba(79, 70, 229, 0.40);
 }
 
-:global(.light) .leverRange {
-    color: #9CA3AF;
+/* Ghost bars — Slate track, Slate-900 text for maximum legibility */
+:global(.light) .track            { background: rgba(226, 232, 240, 0.85); }
+/* Projected bar → solid Indigo-500 at 40% so estimate is clearly distinct */
+:global(.light) .barFillProjected {
+    background: rgba(99, 102, 241, 0.40) !important;
+    opacity: 1 !important;
 }
+:global(.light) .barTag  { color: #0F172A; }
+:global(.light) .barVal  { color: #0F172A; }
+:global(.light) .delta   { color: #0F172A; }
 
-/* Ghost bars: semi-transparent Indigo instead of Neon for light mode visibility */
-:global(.light) .track {
-    background: rgba(99, 102, 241, 0.10);
-}
-
-:global(.light) .barFill {
-    background: rgba(99, 102, 241, 0.55) !important;
-}
-
-:global(.light) .barTag {
-    color: #6B7280;
-}
-
-:global(.light) .barVal {
-    color: #374151;
-}
-
-:global(.light) .delta {
-    color: #374151;
-}
-
-:global(.light) .tierName {
-    color: #1F2937;
-}
-
-:global(.light) .tierArrow {
-    color: #9CA3AF;
-}
+:global(.light) .tierName  { color: #0F172A; }
+:global(.light) .tierArrow { color: #64748B; }
 
 :global(.light) .impactSummary {
-    background: rgba(99, 102, 241, 0.07);
-    border-color: rgba(99, 102, 241, 0.20);
+    background: rgba(79, 70, 229, 0.05);
+    border-color: #E2E8F0;
 }
-
-:global(.light) .impactSummaryLabel {
-    color: #6366F1;
-}
+:global(.light) .impactSummaryLabel { color: #4F46E5; }
+:global(.light) .impactSummaryVal   { color: #0F172A; }
 
 :global(.light) .reasoningDrawer {
-    background: rgba(245, 245, 252, 0.95);
-    border-top-color: rgba(99, 102, 241, 0.22);
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.93);
+    border-top-color: #E2E8F0;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.10);
 }
-
-:global(.light) .drawerTitle {
-    color: #4F46E5;
-}
-
-:global(.light) .drawerHandleBar {
-    background: rgba(99, 102, 241, 0.25);
-}
-
-:global(.light) .reasoningText {
-    color: #4B5563;
-}
+:global(.light) .drawerTitle       { color: #4F46E5; }
+:global(.light) .drawerHandleBar   { background: #CBD5E1; }
+:global(.light) .reasoningText     { color: #0F172A; }

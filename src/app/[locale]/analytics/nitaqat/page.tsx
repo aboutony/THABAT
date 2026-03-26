@@ -1,6 +1,7 @@
 'use client';
 
 import { useState }          from 'react';
+import { useRouter }         from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence }    from 'framer-motion';
 import Link                           from 'next/link';
@@ -63,6 +64,7 @@ const WORKER_ROWS: {
 export default function NitaqatPage() {
     const locale  = useLocale();
     const isAr    = locale === 'ar';
+    const router  = useRouter();
     const t       = useTranslations('nitaqat');
 
     const [plannedExpats,      setPlannedExpats]      = useState(0);
@@ -159,9 +161,9 @@ export default function NitaqatPage() {
             transition={{ duration: 0.35, ease: 'easeOut' }}
         >
             {/* Back link */}
-            <Link href={`/${locale}/analytics`} className={s.backLink}>
-                {isAr ? '←' : '→'}&nbsp;{t('back')}
-            </Link>
+            <button className={s.backLink} onClick={() => router.push(`/${locale}`)}>
+                {isAr ? '→' : '←'}&nbsp;{t('back')}
+            </button>
 
             {/* Header */}
             <div className={s.header}>

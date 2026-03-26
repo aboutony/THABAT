@@ -1,0 +1,93 @@
+/* ── VocalResponseOverlay — Phase 13 ────────────────────────────────────────── */
+
+.overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 22px 32px;
+    background: rgba(6, 8, 18, 0.88);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    cursor: pointer;
+}
+
+/* Thin accent line at very top */
+.accentLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    opacity: 0.75;
+    border-radius: 0 0 2px 2px;
+}
+
+/* Intent category badge */
+.badge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    padding: 2px 8px;
+    border: 1px solid;
+    border-radius: 20px;
+    width: fit-content;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Main response text */
+.text {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.92);
+    margin: 0;
+}
+
+/* Blinking cursor during typewriter */
+.cursor {
+    display: inline-block;
+    width: 2px;
+    height: 18px;
+    background: var(--accent, rgba(165, 180, 252, 0.75));
+    margin-inline-start: 2px;
+    vertical-align: middle;
+    animation: overlay-blink 0.8s step-end infinite;
+}
+
+@keyframes overlay-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+/* "tap to dismiss" hint */
+.dismiss {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.20);
+    align-self: flex-end;
+}
+
+/* ── Light mode — Frosted Pearl ──────────────────────────────────────────────── */
+:global(.light) .overlay {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+:global(.light) .text    { color: #0F172A; }
+:global(.light) .dismiss { color: rgba(0, 0, 0, 0.28); }
+:global(.light) .badge   { background: rgba(0, 0, 0, 0.04); }
+
+:global(.light) .cursor {
+    background: var(--accent, rgba(79, 70, 229, 0.80));
+}
