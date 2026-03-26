@@ -10,6 +10,7 @@ import {
 } from '@/lib/generateBriefing';
 import type { BriefingContext, RiskKey, ActionKey } from '@/lib/generateBriefing';
 import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
+import { hasRetentionRisk } from '@/lib/calculateClientHealth';
 import { useEntity } from '@/context/EntityContext';
 import s from './OracleBriefing.module.css';
 
@@ -65,8 +66,9 @@ export default function OracleBriefing({ score, scoreBreakdown }: OracleBriefing
         const context  = generateBriefing({
             score,
             stockGap,
-            nitaqatTier:    DEMO_NITAQAT_TIER,
+            nitaqatTier:      DEMO_NITAQAT_TIER,
             scoreBreakdown,
+            hasRetentionRisk: hasRetentionRisk(),
         });
         setCtx(context);
     }, [score, scoreBreakdown]);

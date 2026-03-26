@@ -10,6 +10,7 @@ import type { NitaqatTierKey } from './ledger';
 export type RiskKey =
     | 'stockOutRisk'
     | 'nitaqatRisk'
+    | 'retentionRisk'
     | 'marginsRisk'
     | 'receivablesRisk'
     | 'liquidityRisk'
@@ -26,7 +27,8 @@ export type ModuleRoute =
     | 'nitaqat'
     | 'sales-report'
     | 'receivables-report'
-    | 'efficiency-report';
+    | 'efficiency-report'
+    | 'retention';
 
 export interface BriefingInput {
     /** Overall stability score 0–100 */
@@ -41,6 +43,8 @@ export interface BriefingInput {
         receivables: number;
         liquidity:   number;
     };
+    /** True when any client health score < 60 */
+    hasRetentionRisk?: boolean;
 }
 
 export interface BriefingContext {
@@ -75,7 +79,12 @@ function resolveRisk(
         return { riskKey: 'nitaqatRisk', riskModule: 'nitaqat' };
     }
 
-    // 3. Financial sub-score weaknesses
+    // 3. Client retention risk (churn signals)
+    if (input.hasRetentionRisk) {
+        return { riskKey: 'retentionRisk', riskModule: 'retention' };
+    }
+
+    // 4. Financial sub-score weaknesses
     if (input.scoreBreakdown) {
         const { margins, receivables, liquidity } = input.scoreBreakdown;
         if (margins < 50) {
@@ -89,7 +98,7 @@ function resolveRisk(
         }
     }
 
-    // 4. Overall score degradation
+    // 5. Overall score degradation
     if (input.score < 60) {
         return { riskKey: 'marginsRisk', riskModule: 'sales-report' };
     }

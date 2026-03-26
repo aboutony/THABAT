@@ -108,6 +108,8 @@
         "moduleSupplyChainDesc": "Logistics resilience & Saudi customs intelligence",
         "moduleEfficiency": "Operational Efficiency",
         "moduleEfficiencyDesc": "Process friction & Time-to-Value radar",
+        "moduleRetention": "Client Retention",
+        "moduleRetentionDesc": "Churn signals · health scores · proactive outreach",
         "actionLedger": "Executive Action Ledger"
     },
     "integrations": {
@@ -451,6 +453,7 @@
         "sent1": {
             "stockOutRisk":     "Today's focus is supply chain exposure — {n} days of stock remaining against a {lead}-day replenishment cycle.",
             "nitaqatRisk":      "Today's focus is Nitaqat compliance — current tier warrants an immediate workforce review.",
+            "retentionRisk":    "Today's focus is client retention — churn signals detected across multiple accounts.",
             "marginsRisk":      "Today's focus is margin pressure — cost-to-revenue ratio is compressing net profit.",
             "receivablesRisk":  "Today's focus is receivables velocity — outstanding balances are constraining cash flow.",
             "liquidityRisk":    "Today's focus is cash runway — available reserves require active monitoring.",
@@ -464,6 +467,7 @@
         "sent3": {
             "stockOutRisk":     "Suggesting an emergency reorder review to maintain the 18% Net Profit target.",
             "nitaqatRisk":      "Suggesting workforce corrections this quarter to protect your compliance standing.",
+            "retentionRisk":    "Suggesting a proactive outreach campaign to at-risk clients before contracts lapse.",
             "marginsRisk":      "Suggesting a cost audit of the top expense categories to recover margin.",
             "receivablesRisk":  "Suggesting priority follow-up on overdue accounts to release working capital.",
             "liquidityRisk":    "Suggesting accelerating collections to extend cash runway beyond 6 months.",

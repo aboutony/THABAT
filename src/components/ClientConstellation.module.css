@@ -1,0 +1,154 @@
+/* ── ClientConstellation ──────────────────────────────────────────────────── */
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    position: relative;
+}
+
+.wrapper:hover {
+    border-color: rgba(165, 180, 252, 0.30);
+}
+
+/* ── Label row ───────────────────────────────────────────────────────────── */
+.labelRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.icon {
+    font-size: 13px;
+    color: rgba(165, 180, 252, 0.60);
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-secondary);
+    flex: 1;
+}
+
+.arrow {
+    font-size: 16px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    transition: transform 0.15s;
+}
+.wrapper:hover .arrow { transform: translateX(2px); }
+
+/* ── SVG canvas ──────────────────────────────────────────────────────────── */
+.svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    display: block;
+}
+
+/* ── Client tooltip ──────────────────────────────────────────────────────── */
+.tooltip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    width: fit-content;
+    align-self: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.tooltipDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.tooltipName {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.tooltipScore {
+    font-size: 13px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.tooltipLabel {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+}
+
+.tooltipRisk {
+    font-size: 9px;
+    font-weight: 700;
+    color: #F59E0B;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1px 6px;
+    background: rgba(245, 158, 11, 0.12);
+    border-radius: 10px;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* ── At-risk count badge ─────────────────────────────────────────────────── */
+.riskBadge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #F59E0B;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    align-self: flex-start;
+}
+
+.riskDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #F59E0B;
+    box-shadow: 0 0 4px #F59E0B;
+    flex-shrink: 0;
+    animation: risk-pulse 2s ease-in-out infinite;
+}
+
+@keyframes risk-pulse {
+    0%, 100% { box-shadow: 0 0 4px #F59E0B; }
+    50%       { box-shadow: 0 0 10px #F59E0B; }
+}
+
+/* ── Light mode ──────────────────────────────────────────────────────────── */
+:global(.light) .tooltip {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.10);
+}
+
+:global(.light) .tooltipName {
+    color: #1A1A1A;
+}

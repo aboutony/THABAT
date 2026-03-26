@@ -9,6 +9,7 @@ import DriverCard from '@/components/DriverCard';
 import InsightCard from '@/components/InsightCard';
 import StockHourglass from '@/components/StockHourglass';
 import OracleBriefing from '@/components/OracleBriefing';
+import ClientConstellation from '@/components/ClientConstellation';
 import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
 import EntitySelector from '@/components/EntitySelector';
@@ -282,19 +283,8 @@ export default function RitualScreen() {
                     </div>
                 )}
 
-                {/* ── Relationship Constellation placeholder ───────────── */}
-                <div className={styles.constellation}>
-                    <div className={styles.constellationStars} aria-hidden="true" />
-                    <div className={styles.constellationInner}>
-                        <span className={styles.constellationIcon}>⬡</span>
-                        <span className={styles.constellationTitle}>
-                            {locale === 'ar' ? 'كوكبة العملاء' : 'Client Constellation'}
-                        </span>
-                        <span className={styles.constellationSub}>
-                            {locale === 'ar' ? 'المرحلة ١٢ — قريباً' : 'Phase 12 — Coming Soon'}
-                        </span>
-                    </div>
-                </div>
+                {/* ── Relationship Constellation ───────────────────────── */}
+                <ClientConstellation />
 
                 {/* ── Action row: Scenario Lab + Export ────────────────── */}
                 <div className={styles.actionRow}>
