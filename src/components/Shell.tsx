@@ -28,9 +28,10 @@ export default function Shell({ children }: ShellProps) {
     const isAdmin = user?.role === 'admin';
 
     // Vault alert glow — pulse amber when any active risk exists
-    const stockGap        = calculateStockGap(DEMO_STOCK_GAP_INPUT);
-    const hasNitaqatDanger = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
-    const vaultHasAlerts  = stockGap.isAtRisk || hasNitaqatDanger || hasRetentionRisk();
+    const stockGap           = calculateStockGap(DEMO_STOCK_GAP_INPUT);
+    const hasNitaqatDanger   = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
+    const hasReceivablesRisk = 62 < 70; // matches DEMO_RECEIVABLES_SCORE in Vault
+    const vaultHasAlerts     = stockGap.isAtRisk || hasNitaqatDanger || hasRetentionRisk() || hasReceivablesRisk;
 
     // Active tab detection
     const isActive = (path: string) => {

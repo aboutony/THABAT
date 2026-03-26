@@ -5,15 +5,13 @@ import { useTranslations, useLocale } from 'next-intl';
 import { AnimatePresence } from 'framer-motion';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
-import InsightCard from '@/components/InsightCard';
 import OracleBriefing from '@/components/OracleBriefing';
 import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
 import EntitySelector from '@/components/EntitySelector';
-import { generateConsequenceStatement } from '@/lib/scoring';
-import { formatScore, formatPercent } from '@/lib/locale-utils';
+import { formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
-import type { ScoreBreakdown, RawMetrics, ConsequenceInsight } from '@/lib/scoring';
+import type { ScoreBreakdown, RawMetrics } from '@/lib/scoring';
 import styles from './RitualScreen.module.css';
 
 // Fallback demo data when no real metrics exist
@@ -31,7 +29,6 @@ export default function RitualScreen() {
     const tSC = useTranslations('scenario');
     const tR  = useTranslations('report');
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
-    const [insight, setInsight] = useState<ConsequenceInsight | null>(null);
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);
     const [now, setNow] = useState(() => new Date());
@@ -84,7 +81,6 @@ export default function RitualScreen() {
                         };
 
                         setLatestData({ score: scoreBreakdown, metrics: rawMetrics });
-                        setInsight(generateConsequenceStatement(scoreBreakdown, rawMetrics));
                     }
                 }
             } catch {
@@ -104,17 +100,6 @@ export default function RitualScreen() {
         window.addEventListener('thabat-ledger-updated', sync);
         return () => window.removeEventListener('thabat-ledger-updated', sync);
     }, []);
-
-    // Generate demo insight if no real data
-    const demoInsight: ConsequenceInsight | null = !insight ? {
-        metricKey: 'scoring.costs',
-        consequenceKey: 'insight.consequence.costs',
-        severity: 'moderate',
-        impactValue: '74.2%',
-        score: 62,
-    } : null;
-
-    const activeInsight = insight || demoInsight;
 
     const drivers = [
         {
@@ -212,11 +197,6 @@ export default function RitualScreen() {
                     oeeValue="84%"
                     oeePercent={84}
                 />
-
-                {/* Executive Insight — Consequence Statement */}
-                {activeInsight && (
-                    <InsightCard insight={activeInsight} />
-                )}
 
                 {/* Top 3 Drivers */}
                 <div className={styles.driversBlock}>

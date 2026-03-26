@@ -11,6 +11,9 @@ import { useAuth } from '@/context/AuthContext';
 import { calculateStockGap, DEMO_STOCK_GAP_INPUT, DEMO_NEXT_SHIPMENT_DAYS } from '@/lib/stockGap';
 import { DEMO_NITAQAT_TIER } from '@/lib/generateBriefing';
 import { hasRetentionRisk, getAtRiskClients } from '@/lib/calculateClientHealth';
+
+// Receivables risk threshold: score below 70 triggers a vault warning
+const DEMO_RECEIVABLES_SCORE = 62;
 import styles from './vault.module.css';
 
 // ── Warning card definition ────────────────────────────────────────────────
@@ -41,10 +44,11 @@ export default function ExecutiveVault() {
     }, [user, authLoading, router, locale]);
 
     // ── Risk computation ─────────────────────────────────────────────────
-    const stockGap        = calculateStockGap(DEMO_STOCK_GAP_INPUT);
-    const hasNitaqatDanger = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
-    const retentionRisk   = hasRetentionRisk();
-    const atRiskCount     = retentionRisk ? getAtRiskClients().length : 0;
+    const stockGap           = calculateStockGap(DEMO_STOCK_GAP_INPUT);
+    const hasNitaqatDanger   = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
+    const retentionRisk      = hasRetentionRisk();
+    const atRiskCount        = retentionRisk ? getAtRiskClients().length : 0;
+    const hasReceivablesRisk = DEMO_RECEIVABLES_SCORE < 70;
 
     // ── Build warning cards ──────────────────────────────────────────────
     const warnings: WarningCard[] = [];
@@ -82,6 +86,18 @@ export default function ExecutiveVault() {
             bodyAr:  `${atRiskCount} عميل يُظهر إشارات مخاطر — يُنصح بالتواصل الاستباقي.`,
             href:    `/${locale}/analytics/retention`,
             color:   '#FB7185',
+        });
+    }
+
+    if (hasReceivablesRisk) {
+        warnings.push({
+            id:      'receivables',
+            titleEn: 'Receivables Under Pressure',
+            titleAr: 'ضغط على المستحقات',
+            bodyEn:  `Receivables score ${DEMO_RECEIVABLES_SCORE}/100 — elevated overdue exposure detected. Review financial position.`,
+            bodyAr:  `نقاط المستحقات ${DEMO_RECEIVABLES_SCORE}/100 — تم رصد ارتفاع في التعرض للمتأخرات. راجع الوضع المالي.`,
+            href:    `/${locale}/analytics/sales-report`,
+            color:   '#F59E0B',
         });
     }
 
