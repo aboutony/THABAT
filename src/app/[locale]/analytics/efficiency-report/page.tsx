@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
+import EfficiencyRadar from '@/components/EfficiencyRadar';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './efficiency.module.css';
 
@@ -81,6 +82,25 @@ export default function EfficiencyReportPage() {
                 <Link href={`/${locale}`} className={styles.backLink}>
                     {isAr ? '→' : '←'} {t('back')}
                 </Link>
+
+                {/* ── Bottleneck Radar — Phase 11 ───────────────────── */}
+                <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className={styles.radarHeader}>
+                        <span className={styles.radarTitle}>
+                            {isAr ? 'رادار الكفاءة التشغيلية' : 'Operational Efficiency Radar'}
+                        </span>
+                        <span className={styles.radarSub}>
+                            {isAr
+                                ? 'الأقرب للمركز = احتكاك أعلى'
+                                : 'Closer to centre = higher friction'}
+                        </span>
+                    </div>
+                    <EfficiencyRadar showWaterfallLink />
+                </motion.div>
 
                 {/* Velocity Dial */}
                 <motion.div

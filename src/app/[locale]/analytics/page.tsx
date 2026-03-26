@@ -252,6 +252,29 @@ export default function AnalyticsPage() {
                             </Link>
                         </motion.div>
 
+                        {/* Card D: Operational Efficiency — Phase 11 */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.4 }}
+                        >
+                            <Link href={`/${locale}/analytics/efficiency-report`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(16, 185, 129, 0.14)', color: '#10B981' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleEfficiency')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleEfficiencyDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: '#10B981', background: 'rgba(16,185,129,0.12)', borderColor: 'rgba(16,185,129,0.28)' }}>Phase 11</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
                     </div>
                 </div>
 

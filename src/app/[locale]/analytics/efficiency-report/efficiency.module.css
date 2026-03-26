@@ -1,3 +1,25 @@
+/* ── Radar section header ────────────────────────────────────────────────── */
+.radarHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+.radarTitle {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-tertiary);
+}
+
+.radarSub {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.06em;
+}
+
 .page {
     display: flex;
     flex-direction: column;

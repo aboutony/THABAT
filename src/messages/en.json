@@ -106,6 +106,8 @@
         "moduleNitaqatDesc": "Saudization monitor — HRSD 2026 Nitaqat 2.0",
         "moduleSupplyChain": "Supply Chain Nerve Center",
         "moduleSupplyChainDesc": "Logistics resilience & Saudi customs intelligence",
+        "moduleEfficiency": "Operational Efficiency",
+        "moduleEfficiencyDesc": "Process friction & Time-to-Value radar",
         "actionLedger": "Executive Action Ledger"
     },
     "integrations": {
