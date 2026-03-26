@@ -17,9 +17,13 @@ import { useVoiceOracle } from '@/hooks/useVoiceOracle';
 import { processVoiceIntent, INTENT_ROUTE } from '@/lib/processVoiceIntent';
 import type { VoiceIntent } from '@/lib/processVoiceIntent';
 import { generateVocalResponse } from '@/lib/generateVocalResponse';
+import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
+import { getAtRiskClients } from '@/lib/calculateClientHealth';
+import { TTV_RESULTS } from '@/lib/calculateTTV';
 import VoiceTrigger from './VoiceTrigger';
 import SonicWave from './SonicWave';
 import VocalResponseOverlay from './VocalResponseOverlay';
+import ActionToast from './ActionToast';
 import s from './OracleBriefing.module.css';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
@@ -86,8 +90,9 @@ export default function OracleBriefing({
     const { listening, supported, toggle, finalTranscript, clearTranscript } = useVoiceOracle(locale);
 
     // ── Voice intent state ──────────────────────────────────────────────────
-    const [vocalResponse,  setVocalResponse]  = useState<string | null>(null);
-    const [activeIntent,   setActiveIntent]   = useState<VoiceIntent | null>(null);
+    const [vocalResponse,    setVocalResponse]    = useState<string | null>(null);
+    const [activeIntent,     setActiveIntent]     = useState<VoiceIntent | null>(null);
+    const [voiceActionResult, setVoiceActionResult] = useState<ActionResult | null>(null);
 
     const dismissOverlay = useCallback(() => {
         setVocalResponse(null);
@@ -95,7 +100,9 @@ export default function OracleBriefing({
         clearTranscript();
     }, [clearTranscript]);
 
-    // Process final transcript → intent → response → navigation warp
+    const dismissActionToast = useCallback(() => setVoiceActionResult(null), []);
+
+    // Process final transcript → intent → response → action dispatch → navigation warp
     useEffect(() => {
         if (!finalTranscript) return;
 
@@ -105,6 +112,29 @@ export default function OracleBriefing({
         setActiveIntent(intent);
         setVocalResponse(response);
 
+        // Dispatch action for actionable intents
+        if (intent === 'OPERATIONAL_FRICTION') {
+            const top = TTV_RESULTS.filter(r => r.severity === 'high')[0]
+                     ?? TTV_RESULTS.filter(r => r.severity === 'medium')[0];
+            if (top) {
+                executeActionBridge({
+                    type:     'INTERNAL_TICKET',
+                    target:   isAr ? top.label.ar : top.label.en,
+                    subject:  'Prioritize pending contracts',
+                    priority: 'high',
+                }).then(r => setVoiceActionResult(r));
+            }
+        } else if (intent === 'RETENTION_RISK') {
+            const atRisk = getAtRiskClients();
+            if (atRisk.length > 0) {
+                executeActionBridge({
+                    type:     'EMAIL_OUTREACH',
+                    target:   isAr ? atRisk[0].name.ar : atRisk[0].name.en,
+                    priority: 'high',
+                }).then(r => setVoiceActionResult(r));
+            }
+        }
+
         // Navigation warp — after 1.8 s to let the user read the first line
         const route = INTENT_ROUTE[intent];
         if (route) {
@@ -113,7 +143,7 @@ export default function OracleBriefing({
             }, 1800);
             return () => clearTimeout(navTimer);
         }
-    }, [finalTranscript, locale, score, router]);
+    }, [finalTranscript, locale, score, isAr, router]);
 
     const [ctx,      setCtx]      = useState<BriefingContext | null>(null);
     const [revealed, setRevealed] = useState(0);   // 0=thinking, 1/2/3=sentences visible
@@ -308,6 +338,7 @@ export default function OracleBriefing({
             intent={activeIntent}
             onDismiss={dismissOverlay}
         />
+        <ActionToast result={voiceActionResult} onDismiss={dismissActionToast} />
         </>
     );
 }

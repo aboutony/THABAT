@@ -60,9 +60,11 @@ function formatHours(h: number, isAr: boolean): string {
 interface EfficiencyRadarProps {
     /** Show the Waterfall cross-link for Logistics (default: true) */
     showWaterfallLink?: boolean;
+    /** Called when user taps "Fix Bottleneck" on a high/medium friction blip */
+    onFixBottleneck?: (stageKey: string, stageLabel: string) => void;
 }
 
-export default function EfficiencyRadar({ showWaterfallLink = true }: EfficiencyRadarProps) {
+export default function EfficiencyRadar({ showWaterfallLink = true, onFixBottleneck }: EfficiencyRadarProps) {
     const locale  = useLocale();
     const isAr    = locale === 'ar';
     const results = TTV_RESULTS;
@@ -276,6 +278,19 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                                     ? 'هذا الاحتكاك يُسهم في تسرب 14% في اللوجستيات — راجع الشلال.'
                                     : 'Friction here is contributing to the 14% Logistics leakage found in your Waterfall.'}
                             </div>
+                        )}
+
+                        {/* Fix Bottleneck CTA — only for high/medium friction */}
+                        {onFixBottleneck && active.severity !== 'low' && (
+                            <button
+                                className={s.fixBtn}
+                                onClick={() => onFixBottleneck(
+                                    active.key,
+                                    isAr ? active.label.ar : active.label.en,
+                                )}
+                            >
+                                ⚡ {isAr ? 'إصلاح الاختناق' : 'Fix Bottleneck'}
+                            </button>
                         )}
                     </motion.div>
                 )}
