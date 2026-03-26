@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import Link from 'next/link';
 import { AnimatePresence } from 'framer-motion';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
@@ -206,25 +205,14 @@ export default function RitualScreen() {
                     <span className={styles.greetingTime}>{timeString}</span>
                 </div>
 
-                {/* ── Oracle Briefing + OEE micro-ring ─────────────── */}
-                <div className={styles.oracleRow}>
-                    <OracleBriefing
-                        score={score}
-                        scoreBreakdown={latestData?.score}
-                    />
-                    <Link
-                        href={`/${locale}/analytics/efficiency-report`}
-                        className={styles.oeeWidget}
-                        aria-label="Overall Equipment Effectiveness"
-                    >
-                        <svg viewBox="0 0 44 44" className={styles.oeeSvg} aria-hidden="true">
-                            <circle cx="22" cy="22" r="18" className={styles.oeeTrack} />
-                            <circle cx="22" cy="22" r="18" className={styles.oeeFill} />
-                        </svg>
-                        <span className={styles.oeeValue}>84%</span>
-                        <span className={styles.oeeLabel}>OEE</span>
-                    </Link>
-                </div>
+                {/* ── Oracle Briefing — Floating Command Header ────── */}
+                <OracleBriefing
+                    score={score}
+                    scoreBreakdown={latestData?.score}
+                    oeeHref={`/${locale}/analytics/efficiency-report`}
+                    oeeValue="84%"
+                    oeePercent={84}
+                />
 
                 {/* Executive Insight — Consequence Statement */}
                 {activeInsight && (

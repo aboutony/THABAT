@@ -1,14 +1,19 @@
-/* ── OracleBriefing — ExecutiveOracle Daily Briefing card ──────────────────── */
+/* ── OracleBriefing — Floating Command Header ───────────────────────────────── */
 
 .card {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 10;
     width: 100%;
-    padding: 20px 22px 18px;
+    padding: 18px 20px 16px;
     border-radius: var(--radius-sm);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.22),
+        0 1px 6px rgba(0, 0, 0, 0.14);
 }
 
 /* ── Atmospheric glow backgrounds ──────────────────────────────────────────── */
@@ -167,3 +172,117 @@
 .deepLink:hover .arrow { transform: translateX(3px); }
 
 [dir='rtl'] .deepLink:hover .arrow { transform: translateX(-3px); }
+
+/* ── AI scanning line ────────────────────────────────────────────────────── */
+/* Sweeps left→right across the card each time a new sentence is revealed.   */
+.scanLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+        180deg,
+        transparent        0%,
+        rgba(165, 180, 252, 0.45) 25%,
+        rgba(165, 180, 252, 0.75) 50%,
+        rgba(165, 180, 252, 0.45) 75%,
+        transparent        100%
+    );
+    filter: blur(0.5px);
+    pointer-events: none;
+    z-index: 3;
+    animation: oracle-scan 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes oracle-scan {
+    0%   { transform: translateX(-2px); opacity: 0; }
+    8%   { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { transform: translateX(360px); opacity: 0; }
+}
+
+/* ── Inline OEE ring (inside header) ────────────────────────────────────── */
+.oeeInline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 6px 4px;
+    border-radius: 8px;
+    background: rgba(74, 222, 128, 0.06);
+    border: 1px solid rgba(74, 222, 128, 0.18);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+    margin-inline-start: 6px;
+}
+
+.oeeInline:hover {
+    border-color: rgba(74, 222, 128, 0.38);
+    background: rgba(74, 222, 128, 0.10);
+}
+
+.oeeInlineSvg {
+    width: 32px;
+    height: 32px;
+    overflow: visible;
+}
+
+.oeeInlineTrack {
+    fill: none;
+    stroke: rgba(74, 222, 128, 0.12);
+    stroke-width: 3;
+}
+
+.oeeInlineFill {
+    fill: none;
+    stroke: #4ADE80;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 113.097;
+    transform: rotate(-90deg);
+    transform-origin: 22px 22px;
+}
+
+.oeeInlineVal {
+    font-size: 9px;
+    font-weight: 800;
+    color: #4ADE80;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.oeeInlineLbl {
+    font-size: 7px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-tertiary);
+    line-height: 1;
+}
+
+/* ── Light mode ──────────────────────────────────────────────────────────── */
+:global(.light) .card {
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+:global(.light) .scanLine {
+    background: linear-gradient(
+        180deg,
+        transparent        0%,
+        rgba(99, 102, 241, 0.35) 25%,
+        rgba(99, 102, 241, 0.60) 50%,
+        rgba(99, 102, 241, 0.35) 75%,
+        transparent        100%
+    );
+}
+
+:global(.light) .oeeInline {
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.25);
+}

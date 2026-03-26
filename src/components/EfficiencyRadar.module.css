@@ -194,4 +194,7 @@
 
 :global(.light) .legendItem  { color: #6B7280; }
 
-:global(.light) .quadLabel   { fill: rgba(0, 0, 0, 0.35) !important; }
+:global(.light) .quadLabel   { fill: #1A1A1A !important; }
+:global(.light) .ringLabel   { fill: #4B5563 !important; }
+:global(.light) .detailName  { color: #1A1A1A; }
+:global(.light) .detailVal   { color: #1A1A1A; }

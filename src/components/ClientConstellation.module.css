@@ -152,3 +152,19 @@
 :global(.light) .tooltipName {
     color: #1A1A1A;
 }
+
+:global(.light) .svg line {
+    stroke: #94A3B8 !important;
+    opacity: 0.9;
+}
+
+:global(.light) .wrapper {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global(.light) .label {
+    color: #374151;
+}

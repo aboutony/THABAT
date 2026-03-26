@@ -19,6 +19,10 @@ import s from './OracleBriefing.module.css';
 interface OracleBriefingProps {
     score:          number;
     scoreBreakdown?: { margins: number; receivables: number; liquidity: number; };
+    /** OEE ring — rendered inline inside the card header */
+    oeeHref?:        string;
+    oeeValue?:       string;   // display label e.g. "84%"
+    oeePercent?:     number;   // 0-100 for ring fill
 }
 
 // ── Glow class by health score ─────────────────────────────────────────────
@@ -29,8 +33,15 @@ function glowClass(score: number): string {
     return s.glowAmber;
 }
 
+// ── OEE ring SVG math ─────────────────────────────────────────────────────
+const OEE_R           = 18;
+const OEE_CIRC        = 2 * Math.PI * OEE_R; // ≈113.097
+
+function oeeOffset(pct: number) {
+    return OEE_CIRC * (1 - Math.max(0, Math.min(100, pct)) / 100);
+}
+
 // ── Sentence builders ────────────────────────────────────────────────────────
-// Each returns a single interpolated string from the oracle.sent{1,2,3} keys.
 
 function useSentences(ctx: BriefingContext | null, locale: string) {
     const t = useTranslations('oracle');
@@ -51,14 +62,20 @@ function useSentences(ctx: BriefingContext | null, locale: string) {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export default function OracleBriefing({ score, scoreBreakdown }: OracleBriefingProps) {
-    const locale        = useLocale();
-    const t             = useTranslations('oracle');
+export default function OracleBriefing({
+    score,
+    scoreBreakdown,
+    oeeHref,
+    oeeValue  = '84%',
+    oeePercent = 84,
+}: OracleBriefingProps) {
+    const locale           = useLocale();
+    const t                = useTranslations('oracle');
     const { activeEntity } = useEntity();
 
-    const [ctx,       setCtx]       = useState<BriefingContext | null>(null);
-    const [revealed,  setRevealed]  = useState(0);   // 0 = thinking, 1/2/3 = sentences visible
-    const [cursorOn,  setCursorOn]  = useState(true);
+    const [ctx,      setCtx]      = useState<BriefingContext | null>(null);
+    const [revealed, setRevealed] = useState(0);   // 0=thinking, 1/2/3=sentences visible
+    const [cursorOn, setCursorOn] = useState(true);
 
     // Build context client-side (reads localStorage ledger)
     useEffect(() => {
@@ -80,7 +97,6 @@ export default function OracleBriefing({ score, scoreBreakdown }: OracleBriefing
             setTimeout(() => setRevealed(1), 320),
             setTimeout(() => setRevealed(2), 920),
             setTimeout(() => setRevealed(3), 1520),
-            // Hide cursor 1.8s after all text is shown
             setTimeout(() => setCursorOn(false), 3400),
         ];
         return () => timers.forEach(clearTimeout);
@@ -93,20 +109,30 @@ export default function OracleBriefing({ score, scoreBreakdown }: OracleBriefing
         ? `/${locale}/analytics/${ctx.riskModule}`
         : `/${locale}/analytics`;
 
+    const dashOffset = oeeOffset(oeePercent);
+
     return (
         <div className={`glass-card ${s.card} ${glow}`}>
+
+            {/* AI scanning line — visible while text is being revealed */}
+            {revealed < 3 && (
+                <div key={revealed} className={s.scanLine} aria-hidden="true" />
+            )}
 
             {/* ── Header ────────────────────────────────────────────── */}
             <div className={s.header}>
                 <span className={s.oracleIcon}>✦</span>
                 <p className={s.sectionLabel}>{t('section')}</p>
-                {/* Sovereign badge — confirms which entity the Oracle is advising */}
+
+                {/* Sovereign badge */}
                 <span
                     className={s.sovereignBadge}
                     style={{ borderColor: `${activeEntity.accent}44`, color: activeEntity.accent }}
                 >
                     ⬡&nbsp;{locale === 'ar' ? activeEntity.nameAr : activeEntity.name}
                 </span>
+
+                {/* Thinking dots */}
                 <AnimatePresence>
                     {revealed === 0 && (
                         <motion.span
@@ -121,6 +147,29 @@ export default function OracleBriefing({ score, scoreBreakdown }: OracleBriefing
                         </motion.span>
                     )}
                 </AnimatePresence>
+
+                {/* OEE ring — glassmorphic inline element */}
+                {oeeHref && (
+                    <Link href={oeeHref} className={s.oeeInline} aria-label="OEE">
+                        <svg
+                            viewBox="0 0 44 44"
+                            className={s.oeeInlineSvg}
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="22" cy="22" r={OEE_R}
+                                className={s.oeeInlineTrack}
+                            />
+                            <circle
+                                cx="22" cy="22" r={OEE_R}
+                                className={s.oeeInlineFill}
+                                style={{ strokeDashoffset: dashOffset }}
+                            />
+                        </svg>
+                        <span className={s.oeeInlineVal}>{oeeValue}</span>
+                        <span className={s.oeeInlineLbl}>OEE</span>
+                    </Link>
+                )}
             </div>
 
             {/* ── Briefing body ─────────────────────────────────────── */}

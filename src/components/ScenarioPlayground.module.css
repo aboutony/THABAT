@@ -601,3 +601,26 @@
 :global(.light) .reasoningText {
     color: #4B5563;
 }
+
+/* Slider thumb: replace dark #080A14 border with light for frosted panels */
+:global(.light) .slider::-webkit-slider-thumb {
+    border-color: rgba(255, 255, 255, 0.90);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.40), 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+:global(.light) .slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.60), 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+:global(.light) .slider::-moz-range-thumb {
+    border-color: rgba(255, 255, 255, 0.90);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.40);
+}
+
+/* Ghost bar track — slightly more visible on frosted white */
+:global(.light) .track {
+    background: rgba(99, 102, 241, 0.13);
+}
+
+/* Impact summary label text */
+:global(.light) .impactSummaryVal {
+    color: #1F2937;
+}
