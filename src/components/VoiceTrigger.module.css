@@ -1,0 +1,68 @@
+/* ── VoiceTrigger — Phase 13 ─────────────────────────────────────────────── */
+
+.btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(139, 92, 246, 0.22);
+    background: rgba(139, 92, 246, 0.07);
+    color: rgba(139, 92, 246, 0.50);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.18s, background 0.18s, color 0.18s;
+    margin-inline-start: 4px;
+}
+
+.btn:hover {
+    border-color: rgba(139, 92, 246, 0.48);
+    background: rgba(139, 92, 246, 0.13);
+    color: rgba(139, 92, 246, 0.82);
+}
+
+/* Active (listening) state */
+.btn.active {
+    border-color: rgba(139, 92, 246, 0.65);
+    background: rgba(139, 92, 246, 0.16);
+    color: #8B5CF6;
+}
+
+/* Expanding glow ring */
+.glowRing {
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(139, 92, 246, 0.50);
+    pointer-events: none;
+}
+
+.icon {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Light mode — Deep Indigo ────────────────────────────────────────────── */
+:global(.light) .btn {
+    border-color: rgba(79, 70, 229, 0.28);
+    background: rgba(79, 70, 229, 0.06);
+    color: rgba(79, 70, 229, 0.60);
+}
+
+:global(.light) .btn:hover {
+    border-color: rgba(79, 70, 229, 0.55);
+    background: rgba(79, 70, 229, 0.11);
+    color: rgba(79, 70, 229, 0.90);
+}
+
+:global(.light) .btn.active {
+    border-color: rgba(79, 70, 229, 0.75);
+    background: rgba(79, 70, 229, 0.13);
+    color: #4F46E5;
+}
+
+:global(.light) .glowRing {
+    border-color: rgba(79, 70, 229, 0.50);
+}
