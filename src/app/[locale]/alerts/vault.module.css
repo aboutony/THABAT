@@ -1,0 +1,252 @@
+/* ── Executive Vault page ────────────────────────────────────────────────── */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px 16px 80px;
+    scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar {
+    display: none;
+}
+
+/* ── Page header ─────────────────────────────────────────────────────────── */
+
+.pageHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.pageTitle {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+.pageSubtitle {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.04em;
+}
+
+/* ── Section label ───────────────────────────────────────────────────────── */
+
+.sectionLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-tertiary);
+    padding: 4px 0 2px;
+}
+
+/* ── Sand Watch (Stock-at-Risk hourglass) ────────────────────────────────── */
+
+.sandWatch {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+}
+
+.sandWatch:hover {
+    border-color: rgba(165, 180, 252, 0.25);
+}
+
+.sandWatchCritical {
+    border-color: rgba(248, 113, 113, 0.30);
+    background: rgba(248, 113, 113, 0.04);
+}
+
+.sandWatchCritical:hover {
+    border-color: rgba(248, 113, 113, 0.45);
+}
+
+.sandWatchSafe {
+    border-color: rgba(74, 222, 128, 0.25);
+}
+
+.sandWatchBody {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.sandWatchLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-tertiary);
+}
+
+.sandWatchValue {
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+}
+
+.sandWatchSub {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+
+.sandWatchArrow {
+    font-size: 20px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    transition: transform 0.15s;
+}
+
+.sandWatch:hover .sandWatchArrow {
+    transform: translateX(2px);
+}
+
+/* ── Oracle warning cards ────────────────────────────────────────────────── */
+
+.warningCard {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.warningCard:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.warningDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: vault-dot-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes vault-dot-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.55; transform: scale(1.25); }
+}
+
+.warningBody {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.warningTitle {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    line-height: 1;
+}
+
+.warningText {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.warningArrow {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    transition: transform 0.15s;
+}
+
+.warningCard:hover .warningArrow {
+    transform: translateX(2px);
+}
+
+/* ── All clear state ─────────────────────────────────────────────────────── */
+
+.allClear {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    background: rgba(74, 222, 128, 0.06);
+    border: 1px solid rgba(74, 222, 128, 0.20);
+}
+
+.allClearIcon {
+    font-size: 16px;
+    color: #4ADE80;
+    font-weight: 700;
+}
+
+.allClearText {
+    font-size: 13px;
+    color: #4ADE80;
+    font-weight: 600;
+}
+
+/* ── RTL overrides ───────────────────────────────────────────────────────── */
+
+:global([dir="rtl"]) .sandWatch {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .sandWatchArrow {
+    transform: scaleX(-1);
+}
+
+:global([dir="rtl"]) .sandWatch:hover .sandWatchArrow {
+    transform: scaleX(-1) translateX(2px);
+}
+
+:global([dir="rtl"]) .warningCard {
+    flex-direction: row-reverse;
+}
+
+:global([dir="rtl"]) .warningArrow {
+    transform: scaleX(-1);
+}
+
+:global([dir="rtl"]) .warningCard:hover .warningArrow {
+    transform: scaleX(-1) translateX(2px);
+}
+
+/* ── Light mode ──────────────────────────────────────────────────────────── */
+
+:global(.light) .sandWatch {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+:global(.light) .warningCard {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+:global(.light) .pageTitle {
+    color: #1A1A1A;
+}

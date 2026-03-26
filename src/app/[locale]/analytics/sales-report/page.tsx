@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
@@ -238,6 +239,7 @@ function ForecastChart({ forecast, isAr }: ForecastChartProps) {
 export default function SalesReportPage() {
     const locale = useLocale();
     const isAr = locale === 'ar';
+    const router = useRouter();
     const t = useTranslations('salesReport');
     const tc = useTranslations('common');
     const [volumeMultiplier, setVolumeMultiplier] = useState(100);
@@ -297,9 +299,9 @@ export default function SalesReportPage() {
     return (
         <Shell>
             <div className={styles.page}>
-                <Link href={`/${locale}/analytics`} className={styles.backLink}>
+                <button className={styles.backLink} onClick={() => router.push(`/${locale}`)}>
                     {isAr ? '→' : '←'} {t('back')}
-                </Link>
+                </button>
 
                 {/* ── Agentic Alert Bar ── */}
                 <AnimatePresence>

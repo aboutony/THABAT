@@ -156,12 +156,23 @@
     font-weight: 800;
 }
 
-/* Amber alert glow */
+/* Vault alert glow — pulses when active risks exist */
 .navAlertGlow svg {
     color: var(--amber-action);
     filter: drop-shadow(0 0 5px var(--amber-action-glow));
 }
 
 .navAlertGlow {
-    animation: amber-pulse 2.5s ease-in-out infinite;
+    animation: vault-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes vault-glow {
+    0%, 100% {
+        color: var(--amber-action);
+        filter: drop-shadow(0 0 4px var(--amber-action-glow));
+    }
+    50% {
+        color: var(--amber-action);
+        filter: drop-shadow(0 0 10px var(--amber-action-glow));
+    }
 }

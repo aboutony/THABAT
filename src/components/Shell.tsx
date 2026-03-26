@@ -4,6 +4,9 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
+import { DEMO_NITAQAT_TIER } from '@/lib/generateBriefing';
+import { hasRetentionRisk } from '@/lib/calculateClientHealth';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import ExportButton from './ExportButton';
@@ -23,6 +26,11 @@ export default function Shell({ children }: ShellProps) {
     // Detect locale from pathname
     const locale = pathname.startsWith('/ar') ? 'ar' : 'en';
     const isAdmin = user?.role === 'admin';
+
+    // Vault alert glow — pulse amber when any active risk exists
+    const stockGap        = calculateStockGap(DEMO_STOCK_GAP_INPUT);
+    const hasNitaqatDanger = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
+    const vaultHasAlerts  = stockGap.isAtRisk || hasNitaqatDanger || hasRetentionRisk();
 
     // Active tab detection
     const isActive = (path: string) => {
@@ -60,7 +68,7 @@ export default function Shell({ children }: ShellProps) {
             path: 'alerts',
             label: tNav('alerts'),
             adminOnly: true,
-            alertGlow: true, // Executive Action glow when alerts are active
+            alertGlow: vaultHasAlerts, // Pulse amber when active risks detected
             icon: (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
