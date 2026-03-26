@@ -111,6 +111,7 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                 {RINGS.map((r, i) => (
                     <circle
                         key={i}
+                        className={s.ring}
                         cx={CX} cy={CY} r={r}
                         fill="none"
                         stroke="rgba(16,185,129,0.12)"
@@ -132,6 +133,7 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                 {/* Quadrant axes */}
                 {AXES.map((ax, i) => (
                     <line key={i}
+                        className={s.axisLine}
                         x1={ax.x1} y1={ax.y1} x2={ax.x2} y2={ax.y2}
                         stroke="rgba(16,185,129,0.14)" strokeWidth="1"
                     />
@@ -151,6 +153,7 @@ export default function EfficiencyRadar({ showWaterfallLink = true }: Efficiency
                     <path d={SWEEP_TRAIL} fill="rgba(16,185,129,0.09)" />
                     {/* Scan line */}
                     <line
+                        className={s.sweepLine}
                         x1={CX} y1={CY} x2={CX} y2={CY - R}
                         stroke="rgba(16,185,129,0.75)" strokeWidth="1.5"
                         strokeLinecap="round"

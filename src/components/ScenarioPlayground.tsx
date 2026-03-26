@@ -50,7 +50,7 @@ function GhostBars({
                 <span className={s.barTag}>{tagEst}</span>
                 <div className={s.track}>
                     <motion.div
-                        className={s.barFill}
+                        className={`${s.barFill} ${s.barFillProjected}`}
                         style={{ background: projectedColor, opacity: 0.45 }}
                         animate={{ width: `${Math.max(2, projectedPct)}%` }}
                         transition={{ duration: 0.35, ease: 'easeOut' }}

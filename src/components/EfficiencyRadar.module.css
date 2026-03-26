@@ -178,23 +178,28 @@
     border-color: rgba(16, 185, 129, 0.25);
 }
 
-:global(.light) .detailName  { color: #1F2937; }
-:global(.light) .detailLabel { color: #9CA3AF; }
-:global(.light) .detailVal   { color: #374151; }
-:global(.light) .detailDelta { color: #DC2626; }
-:global(.light) .detailRatio { color: #6B7280; }
+/* Grid: concentric rings + quadrant axes → Slate-300 */
+:global(.light) .ring     { stroke: #CBD5E1 !important; }
+:global(.light) .axisLine { stroke: #CBD5E1 !important; }
 
-:global(.light) .detail {
-    background: rgba(255, 255, 255, 0.60);
-}
+/* Sweep scan line → Deep Indigo at 30% so pulse is visible, not blinding */
+:global(.light) .sweepLine { stroke: rgba(79, 70, 229, 0.30) !important; }
 
-:global(.light) .waterfallLink {
-    background: rgba(245, 158, 11, 0.08);
-}
+/* Quadrant labels — Slate-800 for maximum legibility */
+:global(.light) .quadLabel { fill: #1E293B !important; }
 
-:global(.light) .legendItem  { color: #6B7280; }
+/* Ring friction labels — Slate-400 */
+:global(.light) .ringLabel { fill: #94A3B8 !important; }
 
-:global(.light) .quadLabel   { fill: #1A1A1A !important; }
-:global(.light) .ringLabel   { fill: #4B5563 !important; }
-:global(.light) .detailName  { color: #1A1A1A; }
-:global(.light) .detailVal   { color: #1A1A1A; }
+/* Legend text — Slate-700 */
+:global(.light) .legendItem { color: #334155; }
+
+/* Detail panel */
+:global(.light) .detail       { background: rgba(255, 255, 255, 0.60); }
+:global(.light) .detailName   { color: #1E293B; }
+:global(.light) .detailLabel  { color: #64748B; }
+:global(.light) .detailVal    { color: #1E293B; }
+:global(.light) .detailDelta  { color: #DC2626; }
+:global(.light) .detailRatio  { color: #64748B; }
+
+:global(.light) .waterfallLink { background: rgba(245, 158, 11, 0.08); }

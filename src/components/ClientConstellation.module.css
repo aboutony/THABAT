@@ -151,16 +151,17 @@
     border-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Connective lines — Slate-400 at 60% so structure is visible without neon */
+/* Connective lines — Slate-400, 1.5px so the map structure is unmissable */
 :global(.light) .svg line {
     stroke: #94A3B8 !important;
+    stroke-width: 1.5px !important;
     stroke-opacity: 0.6;
     opacity: 1;
 }
 
-/* Background decoration dots — darken to Slate-300 so the grid reads clearly */
+/* Background decoration dots — Slate-200 for depth without noise */
 :global(.light) .svg circle[r="1"] {
-    fill: #CBD5E1 !important;
+    fill: #E2E8F0 !important;
 }
 
 /* Labels — Slate-800 for maximum legibility on frosted white */
@@ -168,6 +169,12 @@
 :global(.light) .riskBadge { color: #1E293B; }
 :global(.light) .icon      { color: #64748B; }
 :global(.light) .arrow     { color: #64748B; }
+
+/* At-risk flicker dot — saturated Amber-600 so the glow reads on white */
+:global(.light) .riskDot {
+    background: #D97706;
+    box-shadow: 0 0 6px rgba(217, 119, 6, 0.70);
+}
 
 :global(.light) .tooltip {
     background: rgba(255, 255, 255, 0.90);

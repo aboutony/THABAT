@@ -552,7 +552,12 @@
 }
 
 /* Ghost bars — Slate track, Slate-900 text for maximum legibility */
-:global(.light) .track   { background: rgba(226, 232, 240, 0.85); }
+:global(.light) .track            { background: rgba(226, 232, 240, 0.85); }
+/* Projected bar → solid Indigo-500 at 40% so estimate is clearly distinct */
+:global(.light) .barFillProjected {
+    background: rgba(99, 102, 241, 0.40) !important;
+    opacity: 1 !important;
+}
 :global(.light) .barTag  { color: #0F172A; }
 :global(.light) .barVal  { color: #0F172A; }
 :global(.light) .delta   { color: #0F172A; }
