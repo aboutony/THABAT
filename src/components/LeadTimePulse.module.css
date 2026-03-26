@@ -1,0 +1,76 @@
+.wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ── Header row ──────────────────────────────────────────────────────────── */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+}
+
+/* Live badge */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(99, 102, 241, 0.90);
+    background: rgba(79, 70, 229, 0.12);
+    border: 1px solid rgba(79, 70, 229, 0.26);
+    padding: 2px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+}
+
+.liveDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6366F1;
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.75);
+    animation: ltp-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ltp-pulse {
+    0%, 100% { opacity: 1;   transform: scale(1);    }
+    50%       { opacity: 0.5; transform: scale(0.80); }
+}
+
+/* ── Legend ──────────────────────────────────────────────────────────────── */
+.legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.03em;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.indigo { background: #4F46E5; box-shadow: 0 0 5px rgba(79, 70, 229, 0.65); }
+.red    { background: #DC2626; }
+.gold   { background: #D4AF37; }

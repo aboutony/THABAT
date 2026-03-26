@@ -1,0 +1,319 @@
+/* ── ExportPortal — Capital Report Export Center ─────────────────────────────
+   Always dark; full-screen overlay with spring-mounted panel.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Full-screen overlay ──────────────────────────────────────────────────── */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* ── Panel ────────────────────────────────────────────────────────────────── */
+.panel {
+    width: 100%;
+    max-width: 390px;
+    background: #080A14;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ── Top bar ──────────────────────────────────────────────────────────────── */
+.topBar {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.18);
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+.topIcon {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.topTitle {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6366F1;
+    flex: 1;
+    margin: 0;
+}
+
+.topSub {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: #3E4560;
+    flex: 1;
+    margin: 0;
+}
+
+.closeBtn {
+    background: none;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #8896B3;
+    font-size: 14px;
+    line-height: 1;
+    transition: border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+.closeBtn:hover { border-color: rgba(99, 102, 241, 0.5); color: #C8CDD4; }
+
+/* ── Body ─────────────────────────────────────────────────────────────────── */
+.body {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 20px 16px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.body::-webkit-scrollbar { display: none; }
+
+/* ── Preview label ────────────────────────────────────────────────────────── */
+.previewLabel {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #3E4560;
+    margin: 0;
+    padding-inline-start: 2px;
+}
+
+/* ── Preview cards row ────────────────────────────────────────────────────── */
+.previewRow {
+    display: flex;
+    gap: 8px;
+}
+
+.previewCard {
+    flex: 1;
+    aspect-ratio: 0.707;  /* A4 proportion */
+    background: #0D0F1E;
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px 7px 7px;
+    gap: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.previewCardHdr {
+    height: 6px;
+    background: rgba(99, 102, 241, 0.25);
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.previewCardTitle {
+    font-size: 7px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6366F1;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.previewCardIcon {
+    font-size: 18px;
+    text-align: center;
+    margin: 4px 0;
+    flex-shrink: 0;
+}
+
+/* Preview line stubs */
+.previewLines {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.previewLine {
+    height: 3px;
+    background: rgba(99, 102, 241, 0.12);
+    border-radius: 2px;
+}
+
+.previewLine:nth-child(2) { width: 75%; }
+.previewLine:nth-child(3) { width: 55%; }
+
+.previewKpi {
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #4ADE80;
+    text-align: center;
+    margin: 2px 0;
+}
+
+.previewTierDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #D4AF37;
+    box-shadow: 0 0 5px rgba(212,175,55,0.55);
+    align-self: center;
+    flex-shrink: 0;
+}
+
+/* ── KPI summary row ──────────────────────────────────────────────────────── */
+.summaryRow {
+    display: flex;
+    gap: 8px;
+}
+
+.summaryCell {
+    flex: 1;
+    padding: 10px 10px 9px;
+    background: rgba(99, 102, 241, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.14);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
+}
+
+.summaryCellVal {
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #E8EAF0;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.summaryCellLabel {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #3E4560;
+    margin: 0;
+}
+
+/* ── CTA area ─────────────────────────────────────────────────────────────── */
+.ctaArea {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.generateBtn {
+    width: 100%;
+    padding: 14px;
+    background: #4F46E5;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 22px rgba(99, 102, 241, 0.4);
+    transition: opacity 0.15s, box-shadow 0.2s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+.generateBtn:hover  { opacity: 0.9; box-shadow: 0 0 30px rgba(99, 102, 241, 0.55); }
+.generateBtn:disabled { opacity: 0.55; cursor: default; }
+
+.generateIcon { font-size: 14px; }
+
+.shareBtn {
+    width: 100%;
+    padding: 11px;
+    background: none;
+    color: #8896B3;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid rgba(99, 102, 241, 0.20);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.shareBtn:hover {
+    border-color: rgba(99, 102, 241, 0.45);
+    color: #C8CDD4;
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.shareBtnCopied {
+    color: #4ADE80;
+    border-color: rgba(74, 222, 128, 0.30);
+}
+
+/* ── Investor link line ───────────────────────────────────────────────────── */
+.investorLink {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.investorLinkText {
+    font-size: 9px;
+    color: #3E4560;
+    text-align: center;
+}
+
+.investorLinkUrl {
+    font-size: 9px;
+    font-weight: 600;
+    color: #6366F1;
+    text-decoration: none;
+    letter-spacing: 0.03em;
+}
+.investorLinkUrl:hover { text-decoration: underline; }
+
+/* ── Generating overlay ───────────────────────────────────────────────────── */
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.spinIcon { display: inline-block; animation: spin 1s linear infinite; }
+
+/* ── Hidden capture host ──────────────────────────────────────────────────── */
+.captureHost {
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+}

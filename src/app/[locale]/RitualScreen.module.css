@@ -7,6 +7,12 @@
     overflow: hidden;
 }
 
+/* ── Entity switcher row ─────────────────────────────────────────────────── */
+.entityRow {
+    padding: 10px 0 2px;
+    flex-shrink: 0;
+}
+
 /* ---- Stability Ring Anchor: 40px margin-top ---- */
 .ringSection {
     display: flex;
@@ -53,4 +59,379 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+/* ── Impact Scoreboard widget ────────────────────────────────────────────── */
+.valueWidget {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 8px;
+}
+
+.valueLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+}
+
+.valueAmount {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--success);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+/* ── Stock-at-Risk widget ────────────────────────────────────────────────── */
+.sarWidget {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.15s;
+}
+
+.sarWidget:hover { opacity: 0.85; }
+
+.sarCritical {
+    background: rgba(220, 38, 38, 0.07);
+    border: 1px solid rgba(220, 38, 38, 0.22);
+    animation: sar-pulse 2.4s ease-in-out infinite;
+}
+
+.sarSafe {
+    background: rgba(39, 103, 73, 0.07);
+    border: 1px solid rgba(39, 103, 73, 0.20);
+}
+
+@keyframes sar-pulse {
+    0%, 100% { box-shadow: 0 0 0   0px rgba(220, 38, 38, 0);    }
+    50%       { box-shadow: 0 0 0   6px rgba(220, 38, 38, 0.10); }
+}
+
+.sarBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+}
+
+.sarLabel {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-tertiary);
+}
+
+.sarValue {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.sarCritical .sarValue { color: var(--danger); }
+.sarSafe     .sarValue { color: var(--success); }
+
+.sarSub {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sarArrow {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+
+/* ── Scenario Lab trigger button ─────────────────────────────────────────── */
+.simBtn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 12px;
+    background: none;
+    border: 1px dashed rgba(99, 102, 241, 0.35);
+    border-radius: var(--radius-sm);
+    color: rgba(99, 102, 241, 0.75);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+/* ── Action row wrapper ──────────────────────────────────────────────────── */
+.actionRow {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    margin-bottom: 8px;
+}
+
+.actionRow .simBtn {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.simBtn:hover {
+    border-color: rgba(99, 102, 241, 0.65);
+    color: rgba(99, 102, 241, 1);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.simBtnIcon {
+    font-size: 14px;
+}
+
+/* ── Export / Share icon button ──────────────────────────────────────────── */
+.exportBtn {
+    width: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px dashed rgba(99, 102, 241, 0.35);
+    border-radius: var(--radius-sm);
+    color: rgba(99, 102, 241, 0.75);
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    font-family: inherit;
+}
+
+.exportBtn:hover {
+    border-color: rgba(99, 102, 241, 0.65);
+    color: rgba(99, 102, 241, 1);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+/* ── Executive Greeting ──────────────────────────────────────────────────── */
+.greeting {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 2px 2px;
+}
+
+.greetingText {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.greetingTime {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    letter-spacing: 0.04em;
+}
+
+/* ── Oracle + OEE row ────────────────────────────────────────────────────── */
+.oracleRow {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.oracleRow > :first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── OEE micro-ring widget ───────────────────────────────────────────────── */
+.oeeWidget {
+    width: 66px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 10px 6px 8px;
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    border: 1px solid rgba(74, 222, 128, 0.20);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.oeeWidget:hover {
+    border-color: rgba(74, 222, 128, 0.40);
+    box-shadow: 0 0 14px rgba(74, 222, 128, 0.10);
+}
+
+.oeeSvg {
+    width: 44px;
+    height: 44px;
+    overflow: visible;
+}
+
+.oeeTrack {
+    fill: none;
+    stroke: rgba(74, 222, 128, 0.12);
+    stroke-width: 3;
+}
+
+.oeeFill {
+    fill: none;
+    stroke: #4ADE80;
+    stroke-width: 3;
+    stroke-linecap: round;
+    /* r=18 → circumference≈113.1; 84% fill → dashoffset≈18.1 */
+    stroke-dasharray: 113.097;
+    stroke-dashoffset: 18.1;
+    transform: rotate(-90deg);
+    transform-origin: 22px 22px;
+}
+
+.oeeValue {
+    font-size: 11px;
+    font-weight: 800;
+    color: #4ADE80;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.oeeLabel {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-tertiary);
+    line-height: 1;
+}
+
+/* ── Relationship Constellation placeholder ──────────────────────────────── */
+.constellation {
+    position: relative;
+    height: 110px;
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Starfield — two layers of tiny dots via box-shadow, each fading at
+   different rates to simulate depth */
+.constellationStars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.constellationStars::before,
+.constellationStars::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.constellationStars::before {
+    box-shadow:
+        18px 14px 0 1px rgba(165, 180, 252, 0.50),
+        52px 38px 0 0px rgba(165, 180, 252, 0.35),
+        88px 10px 0 1px rgba(196, 181, 253, 0.45),
+        120px 52px 0 0px rgba(165, 180, 252, 0.30),
+        155px 22px 0 1px rgba(165, 180, 252, 0.55),
+        200px 68px 0 0px rgba(196, 181, 253, 0.35),
+        240px 18px 0 1px rgba(165, 180, 252, 0.40),
+        288px 44px 0 0px rgba(165, 180, 252, 0.30),
+        330px 8px 0 1px rgba(196, 181, 253, 0.45),
+        60px 80px 0 0px rgba(165, 180, 252, 0.35),
+        145px 90px 0 1px rgba(165, 180, 252, 0.25),
+        220px 95px 0 0px rgba(196, 181, 253, 0.30);
+    animation: star-drift-a 8s ease-in-out infinite alternate;
+}
+
+.constellationStars::after {
+    box-shadow:
+        35px 55px 0 1px rgba(165, 180, 252, 0.30),
+        75px 28px 0 0px rgba(196, 181, 253, 0.45),
+        110px 72px 0 1px rgba(165, 180, 252, 0.35),
+        170px 40px 0 0px rgba(165, 180, 252, 0.25),
+        205px 85px 0 1px rgba(196, 181, 253, 0.40),
+        255px 32px 0 0px rgba(165, 180, 252, 0.30),
+        300px 60px 0 1px rgba(165, 180, 252, 0.45),
+        350px 20px 0 0px rgba(196, 181, 253, 0.35),
+        95px 98px 0 1px rgba(165, 180, 252, 0.20),
+        190px 12px 0 0px rgba(165, 180, 252, 0.40),
+        275px 78px 0 1px rgba(196, 181, 253, 0.25);
+    animation: star-drift-b 11s ease-in-out infinite alternate;
+}
+
+@keyframes star-drift-a {
+    0%   { opacity: 0.5; transform: translateY(0px);  }
+    100% { opacity: 1.0; transform: translateY(-4px); }
+}
+
+@keyframes star-drift-b {
+    0%   { opacity: 0.6; transform: translateY(0px); }
+    100% { opacity: 0.9; transform: translateY(3px); }
+}
+
+.constellationInner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+}
+
+.constellationIcon {
+    font-size: 18px;
+    color: rgba(165, 180, 252, 0.60);
+    line-height: 1;
+}
+
+.constellationTitle {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.constellationSub {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
 }

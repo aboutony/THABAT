@@ -1,0 +1,247 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 16px 16px 80px;
+    scrollbar-width: none;
+}
+
+.page::-webkit-scrollbar { display: none; }
+
+/* ── Back link ───────────────────────────────────────────────────────────── */
+.backLink {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color var(--transition-fast);
+}
+.backLink:hover { color: var(--text-primary); }
+
+/* ── Page header ─────────────────────────────────────────────────────────── */
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+/* ── Shared card ─────────────────────────────────────────────────────────── */
+.card {
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cardTitle {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.cardSubtitle {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin: 0;
+    letter-spacing: 0.03em;
+}
+
+/* ── KPI grid ────────────────────────────────────────────────────────────── */
+.kpiGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.kpiTile {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+}
+
+.kpiNum {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpiNum.indigo { color: rgba(99, 102, 241, 0.90); }
+.kpiNum.success { color: var(--success); }
+.kpiNum.warning { color: var(--warning); }
+.kpiNum.neutral { color: var(--text-primary); }
+
+.kpiSuffix {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-inline-start: 2px;
+}
+
+.kpiLabel {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+}
+
+/* ── Shipments list ──────────────────────────────────────────────────────── */
+.shipList {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.shipRow {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 12px;
+}
+
+.shipRow:last-child { border-bottom: none; }
+
+.shipStatus {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.shipStatus.transit  { background: #6366F1; box-shadow: 0 0 6px rgba(99,102,241,0.60); }
+.shipStatus.customs  { background: var(--warning); box-shadow: 0 0 5px rgba(217,119,6,0.50); }
+.shipStatus.delivered { background: var(--success); }
+
+.shipBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.shipId {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.shipMeta {
+    font-size: 10px;
+    color: var(--text-tertiary);
+}
+
+.shipDay {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.shipDayUnit {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+/* ── Status badge pill ───────────────────────────────────────────────────── */
+.statusPill {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    border-width: 1px;
+    border-style: solid;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.statusPill.transit {
+    color: rgba(99,102,241,0.90);
+    background: rgba(79,70,229,0.10);
+    border-color: rgba(79,70,229,0.24);
+}
+.statusPill.customs {
+    color: var(--warning);
+    background: rgba(217,119,6,0.10);
+    border-color: rgba(217,119,6,0.28);
+}
+.statusPill.delivered {
+    color: var(--success);
+    background: rgba(39,103,73,0.10);
+    border-color: rgba(39,103,73,0.24);
+}
+
+/* ── Supplier list ───────────────────────────────────────────────────────── */
+.supplierList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ── Risk alerts ─────────────────────────────────────────────────────────── */
+.alertList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.alertRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.alertRow.warn {
+    background: rgba(217,119,6,0.08);
+    border: 1px solid rgba(217,119,6,0.22);
+    color: var(--text-secondary);
+}
+
+.alertRow.info {
+    background: rgba(79,70,229,0.07);
+    border: 1px solid rgba(79,70,229,0.18);
+    color: var(--text-secondary);
+}
+
+.alertIcon {
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}

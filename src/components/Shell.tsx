@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import ThemeToggle from './ThemeToggle';
@@ -17,6 +17,7 @@ export default function Shell({ children }: ShellProps) {
     const tApp = useTranslations('app');
     const tNav = useTranslations('nav');
     const pathname = usePathname();
+    const router = useRouter();
     const { user } = useAuth();
 
     // Detect locale from pathname
@@ -109,16 +110,31 @@ export default function Shell({ children }: ShellProps) {
 
             {/* Floating Glass Bottom Navigation */}
             <nav className={styles.bottomNav}>
-                {navItems.map((item) => (
-                    <Link
-                        key={item.path}
-                        href={`/${locale}/${item.path}`}
-                        className={`${styles.navItem} ${isActive(item.path) ? styles.navActive : ''} ${item.alertGlow ? styles.navAlertGlow : ''}`}
-                    >
-                        {item.icon}
-                        <span>{item.label}</span>
-                    </Link>
-                ))}
+                {navItems.map((item) => {
+                    const cls = `${styles.navItem} ${isActive(item.path) ? styles.navActive : ''} ${item.alertGlow ? styles.navAlertGlow : ''}`;
+                    if (item.path === '') {
+                        return (
+                            <button
+                                key="home"
+                                className={cls}
+                                onClick={() => router.push(`/${locale}`)}
+                            >
+                                {item.icon}
+                                <span>{item.label}</span>
+                            </button>
+                        );
+                    }
+                    return (
+                        <Link
+                            key={item.path}
+                            href={`/${locale}/${item.path}`}
+                            className={cls}
+                        >
+                            {item.icon}
+                            <span>{item.label}</span>
+                        </Link>
+                    );
+                })}
             </nav>
         </div>
     );

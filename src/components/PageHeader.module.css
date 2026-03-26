@@ -66,3 +66,18 @@
     width: 44px;
     flex-shrink: 0;
 }
+
+/* ── Light mode: deep charcoal with frosted-glass readability ────────────── */
+:global(.light) .title {
+    color: #1A1A1A;
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.65);
+}
+
+:global(.light) .subtitle {
+    color: #374151;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.50);
+}
+
+:global(.light) .backBtn {
+    color: #1A1A1A;
+}

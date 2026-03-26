@@ -1,0 +1,253 @@
+/* ── InvestorView — Read-Only Stakeholder Dashboard ─────────────────────────
+   Standalone page; adopts app theme tokens but always renders clean + branded.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Outer shell ──────────────────────────────────────────────────────────── */
+.page {
+    min-height: 100dvh;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 48px;
+}
+
+.inner {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.headerBrand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brandMark {
+    font-size: 20px;
+    color: var(--accent-primary);
+    line-height: 1;
+}
+
+.brandName {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: var(--text-primary);
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.readOnlyBadge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-tertiary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 3px 10px;
+}
+
+/* ── Content sections ─────────────────────────────────────────────────────── */
+.content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ── Section card ─────────────────────────────────────────────────────────── */
+.sectionCard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.sectionHead {
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sectionIcon { font-size: 13px; flex-shrink: 0; }
+
+.sectionTitle {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-tertiary);
+    margin: 0;
+    flex: 1;
+}
+
+.sectionBody { padding: 14px; }
+
+/* ── Score band ────────────────────────────────────────────────────────────── */
+.scoreBandRow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.scoreBand {
+    font-size: 42px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.scoreBandStrong  { color: var(--success); }
+.scoreBandStable  { color: var(--accent-secondary); }
+.scoreBandDev     { color: var(--danger); }
+
+.scoreBandMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.scoreBandLabel {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-tertiary);
+    margin: 0;
+}
+
+.scoreBandDesc {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* ── Compliance row ────────────────────────────────────────────────────────── */
+.complianceRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tierDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.tierDotPlatinum  { background: #D4AF37; box-shadow: 0 0 6px rgba(212,175,55,0.55); }
+.tierDotHighGreen { background: var(--success); }
+.tierDotMedGreen  { background: #52B788; }
+.tierDotLowGreen  { background: #B7E4C7; }
+.tierDotRed       { background: var(--danger); }
+
+.complianceLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.complianceSub {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin: 0;
+    margin-inline-start: auto;
+}
+
+/* ── Strategy items ───────────────────────────────────────────────────────── */
+.strategyItem {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.strategyItem:last-child { border-bottom: none; padding-bottom: 0; }
+
+.strategyIcon { font-size: 14px; flex-shrink: 0; }
+
+.strategyText {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.strategyImpact {
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--success);
+    flex-shrink: 0;
+}
+
+.emptyNote {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Capital protected ────────────────────────────────────────────────────── */
+.protectedAmount {
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--success);
+    letter-spacing: -0.02em;
+    margin: 0 0 2px;
+}
+
+.protectedSub {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.footer {
+    padding: 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.footerText {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    text-align: center;
+    letter-spacing: 0.06em;
+    margin: 0;
+}
+
+.footerBrand {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    color: var(--accent-primary);
+    text-transform: uppercase;
+    margin: 0;
+}

@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THABAT — 5 UI/UX Variants</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Arabic:wght@300;400;600;700&family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0a0a0a; font-family: 'Inter', sans-serif; }
+
+/* ── Switcher ── */
+.switcher {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  background: #0a0a0a; border-bottom: 1px solid #222;
+  display: flex; align-items: center; gap: 6px; padding: 8px 16px;
+  overflow-x: auto;
+}
+.sw-label { font-size: 11px; color: #444; white-space: nowrap; margin-right: 4px; text-transform: uppercase; letter-spacing: .08em; }
+.tab {
+  padding: 5px 14px; border-radius: 4px; border: 1px solid #333;
+  background: transparent; color: #666; font-size: 12px; cursor: pointer;
+  white-space: nowrap; transition: all .15s; font-family: inherit;
+}
+.tab:hover { border-color: #555; color: #ccc; }
+.tab.active { background: #fff; color: #000; border-color: #fff; font-weight: 700; }
+
+.frame { display: none; padding-top: 44px; min-height: 100vh; }
+.frame.active { display: block; }
+
+/* ════════════════════════════════════════
+   V1 — COMMAND CENTER
+   Dense data, blue/amber, monospaced, compact
+════════════════════════════════════════ */
+#v1 {
+  background: #0D1117;
+  font-family: 'Fira Code', monospace;
+  color: #c9d1d9;
+}
+#v1 .shell { display: flex; height: calc(100vh - 44px); }
+#v1 .sb {
+  width: 200px; background: #0D1117; border-right: 1px solid #21262d;
+  padding: 0; flex-shrink: 0; display: flex; flex-direction: column;
+}
+#v1 .sb-logo {
+  padding: 16px; font-size: 13px; font-weight: 700; color: #58a6ff;
+  border-bottom: 1px solid #21262d; letter-spacing: .1em;
+  display: flex; align-items: center; gap: 6px;
+}
+#v1 .sb-logo span { color: #f0883e; }
+#v1 .sb-sec { font-size: 9px; color: #484f58; padding: 10px 16px 4px; text-transform: uppercase; letter-spacing: .12em; }
+#v1 .sb-item {
+  padding: 7px 16px; font-size: 11px; color: #8b949e;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  border-left: 2px solid transparent; transition: all .1s;
+}
+#v1 .sb-item:hover { background: #161b22; color: #c9d1d9; }
+#v1 .sb-item.on { color: #58a6ff; border-left-color: #58a6ff; background: #161b22; }
+#v1 .main { flex: 1; overflow: auto; }
+#v1 .bar {
+  background: #161b22; border-bottom: 1px solid #21262d;
+  padding: 8px 16px; display: flex; justify-content: space-between; align-items: center;
+}
+#v1 .bar-left { font-size: 11px; color: #8b949e; }
+#v1 .bar-left strong { color: #58a6ff; }
+#v1 .bar-right { display: flex; gap: 8px; }
+#v1 .chip {
+  font-size: 10px; padding: 3px 8px; border-radius: 3px;
+  background: #21262d; border: 1px solid #30363d; color: #8b949e; cursor: pointer;
+}
+#v1 .chip.amber { color: #f0883e; border-color: rgba(240,136,62,.4); background: rgba(240,136,62,.08); }
+#v1 .body { padding: 14px 16px; }
+
+/* terminal-style metric table */
+#v1 .term-header {
+  font-size: 10px; color: #484f58; text-transform: uppercase; letter-spacing: .1em;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 8px;
+  padding: 6px 10px; border-bottom: 1px solid #21262d; margin-bottom: 4px;
+}
+#v1 .term-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 8px;
+  padding: 7px 10px; border-bottom: 1px solid #161b22; font-size: 11px;
+  cursor: pointer; transition: background .1s;
+}
+#v1 .term-row:hover { background: #161b22; }
+#v1 .term-row .metric { color: #c9d1d9; }
+#v1 .term-row .val { color: #f0f6fc; font-weight: 700; }
+#v1 .term-row .change.up { color: #3fb950; }
+#v1 .term-row .change.dn { color: #f85149; }
+#v1 .term-row .pct { color: #8b949e; }
+#v1 .bar-chart { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+#v1 .bar-chart span { width: 4px; background: #58a6ff; border-radius: 1px; display: block; }
+
+#v1 .bottom { display: grid; grid-template-columns: 180px 1fr; gap: 14px; margin-top: 14px; }
+#v1 .score-box {
+  background: #161b22; border: 1px solid #21262d; border-radius: 4px;
+  padding: 16px; display: flex; flex-direction: column; align-items: center;
+}
+#v1 .score-num { font-size: 48px; font-weight: 700; color: #58a6ff; line-height: 1; }
+#v1 .score-lbl { font-size: 9px; color: #484f58; text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+#v1 .score-ring { position: relative; width: 90px; height: 90px; margin: 10px 0; }
+#v1 .score-ring svg { width: 90px; height: 90px; transform: rotate(-90deg); }
+#v1 .score-ring .bg { fill: none; stroke: #21262d; stroke-width: 7; }
+#v1 .score-ring .fg { fill: none; stroke: #58a6ff; stroke-width: 7; stroke-linecap: square; stroke-dasharray: 245; stroke-dashoffset: 61; }
+#v1 .score-ring .center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #58a6ff; }
+#v1 .p-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+#v1 .p-chip { font-size: 9px; padding: 2px 6px; background: rgba(88,166,255,.1); border: 1px solid rgba(88,166,255,.3); color: #58a6ff; border-radius: 2px; }
+#v1 .p-chip.w { background: rgba(240,136,62,.1); border-color: rgba(240,136,62,.3); color: #f0883e; }
+
+#v1 .drivers-box { background: #161b22; border: 1px solid #21262d; border-radius: 4px; padding: 14px; }
+#v1 .db-hdr { font-size: 10px; color: #484f58; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+#v1 .d-list { display: flex; flex-direction: column; gap: 6px; }
+#v1 .d-row { display: flex; align-items: center; gap: 10px; }
+#v1 .d-name { font-size: 10px; color: #8b949e; width: 110px; flex-shrink: 0; }
+#v1 .d-track { flex: 1; height: 4px; background: #21262d; border-radius: 0; }
+#v1 .d-fill { height: 100%; }
+#v1 .d-val { font-size: 10px; font-weight: 700; color: #c9d1d9; width: 35px; text-align: right; }
+#v1 .d-badge { font-size: 9px; width: 30px; text-align: right; }
+#v1 .d-badge.g { color: #3fb950; }
+#v1 .d-badge.w { color: #f0883e; }
+#v1 .d-badge.r { color: #f85149; }
+
+/* ════════════════════════════════════════
+   V2 — LIQUID GLASS DARK PREMIUM
+   Full dark, dramatic glass, gold, cinematic
+════════════════════════════════════════ */
+#v2 {
+  background: #070710;
+  font-family: 'Space Grotesk', sans-serif;
+  color: #e8e8f0;
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 44px);
+}
+#v2::before {
+  content: '';
+  position: fixed; top: 44px; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(120,80,200,.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 80% 70%, rgba(180,120,0,.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 60% 20%, rgba(0,100,200,.08) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+#v2 .shell { display: flex; position: relative; z-index: 1; height: calc(100vh - 44px); }
+#v2 .sb {
+  width: 72px; flex-shrink: 0;
+  background: rgba(255,255,255,.025);
+  border-right: 1px solid rgba(255,255,255,.06);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20px 0; gap: 4px;
+}
+#v2 .sb-logo {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, #b8860b, #daa520, #f5c842);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 16px; color: #000; margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(218,165,32,.3);
+}
+#v2 .sb-btn {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: rgba(255,255,255,.25); font-size: 18px;
+  transition: all .2s; border: 1px solid transparent;
+}
+#v2 .sb-btn:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.6); }
+#v2 .sb-btn.on {
+  background: rgba(218,165,32,.12);
+  border-color: rgba(218,165,32,.35);
+  color: #daa520;
+  box-shadow: 0 0 12px rgba(218,165,32,.2);
+}
+#v2 .main { flex: 1; padding: 28px; overflow: auto; }
+#v2 .topbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; }
+#v2 .top-title { font-size: 28px; font-weight: 300; color: rgba(255,255,255,.5); }
+#v2 .top-title strong { color: #fff; font-weight: 700; }
+#v2 .top-title em { color: #daa520; font-style: normal; }
+#v2 .top-right { display: flex; gap: 8px; }
+#v2 .glass-pill {
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 12px; color: rgba(255,255,255,.5); cursor: pointer;
+  transition: all .2s;
+}
+#v2 .glass-pill:hover { border-color: rgba(218,165,32,.4); color: #daa520; }
+
+#v2 .glass {
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 20px;
+  transition: all .25s;
+}
+#v2 .glass:hover { border-color: rgba(218,165,32,.25); box-shadow: 0 8px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08); }
+
+#v2 .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 20px; }
+#v2 .kpi { padding: 22px 24px; }
+#v2 .kpi-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: rgba(255,255,255,.25); margin-bottom: 12px; }
+#v2 .kpi-num { font-size: 32px; font-weight: 700; color: #fff; letter-spacing: -.02em; line-height: 1; }
+#v2 .kpi-chg { font-size: 12px; margin-top: 8px; }
+#v2 .up { color: #4ade80; } #v2 .dn { color: #f87171; }
+
+#v2 .center-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+#v2 .score-panel { padding: 32px 24px; display: flex; flex-direction: column; align-items: center; }
+#v2 .score-label { font-size: 10px; text-transform: uppercase; letter-spacing: .18em; color: rgba(255,255,255,.2); margin-bottom: 28px; }
+#v2 .ring { position: relative; width: 160px; height: 160px; }
+#v2 .ring svg { width: 160px; height: 160px; transform: rotate(-90deg); }
+#v2 .ring .rbg { fill: none; stroke: rgba(255,255,255,.04); stroke-width: 12; }
+#v2 .ring .rglow { fill: none; stroke: rgba(218,165,32,.15); stroke-width: 24; stroke-linecap: round; stroke-dasharray: 440; stroke-dashoffset: 110; }
+#v2 .ring .rfg { fill: none; stroke: url(#ggrad); stroke-width: 12; stroke-linecap: round; stroke-dasharray: 440; stroke-dashoffset: 110; filter: drop-shadow(0 0 8px rgba(218,165,32,.6)); }
+#v2 .ring .rc { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#v2 .ring .rc-num { font-size: 38px; font-weight: 700; color: #daa520; letter-spacing: -.03em; text-shadow: 0 0 20px rgba(218,165,32,.4); }
+#v2 .ring .rc-sub { font-size: 11px; color: rgba(255,255,255,.25); letter-spacing: .08em; }
+#v2 .score-meta { margin-top: 24px; text-align: center; }
+#v2 .score-meta p { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.6; }
+#v2 .score-meta strong { color: #daa520; }
+
+#v2 .drivers-panel { padding: 24px; }
+#v2 .dp-title { font-size: 11px; text-transform: uppercase; letter-spacing: .15em; color: rgba(255,255,255,.2); margin-bottom: 20px; }
+#v2 .d-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+#v2 .d-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 14px; padding: 16px; cursor: pointer;
+  transition: all .2s;
+}
+#v2 .d-card:hover { background: rgba(218,165,32,.06); border-color: rgba(218,165,32,.2); }
+#v2 .d-card-name { font-size: 11px; color: rgba(255,255,255,.3); margin-bottom: 10px; }
+#v2 .d-card-val { font-size: 24px; font-weight: 700; color: #fff; }
+#v2 .d-card-sub { font-size: 12px; margin-top: 6px; }
+#v2 .d-bar { height: 2px; background: rgba(255,255,255,.05); border-radius: 1px; margin-top: 12px; overflow: hidden; }
+#v2 .d-bar-fill { height: 100%; background: linear-gradient(90deg, #b8860b, #daa520); border-radius: 1px; }
+
+/* ════════════════════════════════════════
+   V3 — ENTERPRISE ARABIC-FIRST (RTL)
+   Right-to-left, bilingual, cyan, structured
+════════════════════════════════════════ */
+#v3 {
+  background: #F7FAFB;
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+  color: #0F2D35;
+  direction: rtl;
+}
+#v3 .shell { display: flex; height: calc(100vh - 44px); direction: rtl; }
+#v3 .sb {
+  width: 260px; flex-shrink: 0;
+  background: #fff;
+  border-left: 1px solid #D1F0F5;
+  display: flex; flex-direction: column;
+  box-shadow: -4px 0 16px rgba(0,120,140,.06);
+}
+#v3 .sb-top {
+  padding: 20px; border-bottom: 1px solid #D1F0F5;
+  display: flex; align-items: center; gap: 12px;
+}
+#v3 .sb-mark {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, #0891B2, #06B6D4);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 16px; color: #fff;
+  box-shadow: 0 4px 12px rgba(8,145,178,.25);
+}
+#v3 .sb-names .ar { font-size: 18px; font-weight: 700; color: #0F2D35; font-family: 'Noto Sans Arabic', sans-serif; }
+#v3 .sb-names .en { font-size: 11px; color: #67C4D4; letter-spacing: .05em; font-family: 'Inter', sans-serif; }
+#v3 .org-pill {
+  margin: 12px 14px;
+  background: #EBF8FB; border: 1px solid #A5E8F0;
+  border-radius: 8px; padding: 9px 12px;
+  font-size: 12px; color: #0891B2; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+}
+#v3 .sb-sec { font-size: 10px; color: #A5E8F0; padding: 10px 16px 4px; letter-spacing: .08em; text-align: right; }
+#v3 .sb-item {
+  padding: 10px 16px; font-size: 13px; color: #4A8A95;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; border-right: 3px solid transparent; transition: all .15s;
+  direction: rtl;
+}
+#v3 .sb-item:hover { background: #EBF8FB; color: #0F2D35; }
+#v3 .sb-item.on { background: #DDFAFF; border-right-color: #0891B2; color: #0F2D35; font-weight: 700; }
+#v3 .sb-item-en { font-size: 10px; color: #A5E8F0; font-family: 'Inter', sans-serif; }
+#v3 .main { flex: 1; overflow: auto; direction: rtl; }
+#v3 .topbar {
+  background: #fff; border-bottom: 1px solid #D1F0F5;
+  padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;
+  direction: rtl;
+}
+#v3 .page-title-ar { font-size: 20px; font-weight: 700; color: #0F2D35; font-family: 'Noto Sans Arabic', sans-serif; }
+#v3 .page-title-en { font-size: 11px; color: #67C4D4; font-family: 'Inter', sans-serif; margin-top: 1px; }
+#v3 .tb-acts { display: flex; gap: 8px; }
+#v3 .alert-tag {
+  background: #FFF8E1; border: 1px solid #FFD54F;
+  color: #F57F17; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+#v3 .lang-sw {
+  background: #EBF8FB; border: 1px solid #A5E8F0;
+  color: #0891B2; padding: 6px 12px; border-radius: 6px;
+  font-size: 12px; cursor: pointer; font-weight: 700;
+  display: flex; align-items: center; gap: 4px;
+}
+#v3 .body { padding: 20px 24px; direction: rtl; }
+#v3 .warn-bar {
+  background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px;
+  padding: 10px 16px; margin-bottom: 18px; font-size: 13px; color: #E65100;
+  display: flex; align-items: center; gap: 8px; direction: rtl;
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+#v3 .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; direction: rtl; }
+#v3 .kpi {
+  background: #fff; border: 1px solid #D1F0F5; border-radius: 12px;
+  padding: 18px; cursor: pointer; transition: all .15s; direction: rtl;
+  box-shadow: 0 1px 4px rgba(8,145,178,.06);
+}
+#v3 .kpi:hover { box-shadow: 0 4px 16px rgba(8,145,178,.12); transform: translateY(-2px); }
+#v3 .kpi-ar { font-family: 'Noto Sans Arabic', sans-serif; font-size: 13px; font-weight: 700; color: #0F2D35; margin-bottom: 2px; }
+#v3 .kpi-en { font-size: 10px; color: #67C4D4; font-family: 'Inter', sans-serif; margin-bottom: 8px; letter-spacing: .05em; }
+#v3 .kpi-num { font-size: 28px; font-weight: 800; color: #0891B2; font-family: 'Inter', sans-serif; }
+#v3 .kpi-chg { font-size: 12px; margin-top: 4px; font-family: 'Inter', sans-serif; font-weight: 600; }
+#v3 .up { color: #059669; } #v3 .dn { color: #DC2626; }
+
+#v3 .bottom { display: grid; grid-template-columns: 1fr 280px; gap: 16px; direction: rtl; }
+#v3 .drivers-box {
+  background: #fff; border: 1px solid #D1F0F5; border-radius: 12px; padding: 20px;
+  box-shadow: 0 1px 4px rgba(8,145,178,.06); direction: rtl;
+}
+#v3 .box-title-ar { font-family: 'Noto Sans Arabic', sans-serif; font-size: 15px; font-weight: 700; color: #0F2D35; }
+#v3 .box-title-en { font-size: 10px; color: #67C4D4; font-family: 'Inter', sans-serif; margin-bottom: 16px; letter-spacing: .05em; }
+#v3 .d-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; direction: rtl; }
+#v3 .d-card {
+  border: 1px solid #D1F0F5; border-radius: 10px; padding: 14px;
+  cursor: pointer; transition: all .15s; direction: rtl;
+}
+#v3 .d-card:hover { border-color: #0891B2; background: #EBF8FB; }
+#v3 .d-name-ar { font-family: 'Noto Sans Arabic', sans-serif; font-size: 12px; color: #67C4D4; margin-bottom: 2px; }
+#v3 .d-name-en { font-size: 10px; color: #A5E8F0; font-family: 'Inter', sans-serif; margin-bottom: 8px; }
+#v3 .d-val { font-size: 22px; font-weight: 800; color: #0F2D35; font-family: 'Inter', sans-serif; }
+#v3 .d-bar { height: 4px; background: #D1F0F5; border-radius: 2px; margin-top: 10px; overflow: hidden; }
+#v3 .d-bar-fill { height: 100%; border-radius: 2px; }
+
+#v3 .score-box {
+  background: linear-gradient(145deg, #0891B2, #0E7490);
+  border-radius: 12px; padding: 24px;
+  display: flex; flex-direction: column; align-items: center;
+  box-shadow: 0 8px 24px rgba(8,145,178,.3);
+}
+#v3 .score-title-ar { font-family: 'Noto Sans Arabic', sans-serif; font-size: 14px; color: rgba(255,255,255,.7); margin-bottom: 4px; }
+#v3 .score-title-en { font-size: 10px; color: rgba(255,255,255,.4); font-family: 'Inter', sans-serif; margin-bottom: 20px; letter-spacing: .08em; }
+#v3 .ring { position: relative; width: 130px; height: 130px; }
+#v3 .ring svg { width: 130px; height: 130px; transform: rotate(-90deg); }
+#v3 .ring .rbg { fill: none; stroke: rgba(255,255,255,.15); stroke-width: 10; }
+#v3 .ring .rfg { fill: none; stroke: #fff; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 352; stroke-dashoffset: 88; }
+#v3 .ring .rc { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#v3 .ring .rc-num { font-size: 34px; font-weight: 800; color: #fff; font-family: 'Inter', sans-serif; }
+#v3 .ring .rc-sub { font-size: 10px; color: rgba(255,255,255,.5); letter-spacing: .06em; font-family: 'Inter', sans-serif; }
+#v3 .p-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; justify-content: center; }
+#v3 .p-badge {
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+  color: #fff; font-size: 10px; padding: 3px 9px; border-radius: 20px;
+  font-family: 'Inter', sans-serif; font-weight: 600;
+}
+
+/* ════════════════════════════════════════
+   V4 — DARK BENTO
+   Top nav, modular tiles, indigo/orange, live
+════════════════════════════════════════ */
+#v4 {
+  background: #0C0C1E;
+  font-family: 'Inter', sans-serif;
+  color: #E2E8F0;
+  min-height: calc(100vh - 44px);
+}
+#v4 .topnav {
+  background: rgba(12,12,30,.96); border-bottom: 1px solid rgba(99,102,241,.15);
+  padding: 0 28px; display: flex; align-items: center; justify-content: space-between; height: 50px;
+  position: sticky; top: 44px; z-index: 100;
+}
+#v4 .nav-brand { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: #fff; letter-spacing: .05em; }
+#v4 .nav-brand span { color: #F97316; }
+#v4 .nav-links { display: flex; gap: 4px; }
+#v4 .nav-link {
+  padding: 5px 14px; border-radius: 6px; font-size: 13px;
+  color: rgba(255,255,255,.3); cursor: pointer; transition: all .15s;
+}
+#v4 .nav-link:hover { color: rgba(255,255,255,.7); background: rgba(255,255,255,.05); }
+#v4 .nav-link.on { color: #fff; background: rgba(249,115,22,.12); }
+#v4 .nav-right { display: flex; align-items: center; gap: 12px; }
+#v4 .live-pill {
+  display: flex; align-items: center; gap: 6px; padding: 4px 10px;
+  background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.25);
+  border-radius: 20px;
+}
+#v4 .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #F97316; box-shadow: 0 0 6px #F97316; animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+#v4 .live-txt { font-size: 11px; color: #F97316; font-weight: 600; letter-spacing: .08em; }
+#v4 .nav-org { font-size: 12px; color: rgba(255,255,255,.3); }
+#v4 .nav-ar { font-size: 12px; color: rgba(255,255,255,.3); cursor: pointer; font-family: 'Noto Sans Arabic', sans-serif; }
+#v4 .nav-ar:hover { color: #F97316; }
+
+#v4 .content { padding: 24px 28px; }
+#v4 .pg-head { margin-bottom: 20px; }
+#v4 .pg-head h1 { font-size: 22px; font-weight: 700; color: #fff; font-family: 'Space Grotesk', sans-serif; }
+#v4 .pg-head p { font-size: 12px; color: rgba(255,255,255,.25); margin-top: 3px; }
+
+/* True bento grid with different sized tiles */
+#v4 .bento { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: 80px; gap: 12px; }
+#v4 .tile {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(99,102,241,.12);
+  border-radius: 16px; padding: 18px; cursor: pointer;
+  transition: all .2s; overflow: hidden; position: relative;
+}
+#v4 .tile:hover { border-color: rgba(249,115,22,.4); box-shadow: 0 0 24px rgba(249,115,22,.08); transform: translateY(-1px); }
+#v4 .tile::after {
+  content: ''; position: absolute; inset: 0; border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,255,255,.02) 0%, transparent 100%);
+  pointer-events: none;
+}
+/* Tile sizes */
+#v4 .t-score { grid-column: span 3; grid-row: span 3; }
+#v4 .t-kpi   { grid-column: span 3; grid-row: span 1; }
+#v4 .t-driver{ grid-column: span 3; grid-row: span 2; }
+#v4 .t-wide  { grid-column: span 6; grid-row: span 1; }
+#v4 .t-insight { grid-column: span 3; grid-row: span 1; }
+
+#v4 .t-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: rgba(255,255,255,.25); margin-bottom: 6px; }
+#v4 .t-val { font-size: 26px; font-weight: 700; color: #fff; line-height: 1; }
+#v4 .t-sub { font-size: 12px; color: rgba(255,255,255,.3); margin-top: 4px; }
+#v4 .t-up { color: #4ade80; } #v4 .t-dn { color: #f87171; }
+#v4 .t-orange { color: #F97316; }
+
+#v4 .score-inner { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+#v4 .big-ring { position: relative; width: 140px; height: 140px; }
+#v4 .big-ring svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+#v4 .big-ring .rbg { fill: none; stroke: rgba(255,255,255,.04); stroke-width: 10; }
+#v4 .big-ring .rfg { fill: none; stroke: #F97316; stroke-width: 10; stroke-linecap: round; stroke-dasharray: 380; stroke-dashoffset: 95; filter: drop-shadow(0 0 8px rgba(249,115,22,.5)); }
+#v4 .big-ring .rc { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#v4 .big-ring .rc-num { font-size: 32px; font-weight: 800; color: #F97316; text-shadow: 0 0 20px rgba(249,115,22,.4); }
+#v4 .big-ring .rc-sub { font-size: 10px; color: rgba(255,255,255,.25); letter-spacing: .08em; }
+#v4 .p-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; justify-content: center; }
+#v4 .p-chip {
+  background: rgba(249,115,22,.1); border: 1px solid rgba(249,115,22,.2);
+  color: rgba(255,255,255,.5); font-size: 10px; padding: 2px 8px; border-radius: 10px;
+}
+
+#v4 .d-inner { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+#v4 .d-top { display: flex; justify-content: space-between; align-items: flex-start; }
+#v4 .d-big { font-size: 28px; font-weight: 700; color: #fff; }
+#v4 .d-badge {
+  font-size: 10px; padding: 3px 8px; border-radius: 20px;
+  background: rgba(249,115,22,.12); border: 1px solid rgba(249,115,22,.2); color: #F97316;
+}
+#v4 .d-badge.g { background: rgba(74,222,128,.1); border-color: rgba(74,222,128,.2); color: #4ade80; }
+#v4 .d-badge.r { background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.2); color: #f87171; }
+#v4 .mini-bar { height: 3px; background: rgba(255,255,255,.05); border-radius: 2px; overflow: hidden; }
+#v4 .mini-fill { height: 100%; border-radius: 2px; }
+
+#v4 .insight-inner { display: flex; align-items: center; gap: 10px; height: 100%; }
+#v4 .insight-icon { font-size: 24px; opacity: .6; }
+#v4 .insight-text { font-size: 12px; color: rgba(255,255,255,.4); line-height: 1.5; }
+#v4 .insight-text strong { color: rgba(255,255,255,.8); }
+
+/* ════════════════════════════════════════
+   V5 — SOFT ENTERPRISE (NEUMORPHIC)
+   Warm cream, raised/inset shadows, gold, rounded
+════════════════════════════════════════ */
+#v5 {
+  background: #E8ECF0;
+  font-family: 'Nunito', sans-serif;
+  color: #2D3748;
+  min-height: calc(100vh - 44px);
+}
+/* neumorphic shadows */
+.neu-raised { box-shadow: 6px 6px 14px #c8cdd3, -6px -6px 14px #ffffff; }
+.neu-inset  { box-shadow: inset 4px 4px 10px #c8cdd3, inset -4px -4px 10px #ffffff; }
+.neu-btn    { box-shadow: 3px 3px 8px #c8cdd3, -3px -3px 8px #ffffff; }
+.neu-btn:active { box-shadow: inset 2px 2px 6px #c8cdd3, inset -2px -2px 6px #ffffff; }
+
+#v5 .shell { display: flex; height: calc(100vh - 44px); }
+#v5 .sb {
+  width: 230px; flex-shrink: 0;
+  background: #E8ECF0; padding: 20px 14px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+#v5 .sb-logo {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding: 0 4px;
+}
+#v5 .logo-ico {
+  width: 42px; height: 42px; border-radius: 14px; background: #E8ECF0;
+  box-shadow: 5px 5px 12px #c8cdd3, -5px -5px 12px #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 900; color: #B45309;
+}
+#v5 .logo-txt { font-size: 18px; font-weight: 800; color: #1A202C; letter-spacing: .03em; }
+#v5 .sb-sec { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: #A0AEC0; padding: 10px 8px 4px; }
+#v5 .sb-item {
+  padding: 11px 14px; border-radius: 12px; font-size: 13px;
+  color: #718096; display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: all .2s; font-weight: 600;
+}
+#v5 .sb-item:hover { background: #E8ECF0; box-shadow: inset 2px 2px 6px #c8cdd3, inset -2px -2px 6px #ffffff; color: #2D3748; }
+#v5 .sb-item.on {
+  background: #E8ECF0;
+  box-shadow: inset 4px 4px 10px #c8cdd3, inset -4px -4px 10px #ffffff;
+  color: #1A202C; font-weight: 800;
+}
+#v5 .sb-item.on .sb-dot { background: #B45309; }
+#v5 .sb-dot { width: 7px; height: 7px; border-radius: 50%; background: #CBD5E0; flex-shrink: 0; }
+
+#v5 .main { flex: 1; overflow: auto; background: #E8ECF0; }
+#v5 .topbar {
+  background: #E8ECF0; padding: 16px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,.06);
+}
+#v5 .pg-title { font-size: 22px; font-weight: 900; color: #1A202C; }
+#v5 .pg-sub { font-size: 12px; color: #A0AEC0; font-weight: 600; margin-top: 1px; }
+#v5 .tb-right { display: flex; gap: 10px; }
+#v5 .neu-btn-el {
+  background: #E8ECF0; border: none; border-radius: 12px;
+  padding: 8px 16px; font-size: 12px; color: #718096; cursor: pointer;
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+  box-shadow: 3px 3px 8px #c8cdd3, -3px -3px 8px #ffffff;
+  transition: all .2s;
+}
+#v5 .neu-btn-el:hover { color: #2D3748; }
+#v5 .neu-btn-el.gold { color: #92400E; }
+
+#v5 .body { padding: 24px 28px; }
+#v5 .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+#v5 .kpi {
+  background: #E8ECF0; border-radius: 18px; padding: 20px;
+  box-shadow: 6px 6px 14px #c8cdd3, -6px -6px 14px #ffffff;
+  cursor: pointer; transition: all .2s;
+}
+#v5 .kpi:hover { box-shadow: 8px 8px 18px #c0c5cc, -8px -8px 18px #ffffff; }
+#v5 .kpi:active { box-shadow: inset 3px 3px 8px #c8cdd3, inset -3px -3px 8px #ffffff; }
+#v5 .kpi-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #A0AEC0; margin-bottom: 8px; font-weight: 700; }
+#v5 .kpi-num { font-size: 28px; font-weight: 900; color: #1A202C; }
+#v5 .kpi-chg { font-size: 12px; margin-top: 6px; font-weight: 700; }
+#v5 .up { color: #276749; } #v5 .dn { color: #C53030; }
+
+#v5 .center { display: grid; grid-template-columns: 280px 1fr; gap: 18px; }
+#v5 .score-panel {
+  background: #E8ECF0; border-radius: 22px; padding: 30px 24px;
+  box-shadow: 8px 8px 18px #c8cdd3, -8px -8px 18px #ffffff;
+  display: flex; flex-direction: column; align-items: center;
+}
+#v5 .score-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: #A0AEC0; margin-bottom: 20px; font-weight: 800; }
+#v5 .ring-wrap {
+  position: relative; width: 150px; height: 150px;
+  background: #E8ECF0; border-radius: 50%;
+  box-shadow: 8px 8px 18px #c8cdd3, -8px -8px 18px #ffffff;
+}
+#v5 .ring-wrap svg { width: 150px; height: 150px; transform: rotate(-90deg); }
+#v5 .ring-wrap .rbg { fill: none; stroke: rgba(0,0,0,.05); stroke-width: 12; }
+#v5 .ring-wrap .rfg { fill: none; stroke: #B45309; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 408; stroke-dashoffset: 102; filter: drop-shadow(0 2px 6px rgba(180,83,9,.35)); }
+#v5 .ring-wrap .rc { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#v5 .ring-wrap .rc-num { font-size: 36px; font-weight: 900; color: #1A202C; }
+#v5 .ring-wrap .rc-sub { font-size: 10px; color: #A0AEC0; letter-spacing: .06em; font-weight: 700; }
+#v5 .p-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; justify-content: center; }
+#v5 .p-tag {
+  background: #E8ECF0; border-radius: 20px; padding: 5px 12px;
+  font-size: 11px; color: #718096; font-weight: 800;
+  box-shadow: 2px 2px 6px #c8cdd3, -2px -2px 6px #ffffff;
+}
+#v5 .p-tag.gold { color: #92400E; }
+
+#v5 .drivers-panel {
+  background: #E8ECF0; border-radius: 22px; padding: 24px;
+  box-shadow: 8px 8px 18px #c8cdd3, -8px -8px 18px #ffffff;
+}
+#v5 .dp-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: #A0AEC0; margin-bottom: 18px; font-weight: 800; }
+#v5 .d-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+#v5 .d-card {
+  background: #E8ECF0; border-radius: 16px; padding: 16px;
+  box-shadow: 4px 4px 10px #c8cdd3, -4px -4px 10px #ffffff;
+  cursor: pointer; transition: all .2s;
+}
+#v5 .d-card:hover { box-shadow: 5px 5px 14px #c0c5cc, -5px -5px 14px #ffffff; }
+#v5 .d-card:active { box-shadow: inset 2px 2px 6px #c8cdd3, inset -2px -2px 6px #ffffff; }
+#v5 .d-lbl { font-size: 11px; color: #A0AEC0; margin-bottom: 6px; font-weight: 700; }
+#v5 .d-val { font-size: 22px; font-weight: 900; color: #1A202C; }
+#v5 .d-chg { font-size: 12px; margin-top: 4px; font-weight: 700; }
+#v5 .d-bar { height: 5px; border-radius: 3px; margin-top: 10px; overflow: hidden; box-shadow: inset 1px 1px 3px #c8cdd3; }
+#v5 .d-fill { height: 100%; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="switcher">
+  <span class="sw-label">THABAT</span>
+  <button class="tab active" onclick="show(1)">1 · Command Center</button>
+  <button class="tab" onclick="show(2)">2 · Liquid Glass Dark</button>
+  <button class="tab" onclick="show(3)">3 · Arabic Enterprise</button>
+  <button class="tab" onclick="show(4)">4 · Dark Bento</button>
+  <button class="tab" onclick="show(5)">5 · Soft Neumorphic</button>
+</div>
+
+<!-- ══════════ V1: COMMAND CENTER ══════════ -->
+<div id="v1" class="frame active">
+  <div class="shell">
+    <aside class="sb">
+      <div class="sb-logo">[ <span>T</span> ] THABAT</div>
+      <span class="sb-sec">// monitor</span>
+      <div class="sb-item on">▶ dashboard</div>
+      <div class="sb-item">◈ alerts <span style="margin-left:auto;background:rgba(248,81,73,.2);color:#f85149;font-size:9px;padding:1px 5px;border-radius:2px">2</span></div>
+      <span class="sb-sec">// analytics</span>
+      <div class="sb-item">↑ sales</div>
+      <div class="sb-item">$ receivables</div>
+      <div class="sb-item">~ efficiency</div>
+      <div class="sb-item">♻ retention</div>
+      <div class="sb-item">✓ approvals</div>
+      <span class="sb-sec">// config</span>
+      <div class="sb-item">⚙ integrations</div>
+      <div style="margin-top:auto;padding:12px 16px;font-size:10px;color:#484f58;border-top:1px solid #21262d">
+        SAP · Odoo · Dynamics<br>
+        <span style="color:#3fb950">● connected</span>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="bar">
+        <span class="bar-left">thabat@dashboard ~ <strong>Q1-2026</strong> · Al-Noor Holdings</span>
+        <div class="bar-right">
+          <span class="chip amber">⚠ 2 alerts</span>
+          <span class="chip">عربي</span>
+          <span class="chip">export ↓</span>
+        </div>
+      </div>
+      <div class="body">
+        <!-- metric table -->
+        <div style="background:#161b22;border:1px solid #21262d;border-radius:4px;margin-bottom:14px">
+          <div style="padding:8px 10px;border-bottom:1px solid #21262d;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:10px;color:#58a6ff;text-transform:uppercase;letter-spacing:.1em">// KPI_OVERVIEW</span>
+            <span style="font-size:9px;color:#484f58">updated 2m ago</span>
+          </div>
+          <div class="term-header"><span>METRIC</span><span>VALUE</span><span>CHANGE</span><span>PERCENTILE</span><span>TREND</span></div>
+          <div class="term-row"><span class="metric">revenue</span><span class="val">4.2M</span><span class="change up">+8.3%</span><span class="pct">P80</span><div class="bar-chart"><span style="height:6px"></span><span style="height:8px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:11px"></span></div></div>
+          <div class="term-row"><span class="metric">dso</span><span class="val">38d</span><span class="change dn">+3d</span><span class="pct" style="color:#f0883e">P50 ⚠</span><div class="bar-chart"><span style="height:8px;background:#f0883e"></span><span style="height:10px;background:#f0883e"></span><span style="height:9px;background:#f0883e"></span><span style="height:12px;background:#f0883e"></span><span style="height:14px;background:#f0883e"></span></div></div>
+          <div class="term-row"><span class="metric">gross_margin</span><span class="val">42%</span><span class="change up">+0.5%</span><span class="pct">P60</span><div class="bar-chart"><span style="height:7px"></span><span style="height:8px"></span><span style="height:9px"></span><span style="height:8px"></span><span style="height:9px"></span></div></div>
+          <div class="term-row"><span class="metric">approval_rate</span><span class="val">91%</span><span class="change up">+2pp</span><span class="pct">P85</span><div class="bar-chart"><span style="height:10px"></span><span style="height:11px"></span><span style="height:12px"></span><span style="height:13px"></span><span style="height:13px"></span></div></div>
+          <div class="term-row"><span class="metric">churn_rate</span><span class="val">2.1%</span><span class="change up">-0.2%</span><span class="pct">P78</span><div class="bar-chart"><span style="height:14px"></span><span style="height:12px"></span><span style="height:11px"></span><span style="height:10px"></span><span style="height:9px"></span></div></div>
+          <div class="term-row"><span class="metric">efficiency</span><span class="val">78%</span><span class="change up">+1%</span><span class="pct">P70</span><div class="bar-chart"><span style="height:8px"></span><span style="height:9px"></span><span style="height:10px"></span><span style="height:11px"></span><span style="height:11px"></span></div></div>
+        </div>
+        <div class="bottom">
+          <div class="score-box">
+            <div class="score-lbl">STABILITY_INDEX</div>
+            <div class="score-ring">
+              <svg viewBox="0 0 90 90"><circle class="bg" cx="45" cy="45" r="39"/><circle class="fg" cx="45" cy="45" r="39"/></svg>
+              <div class="center">75</div>
+            </div>
+            <div class="score-lbl" style="font-size:9px;color:#3fb950">STATUS: STABLE</div>
+            <div class="p-row">
+              <span class="p-chip">P75 overall</span>
+              <span class="p-chip w">P50 DSO</span>
+              <span class="p-chip">P80 rev</span>
+            </div>
+          </div>
+          <div class="drivers-box">
+            <div class="db-hdr">// DRIVER_BREAKDOWN</div>
+            <div class="d-list">
+              <div class="d-row"><span class="d-name">revenue_growth</span><div class="d-track"><div class="d-fill" style="width:83%;background:#3fb950"></div></div><span class="d-val">8.3%</span><span class="d-badge g">+P80</span></div>
+              <div class="d-row"><span class="d-name">days_sales_out</span><div class="d-track"><div class="d-fill" style="width:55%;background:#f0883e"></div></div><span class="d-val">38d</span><span class="d-badge w">P50</span></div>
+              <div class="d-row"><span class="d-name">gross_margin</span><div class="d-track"><div class="d-fill" style="width:42%;background:#58a6ff"></div></div><span class="d-val">42%</span><span class="d-badge">P60</span></div>
+              <div class="d-row"><span class="d-name">approval_rate</span><div class="d-track"><div class="d-fill" style="width:91%;background:#3fb950"></div></div><span class="d-val">91%</span><span class="d-badge g">P85</span></div>
+              <div class="d-row"><span class="d-name">churn_rate</span><div class="d-track"><div class="d-fill" style="width:79%;background:#3fb950"></div></div><span class="d-val">2.1%</span><span class="d-badge g">P78</span></div>
+              <div class="d-row"><span class="d-name">efficiency</span><div class="d-track"><div class="d-fill" style="width:78%;background:#58a6ff"></div></div><span class="d-val">78%</span><span class="d-badge">P70</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════ V2: LIQUID GLASS DARK ══════════ -->
+<div id="v2" class="frame">
+  <div class="shell">
+    <aside class="sb">
+      <div class="sb-logo">T</div>
+      <div class="sb-btn on" title="Dashboard">◈</div>
+      <div class="sb-btn" title="Alerts">◉</div>
+      <div class="sb-btn" title="Analytics">↗</div>
+      <div class="sb-btn" title="Receivables">$</div>
+      <div class="sb-btn" title="Efficiency">≋</div>
+      <div class="sb-btn" title="Retention">♻</div>
+      <div class="sb-btn" style="margin-top:auto" title="Settings">⚙</div>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div class="top-title">Stability <strong>Dashboard</strong> · <em>Q1 2026</em></div>
+        <div class="top-right">
+          <span class="glass-pill">Al-Noor Holdings ▾</span>
+          <span class="glass-pill">عربي</span>
+          <span class="glass-pill">Export</span>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="glass kpi"><div class="kpi-lbl">Revenue</div><div class="kpi-num">4.2M</div><div class="kpi-chg up">↑ +8.3% vs prior quarter</div></div>
+        <div class="glass kpi"><div class="kpi-lbl">Days Sales Outstanding</div><div class="kpi-num">38d</div><div class="kpi-chg dn">↑ +3 days — threshold alert</div></div>
+        <div class="glass kpi"><div class="kpi-lbl">Approval Rate</div><div class="kpi-num">91%</div><div class="kpi-chg up">↑ +2pp improvement</div></div>
+        <div class="glass kpi"><div class="kpi-lbl">Client Retention</div><div class="kpi-num">87%</div><div class="kpi-chg up">→ Stable, +1pp YoY</div></div>
+      </div>
+      <div class="center-grid">
+        <div class="glass score-panel">
+          <div class="score-label">Stability Index</div>
+          <div class="ring">
+            <svg viewBox="0 0 160 160">
+              <defs><linearGradient id="ggrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b8860b"/><stop offset="100%" stop-color="#f5c842"/></linearGradient></defs>
+              <circle class="rglow" cx="80" cy="80" r="70"/>
+              <circle class="rbg" cx="80" cy="80" r="70"/>
+              <circle class="rfg" cx="80" cy="80" r="70"/>
+            </svg>
+            <div class="rc"><div class="rc-num">75</div><div class="rc-sub">/ 100</div></div>
+          </div>
+          <div class="score-meta">
+            <p>Top <strong>25th percentile</strong><br>Financial sector · GCC region</p>
+          </div>
+        </div>
+        <div class="glass drivers-panel">
+          <div class="dp-title">Performance Drivers</div>
+          <div class="d-grid">
+            <div class="d-card"><div class="d-card-name">Revenue Growth</div><div class="d-card-val">8.3%</div><div class="d-card-sub up">↑ Strong — P80</div><div class="d-bar"><div class="d-bar-fill" style="width:83%"></div></div></div>
+            <div class="d-card"><div class="d-card-name">DSO</div><div class="d-card-val">38d</div><div class="d-card-sub dn">↑ Watch — P50</div><div class="d-bar"><div class="d-bar-fill" style="width:55%;background:linear-gradient(90deg,#854d0e,#ca8a04)"></div></div></div>
+            <div class="d-card"><div class="d-card-name">Gross Margin</div><div class="d-card-val">42%</div><div class="d-card-sub" style="color:rgba(255,255,255,.35)">→ Stable — P60</div><div class="d-bar"><div class="d-bar-fill" style="width:42%"></div></div></div>
+            <div class="d-card"><div class="d-card-name">Approval Rate</div><div class="d-card-val">91%</div><div class="d-card-sub up">↑ Strong — P85</div><div class="d-bar"><div class="d-bar-fill" style="width:91%;background:linear-gradient(90deg,#166534,#4ade80)"></div></div></div>
+            <div class="d-card"><div class="d-card-name">Churn</div><div class="d-card-val">2.1%</div><div class="d-card-sub up">↑ Good — P78</div><div class="d-bar"><div class="d-bar-fill" style="width:79%;background:linear-gradient(90deg,#166534,#4ade80)"></div></div></div>
+            <div class="d-card"><div class="d-card-name">Efficiency</div><div class="d-card-val">78%</div><div class="d-card-sub" style="color:rgba(255,255,255,.35)">→ Stable — P70</div><div class="d-bar"><div class="d-bar-fill" style="width:78%"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════ V3: ARABIC ENTERPRISE ══════════ -->
+<div id="v3" class="frame">
+  <div class="shell">
+    <aside class="sb">
+      <div class="sb-top">
+        <div class="sb-mark">ث</div>
+        <div class="sb-names"><div class="ar">ثبات</div><div class="en">THABAT</div></div>
+      </div>
+      <div class="org-pill"><span>النور القابضة</span><span>▾</span></div>
+      <span class="sb-sec">المراقبة</span>
+      <div class="sb-item on"><span>لوحة التحكم</span><span class="sb-item-en">Dashboard</span></div>
+      <div class="sb-item"><span>التنبيهات <span style="background:rgba(220,38,38,.15);color:#dc2626;font-size:10px;padding:1px 6px;border-radius:3px">٢</span></span><span class="sb-item-en">Alerts</span></div>
+      <span class="sb-sec">التحليلات</span>
+      <div class="sb-item"><span>المبيعات</span><span class="sb-item-en">Sales</span></div>
+      <div class="sb-item"><span>المستحقات</span><span class="sb-item-en">Receivables</span></div>
+      <div class="sb-item"><span>الكفاءة</span><span class="sb-item-en">Efficiency</span></div>
+      <div class="sb-item"><span>الاستبقاء</span><span class="sb-item-en">Retention</span></div>
+      <div class="sb-item"><span>الموافقات</span><span class="sb-item-en">Approvals</span></div>
+      <span class="sb-sec">الإعدادات</span>
+      <div class="sb-item"><span>التكاملات</span><span class="sb-item-en">Integrations</span></div>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div><div class="page-title-ar">لوحة التحكم</div><div class="page-title-en">Dashboard · Q1 2026</div></div>
+        <div class="tb-acts">
+          <div class="alert-tag">⚠ تنبيهان</div>
+          <div class="lang-sw"><span>EN</span><span>⇄</span><span>عربي</span></div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="warn-bar">⚠ تجاوز متوسط أيام التحصيل (DSO) حد التنبيه 35 يوماً — يلزم متابعة عميلين</div>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-ar">الإيرادات</div><div class="kpi-en">Revenue</div><div class="kpi-num">4.2M</div><div class="kpi-chg up">↑ +8.3%</div></div>
+          <div class="kpi"><div class="kpi-ar">أيام التحصيل</div><div class="kpi-en">DSO</div><div class="kpi-num">38d</div><div class="kpi-chg dn">↑ +3 أيام</div></div>
+          <div class="kpi"><div class="kpi-ar">معدل الموافقات</div><div class="kpi-en">Approval Rate</div><div class="kpi-num">91%</div><div class="kpi-chg up">↑ +2pp</div></div>
+          <div class="kpi"><div class="kpi-ar">الاستبقاء</div><div class="kpi-en">Retention</div><div class="kpi-num">87%</div><div class="kpi-chg up">→ مستقر</div></div>
+        </div>
+        <div class="bottom">
+          <div class="drivers-box">
+            <div class="box-title-ar">المحركات الرئيسية</div>
+            <div class="box-title-en">Key Performance Drivers</div>
+            <div class="d-grid">
+              <div class="d-card"><div class="d-name-ar">نمو الإيرادات</div><div class="d-name-en">Revenue Growth</div><div class="d-val">8.3%</div><div class="d-bar"><div class="d-bar-fill" style="width:83%;background:#059669"></div></div></div>
+              <div class="d-card"><div class="d-name-ar">أيام التحصيل</div><div class="d-name-en">DSO</div><div class="d-val">38d</div><div class="d-bar"><div class="d-bar-fill" style="width:55%;background:#D97706"></div></div></div>
+              <div class="d-card"><div class="d-name-ar">هامش الربح</div><div class="d-name-en">Gross Margin</div><div class="d-val">42%</div><div class="d-bar"><div class="d-bar-fill" style="width:42%;background:#0891B2"></div></div></div>
+              <div class="d-card"><div class="d-name-ar">معدل الموافقات</div><div class="d-name-en">Approvals</div><div class="d-val">91%</div><div class="d-bar"><div class="d-bar-fill" style="width:91%;background:#059669"></div></div></div>
+              <div class="d-card"><div class="d-name-ar">معدل التسرب</div><div class="d-name-en">Churn Rate</div><div class="d-val">2.1%</div><div class="d-bar"><div class="d-bar-fill" style="width:79%;background:#059669"></div></div></div>
+              <div class="d-card"><div class="d-name-ar">الكفاءة التشغيلية</div><div class="d-name-en">Efficiency</div><div class="d-val">78%</div><div class="d-bar"><div class="d-bar-fill" style="width:78%;background:#0891B2"></div></div></div>
+            </div>
+          </div>
+          <div class="score-box">
+            <div class="score-title-ar">مؤشر الثبات</div>
+            <div class="score-title-en">STABILITY SCORE</div>
+            <div class="ring">
+              <svg viewBox="0 0 130 130"><circle class="rbg" cx="65" cy="65" r="56"/><circle class="rfg" cx="65" cy="65" r="56"/></svg>
+              <div class="rc"><div class="rc-num">75</div><div class="rc-sub">/ 100</div></div>
+            </div>
+            <div class="p-row">
+              <span class="p-badge">P75 إجمالي</span>
+              <span class="p-badge">P80 إيرادات</span>
+              <span class="p-badge">P50 تحصيل</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════ V4: DARK BENTO ══════════ -->
+<div id="v4" class="frame">
+  <nav class="topnav">
+    <div class="nav-brand">THA<span>BAT</span></div>
+    <div class="nav-links">
+      <span class="nav-link on">Dashboard</span>
+      <span class="nav-link">Analytics</span>
+      <span class="nav-link">Alerts</span>
+      <span class="nav-link">Settings</span>
+    </div>
+    <div class="nav-right">
+      <div class="live-pill"><div class="live-dot"></div><span class="live-txt">LIVE</span></div>
+      <span class="nav-org">Al-Noor Holdings</span>
+      <span class="nav-ar">عربي</span>
+    </div>
+  </nav>
+  <div class="content">
+    <div class="pg-head">
+      <h1>Stability Dashboard</h1>
+      <p>Q1 2026 · Last updated 2 minutes ago · SAP + Odoo synced</p>
+    </div>
+    <div class="bento">
+      <!-- Score tile 3×3 -->
+      <div class="tile t-score">
+        <div class="t-lbl">Stability Index</div>
+        <div class="score-inner">
+          <div class="big-ring">
+            <svg viewBox="0 0 140 140"><circle class="rbg" cx="70" cy="70" r="60"/><circle class="rfg" cx="70" cy="70" r="60"/></svg>
+            <div class="rc"><div class="rc-num">75</div><div class="rc-sub">/ 100</div></div>
+          </div>
+          <div class="p-chips">
+            <span class="p-chip">P75 Overall</span>
+            <span class="p-chip">Top Quartile</span>
+            <span class="p-chip">GCC Benchmark</span>
+          </div>
+        </div>
+      </div>
+      <!-- KPI tiles -->
+      <div class="tile t-kpi"><div class="t-lbl">Revenue</div><div class="t-val">4.2M</div><div class="t-sub t-up">↑ +8.3% QoQ</div></div>
+      <div class="tile t-kpi"><div class="t-lbl">DSO</div><div class="t-val">38d</div><div class="t-sub t-dn">↑ +3d — alert</div></div>
+      <div class="tile t-kpi"><div class="t-lbl">Approvals</div><div class="t-val">91%</div><div class="t-sub t-up">↑ +2pp</div></div>
+      <div class="tile t-kpi"><div class="t-lbl">Retention</div><div class="t-val">87%</div><div class="t-sub" style="color:rgba(255,255,255,.3)">→ Stable</div></div>
+      <div class="tile t-kpi"><div class="t-lbl">Gross Margin</div><div class="t-val">42%</div><div class="t-sub t-up">↑ +0.5%</div></div>
+      <div class="tile t-kpi"><div class="t-lbl">Churn Rate</div><div class="t-val">2.1%</div><div class="t-sub t-up">↓ −0.2%</div></div>
+      <!-- Driver tiles 3×2 -->
+      <div class="tile t-driver">
+        <div class="t-lbl">Revenue Growth</div>
+        <div class="d-inner">
+          <div class="d-top"><div class="d-big">8.3%</div><span class="d-badge g">P80</span></div>
+          <div><div class="t-sub t-up" style="margin-bottom:8px">Strong positive trend</div><div class="mini-bar"><div class="mini-fill" style="width:83%;background:linear-gradient(90deg,#166534,#4ade80)"></div></div></div>
+        </div>
+      </div>
+      <div class="tile t-driver">
+        <div class="t-lbl">Days Sales Outstanding</div>
+        <div class="d-inner">
+          <div class="d-top"><div class="d-big">38d</div><span class="d-badge r">⚠ P50</span></div>
+          <div><div class="t-sub t-dn" style="margin-bottom:8px">Exceeds 35d threshold</div><div class="mini-bar"><div class="mini-fill" style="width:55%;background:linear-gradient(90deg,#854d0e,#f59e0b)"></div></div></div>
+        </div>
+      </div>
+      <div class="tile t-driver">
+        <div class="t-lbl">Efficiency Score</div>
+        <div class="d-inner">
+          <div class="d-top"><div class="d-big">78%</div><span class="d-badge">P70</span></div>
+          <div><div class="t-sub" style="color:rgba(255,255,255,.3);margin-bottom:8px">Steady performance</div><div class="mini-bar"><div class="mini-fill" style="width:78%;background:linear-gradient(90deg,#1e40af,#F97316)"></div></div></div>
+        </div>
+      </div>
+      <div class="tile t-driver">
+        <div class="t-lbl">Approval Rate</div>
+        <div class="d-inner">
+          <div class="d-top"><div class="d-big">91%</div><span class="d-badge g">P85</span></div>
+          <div><div class="t-sub t-up" style="margin-bottom:8px">Above industry avg</div><div class="mini-bar"><div class="mini-fill" style="width:91%;background:linear-gradient(90deg,#166534,#4ade80)"></div></div></div>
+        </div>
+      </div>
+      <!-- Insight tiles -->
+      <div class="tile t-insight">
+        <div class="insight-inner">
+          <div class="insight-icon">💡</div>
+          <div class="insight-text"><strong>DSO Alert:</strong> 2 clients approaching 45-day threshold</div>
+        </div>
+      </div>
+      <div class="tile t-insight">
+        <div class="insight-inner">
+          <div class="insight-icon">📈</div>
+          <div class="insight-text"><strong>Revenue</strong> trending +8.3% — best quarter since Q3 2024</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ V5: SOFT NEUMORPHIC ══════════ -->
+<div id="v5" class="frame">
+  <div class="shell">
+    <aside class="sb">
+      <div class="sb-logo">
+        <div class="logo-ico">T</div>
+        <span class="logo-txt">THABAT</span>
+      </div>
+      <span class="sb-sec">Monitor</span>
+      <div class="sb-item on"><div class="sb-dot"></div> Dashboard</div>
+      <div class="sb-item"><div class="sb-dot"></div> Alerts <span style="margin-left:auto;background:#FED7AA;color:#C2410C;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:800">2</span></div>
+      <span class="sb-sec">Analytics</span>
+      <div class="sb-item"><div class="sb-dot"></div> Sales</div>
+      <div class="sb-item"><div class="sb-dot"></div> Receivables</div>
+      <div class="sb-item"><div class="sb-dot"></div> Efficiency</div>
+      <div class="sb-item"><div class="sb-dot"></div> Retention</div>
+      <div class="sb-item"><div class="sb-dot"></div> Approvals</div>
+      <span class="sb-sec">Settings</span>
+      <div class="sb-item"><div class="sb-dot"></div> Integrations</div>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div><div class="pg-title">Dashboard</div><div class="pg-sub">Q1 2026 · Al-Noor Holdings</div></div>
+        <div class="tb-right">
+          <button class="neu-btn-el">☀ Light</button>
+          <button class="neu-btn-el">عربي</button>
+          <button class="neu-btn-el gold">Al-Noor ▾</button>
+        </div>
+      </div>
+      <div class="body">
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-lbl">Revenue</div><div class="kpi-num">4.2M</div><div class="kpi-chg up">↑ +8.3%</div></div>
+          <div class="kpi"><div class="kpi-lbl">DSO</div><div class="kpi-num">38d</div><div class="kpi-chg dn">↑ +3 days</div></div>
+          <div class="kpi"><div class="kpi-lbl">Approval Rate</div><div class="kpi-num">91%</div><div class="kpi-chg up">↑ +2pp</div></div>
+          <div class="kpi"><div class="kpi-lbl">Retention</div><div class="kpi-num">87%</div><div class="kpi-chg up">→ Stable</div></div>
+        </div>
+        <div class="center">
+          <div class="score-panel">
+            <div class="score-lbl">Stability Score</div>
+            <div class="ring-wrap">
+              <svg viewBox="0 0 150 150"><circle class="rbg" cx="75" cy="75" r="65"/><circle class="rfg" cx="75" cy="75" r="65"/></svg>
+              <div class="rc"><div class="rc-num">75</div><div class="rc-sub">/ 100</div></div>
+            </div>
+            <div class="p-tags">
+              <span class="p-tag">P75</span>
+              <span class="p-tag gold">P50 DSO</span>
+              <span class="p-tag">P80 Rev</span>
+            </div>
+          </div>
+          <div class="drivers-panel">
+            <div class="dp-lbl">Key Drivers</div>
+            <div class="d-grid">
+              <div class="d-card"><div class="d-lbl">Revenue Growth</div><div class="d-val">8.3%</div><div class="d-chg up">↑ Strong</div><div class="d-bar"><div class="d-fill" style="width:83%;background:#276749"></div></div></div>
+              <div class="d-card"><div class="d-lbl">DSO</div><div class="d-val">38d</div><div class="d-chg dn">↑ Watch</div><div class="d-bar"><div class="d-fill" style="width:55%;background:#D97706"></div></div></div>
+              <div class="d-card"><div class="d-lbl">Gross Margin</div><div class="d-val">42%</div><div class="d-chg" style="color:#718096">→ Stable</div><div class="d-bar"><div class="d-fill" style="width:42%;background:#B45309"></div></div></div>
+              <div class="d-card"><div class="d-lbl">Approvals</div><div class="d-val">91%</div><div class="d-chg up">↑ Strong</div><div class="d-bar"><div class="d-fill" style="width:91%;background:#276749"></div></div></div>
+              <div class="d-card"><div class="d-lbl">Churn Rate</div><div class="d-val">2.1%</div><div class="d-chg up">↑ Good</div><div class="d-bar"><div class="d-fill" style="width:79%;background:#276749"></div></div></div>
+              <div class="d-card"><div class="d-lbl">Efficiency</div><div class="d-val">78%</div><div class="d-chg" style="color:#718096">→ Stable</div><div class="d-bar"><div class="d-fill" style="width:78%;background:#1A202C"></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+function show(n) {
+  document.querySelectorAll('.frame').forEach(f => f.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('v' + n).classList.add('active');
+  document.querySelectorAll('.tab')[n - 1].classList.add('active');
+}
+</script>
+</body>
+</html>

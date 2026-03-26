@@ -28,7 +28,80 @@
     color: var(--text-primary);
 }
 
-/* ── Pipeline Card ── */
+/* ── Agentic Alert Bar ─────────────────────────────────────────────── */
+.alertBar {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border-width: 1px;
+    border-style: solid;
+    transform-origin: top center;
+}
+
+.alertIcon {
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+}
+
+.alertText {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.alertDismiss {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+    color: inherit;
+}
+
+.alertDismiss:hover {
+    opacity: 1;
+}
+
+/* Severity variants */
+.alert_critical {
+    background: rgba(197, 48, 48, 0.08);
+    border-color: rgba(197, 48, 48, 0.3);
+    color: var(--danger);
+    animation: amber-pulse 2.5s ease-in-out infinite;
+}
+
+.alert_warning {
+    background: rgba(217, 119, 6, 0.08);
+    border-color: rgba(217, 119, 6, 0.3);
+    color: var(--warning);
+}
+
+.alert_info {
+    background: var(--accent-glow);
+    border-color: rgba(180, 83, 9, 0.2);
+    color: var(--accent-primary);
+}
+
+[data-theme='dark'] .alert_critical {
+    background: rgba(243, 139, 168, 0.08);
+    border-color: rgba(243, 139, 168, 0.25);
+}
+
+[data-theme='dark'] .alert_warning {
+    background: rgba(250, 179, 135, 0.08);
+    border-color: rgba(250, 179, 135, 0.25);
+}
+
+/* ── Pipeline Card ─────────────────────────────────────────────────── */
 .pipelineCard {
     padding: 24px 20px;
     display: flex;
@@ -78,7 +151,7 @@
     letter-spacing: 0.08em;
 }
 
-/* ── Slider Card ── */
+/* ── Slider Card ───────────────────────────────────────────────────── */
 .sliderCard {
     padding: 20px;
     display: flex;
@@ -190,7 +263,170 @@
     color: #006C35;
 }
 
-/* ── Timeline Card ── */
+/* ── Predictive Forecast Card ──────────────────────────────────────── */
+.forecastCard {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.forecastHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.forecastTitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.forecastSubtitle {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+    letter-spacing: 0.03em;
+}
+
+/* Trend badge */
+.trendBadge {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.trend_improving {
+    color: var(--success);
+    background: rgba(39, 103, 73, 0.12);
+    border: 1px solid rgba(39, 103, 73, 0.25);
+}
+
+.trend_flat {
+    color: var(--text-secondary);
+    background: var(--bg-well);
+    border: 1px solid var(--border-subtle);
+}
+
+.trend_declining {
+    color: var(--danger);
+    background: rgba(197, 48, 48, 0.1);
+    border: 1px solid rgba(197, 48, 48, 0.25);
+}
+
+[data-theme='dark'] .trend_improving {
+    background: rgba(166, 227, 161, 0.10);
+    border-color: rgba(166, 227, 161, 0.2);
+}
+
+[data-theme='dark'] .trend_declining {
+    background: rgba(243, 139, 168, 0.10);
+    border-color: rgba(243, 139, 168, 0.2);
+}
+
+/* Chart legend */
+.chartLegend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.03em;
+}
+
+.legendDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legendLine {
+    width: 16px;
+    height: 2px;
+    flex-shrink: 0;
+    border-radius: 1px;
+    background: repeating-linear-gradient(
+        90deg,
+        currentColor 0,
+        currentColor 4px,
+        transparent 4px,
+        transparent 7px
+    );
+}
+
+.legendBase { background: #006C35; }
+.legendBull { color: var(--success); }
+.legendBear { color: var(--warning); }
+
+/* Forecast callouts */
+.forecastCallouts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.callout {
+    flex: 1;
+    min-width: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    background: var(--bg-well);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+}
+
+.calloutRisk {
+    border-color: rgba(217, 119, 6, 0.35);
+    background: rgba(217, 119, 6, 0.06);
+    justify-content: center;
+}
+
+.calloutLabel {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+}
+
+.calloutRisk .calloutLabel {
+    color: var(--warning);
+    font-weight: 600;
+    font-size: 10px;
+}
+
+.calloutVal {
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.calloutGreen { color: var(--success); }
+.calloutAmber { color: var(--warning); }
+
+/* ── Waterfall Card (Phase 03 host) ───────────────────────────────── */
+.waterfallCard {
+    padding: 20px;
+}
+
+/* ── Liquidity Timeline ────────────────────────────────────────────── */
 .timelineCard {
     padding: 20px;
     display: flex;
@@ -278,7 +514,7 @@
     border-radius: 6px;
 }
 
-/* ── Breakdown Card ── */
+/* ── Product Breakdown ─────────────────────────────────────────────── */
 .breakdownCard {
     padding: 20px;
     display: flex;

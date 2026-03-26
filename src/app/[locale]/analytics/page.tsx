@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
-import MetricsEntry from '@/components/MetricsEntry';
+import Link from 'next/link';
+import ActionLedger from '@/components/ActionLedger';
 import PageHeader from '@/components/PageHeader';
 import PercentileBadge from '@/components/PercentileBadge';
 import StabilityRing from '@/components/StabilityRing';
 import Shell from '@/components/Shell';
-import { useAuth } from '@/context/AuthContext';
 import { formatNumber } from '@/lib/locale-utils';
 import styles from './analytics.module.css';
 
@@ -33,8 +33,6 @@ export default function AnalyticsPage() {
     const ts = useTranslations('scoring');
     const tb = useTranslations('benchmark');
     const [score, setScore] = useState<ScoreResult | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [ringLoading, setRingLoading] = useState(false);
     const [fetchingLatest, setFetchingLatest] = useState(true);
     const locale = useLocale();
 
@@ -62,37 +60,6 @@ export default function AnalyticsPage() {
 
     useEffect(() => { fetchLatest(); }, [fetchLatest]);
 
-    const handleSubmit = async (data: {
-        date: string;
-        cash: number;
-        revenue: number;
-        expenses: number;
-        receivables: number;
-        payables: number;
-    }) => {
-        setLoading(true);
-        setRingLoading(true);
-        try {
-            const res = await fetch('/api/metrics', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-
-            if (res.ok) {
-                const result = await res.json();
-                // Hold the shimmer for a moment to emphasize 'Engine Calculation'
-                await new Promise(r => setTimeout(r, 1800));
-                setScore(result.score);
-            }
-        } catch (err) {
-            console.error('Failed to submit metrics:', err);
-        } finally {
-            setRingLoading(false);
-            setLoading(false);
-        }
-    };
-
     const getScoreColor = (s: number) => {
         if (s >= 70) return 'var(--success)';
         if (s >= 40) return 'var(--warning)';
@@ -102,13 +69,28 @@ export default function AnalyticsPage() {
     return (
         <Shell>
             <div className={styles.page}>
-                <PageHeader title={t('title')} subtitle={t('subtitle')} />
+                <PageHeader
+                    title={t('title')}
+                    subtitle={t('subtitle')}
+                    rightAction={
+                        <Link
+                            href={`/${locale}/settings/integrations`}
+                            className={styles.dataSettingsBtn}
+                            aria-label="Data Settings"
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                            </svg>
+                        </Link>
+                    }
+                />
 
                 {/* Industry Percentile Badge */}
                 <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: locale === 'ar' ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
 
                 {/* Stability Ring — with shimmer on compute */}
-                {(ringLoading || score) && (
+                {score && (
                     <motion.div
                         className={styles.ringContainer}
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -119,7 +101,6 @@ export default function AnalyticsPage() {
                             score={score?.overall ?? 0}
                             trend={(score?.trend as 'strengthening' | 'stable' | 'weakening') ?? 'stable'}
                             locale={locale}
-                            loading={ringLoading}
                         />
                     </motion.div>
                 )}
@@ -191,8 +172,144 @@ export default function AnalyticsPage() {
                     </motion.div>
                 )}
 
-                {/* Metrics Entry Form */}
-                <MetricsEntry onSubmit={handleSubmit} loading={loading} />
+                {/* ── Intelligence Module Hub ───────────────────────────── */}
+                <div className={styles.moduleHub}>
+                    <p className={styles.moduleHubTitle}>{t('moduleHub')}</p>
+                    <div className={styles.moduleList}>
+
+                        {/* Card A: Expense Waterfall */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.1 }}
+                        >
+                            <Link href={`/${locale}/analytics/sales-report`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(0, 108, 53, 0.14)', color: '#22c55e' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="2"  y="3"  width="5" height="18" rx="1.5"/>
+                                        <rect x="9"  y="7"  width="5" height="14" rx="1.5"/>
+                                        <rect x="16" y="11" width="5" height="10" rx="1.5"/>
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleSalesReport')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleSalesReportDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: 'var(--success)', background: 'rgba(39,103,73,0.12)', borderColor: 'rgba(39,103,73,0.25)' }}>Live</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                        {/* Card B: Nitaqat Compliance */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.2 }}
+                        >
+                            <Link href={`/${locale}/analytics/nitaqat`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(212, 175, 55, 0.14)', color: '#D4AF37' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/>
+                                        <path d="M9 12l2 2 4-4"/>
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleNitaqat')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleNitaqatDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: '#D4AF37', background: 'rgba(212,175,55,0.12)', borderColor: 'rgba(212,175,55,0.3)' }}>Platinum</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                        {/* Card C: Supply Chain Nerve Center */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.3 }}
+                        >
+                            <Link href={`/${locale}/analytics/supply-chain`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(79, 70, 229, 0.14)', color: '#6366F1' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="1"  y="3"  width="15" height="13" rx="2"/>
+                                        <path d="M16 8h4l3 3v5h-7V8z"/>
+                                        <circle cx="5.5"  cy="18.5" r="2.5"/>
+                                        <circle cx="18.5" cy="18.5" r="2.5"/>
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleSupplyChain')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleSupplyChainDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: '#6366F1', background: 'rgba(79,70,229,0.12)', borderColor: 'rgba(79,70,229,0.28)' }}>Live</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                        {/* Card D: Operational Efficiency — Phase 11 */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.4 }}
+                        >
+                            <Link href={`/${locale}/analytics/efficiency-report`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(16, 185, 129, 0.14)', color: '#10B981' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleEfficiency')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleEfficiencyDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: '#10B981', background: 'rgba(16,185,129,0.12)', borderColor: 'rgba(16,185,129,0.28)' }}>Phase 11</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                        {/* Card E: Client Retention — Phase 12 */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 14 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.45, delay: 0.5 }}
+                        >
+                            <Link href={`/${locale}/analytics/retention`} className={styles.moduleCard}>
+                                <div className={styles.moduleIcon} style={{ background: 'rgba(225, 29, 72, 0.14)', color: '#FB7185' }}>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                </div>
+                                <div className={styles.moduleBody}>
+                                    <p className={styles.moduleTitle}>{t('moduleRetention')}</p>
+                                    <p className={styles.moduleDesc}>{t('moduleRetentionDesc')}</p>
+                                </div>
+                                <div className={styles.moduleMeta}>
+                                    <span className={styles.moduleBadge} style={{ color: '#FB7185', background: 'rgba(225,29,72,0.12)', borderColor: 'rgba(225,29,72,0.28)' }}>Phase 12</span>
+                                    <span className={styles.moduleArrow}>›</span>
+                                </div>
+                            </Link>
+                        </motion.div>
+
+                    </div>
+                </div>
+
+                {/* ── Executive Action Ledger ───────────────────────────── */}
+                <div className={styles.moduleHub}>
+                    <p className={styles.moduleHubTitle}>{t('actionLedger')}</p>
+                    <ActionLedger />
+                </div>
+
             </div>
         </Shell>
     );

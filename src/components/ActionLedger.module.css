@@ -1,0 +1,236 @@
+/* ── Action Ledger timeline — glass-and-blur, consistent with NitaqatShield */
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 32px 16px;
+    opacity: 0.55;
+}
+
+.emptyIcon {
+    font-size: 28px;
+}
+
+.emptyText {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-align: center;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── Timeline container ──────────────────────────────────────────────────── */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 4px;
+}
+
+/* ── One timeline row (spine + card) ─────────────────────────────────────── */
+.row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.rowRealized {
+    opacity: 0.82;
+}
+
+/* ── Spine: dot + connector line ─────────────────────────────────────────── */
+.spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    padding-top: 14px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px var(--bg-primary);
+}
+
+.dotAmber {
+    background: var(--accent-primary);
+    box-shadow: 0 0 8px rgba(180, 83, 9, 0.45), 0 0 0 3px var(--bg-primary);
+}
+
+.dotGreen {
+    background: var(--success);
+    box-shadow: 0 0 8px rgba(39, 103, 73, 0.45), 0 0 0 3px var(--bg-primary);
+}
+
+.dotIndigo {
+    background: #4F46E5;
+    box-shadow: 0 0 8px rgba(79, 70, 229, 0.45), 0 0 0 3px var(--bg-primary);
+}
+
+.dotViolet {
+    background: #7C3AED;
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.45), 0 0 0 3px var(--bg-primary);
+}
+
+.dotEmeraldVerified {
+    background: #4ADE80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5), 0 0 0 3px var(--bg-primary);
+}
+
+.connector {
+    width: 1.5px;
+    flex: 1;
+    min-height: 16px;
+    background: var(--border-subtle);
+    margin: 4px 0;
+}
+
+/* ── Entry card ──────────────────────────────────────────────────────────── */
+.card {
+    flex: 1;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Header: date + badge */
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.date {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+}
+
+/* Status badges */
+.badgeRealized {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--success);
+    background: rgba(39, 103, 73, 0.12);
+    border: 1px solid rgba(39, 103, 73, 0.28);
+    border-radius: 20px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+}
+
+.badgePending {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-primary);
+    background: rgba(180, 83, 9, 0.10);
+    border: 1px solid rgba(180, 83, 9, 0.28);
+    border-radius: 20px;
+    padding: 2px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+    transition: background 0.15s, opacity 0.15s;
+}
+
+.badgePending:hover {
+    background: rgba(180, 83, 9, 0.18);
+}
+
+.badgeVerified {
+    font-size: 10px;
+    font-weight: 700;
+    color: #4ADE80;
+    background: rgba(74, 222, 128, 0.10);
+    border: 1px solid rgba(74, 222, 128, 0.28);
+    border-radius: 20px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+}
+
+/* Action title */
+.title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.titleIcon {
+    font-size: 13px;
+    flex-shrink: 0;
+    line-height: 1.4;
+}
+
+/* Tier + cost chips row */
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip {
+    font-size: 10px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+
+.chipGreen {
+    color: var(--success) !important;
+    background: rgba(39, 103, 73, 0.08);
+    border-color: rgba(39, 103, 73, 0.22);
+}
+
+.chipIndigo {
+    color: #818CF8 !important;
+    background: rgba(79, 70, 229, 0.08);
+    border-color: rgba(79, 70, 229, 0.22);
+}
+
+.chipViolet {
+    color: #A78BFA !important;
+    background: rgba(124, 58, 237, 0.08);
+    border-color: rgba(124, 58, 237, 0.22);
+}
+
+.chipEmeraldVerified {
+    color: #4ADE80 !important;
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.22);
+}
+
+/* Correction footnote */
+.correctionNote {
+    font-size: 10px;
+    color: var(--warning);
+    margin: 0;
+    line-height: 1.4;
+    padding: 4px 8px;
+    background: rgba(217, 119, 6, 0.07);
+    border-radius: var(--radius-sm);
+    border-left: 2px solid var(--warning);
+}
+
+[dir='rtl'] .correctionNote {
+    border-left: none;
+    border-right: 2px solid var(--warning);
+}

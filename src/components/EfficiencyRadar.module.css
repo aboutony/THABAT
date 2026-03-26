@@ -1,0 +1,197 @@
+/* ── EfficiencyRadar — Phase 11 ─────────────────────────────────────────────
+   Dark command-center aesthetic matching ScenarioPlayground.
+   Override with :global(.light) at the bottom for light mode.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px 14px 14px;
+    background: rgba(8, 10, 20, 0.72);
+    border: 1px solid rgba(16, 185, 129, 0.18);
+    border-radius: 10px;
+    position: relative;
+}
+
+/* ── SVG canvas ──────────────────────────────────────────────────────────── */
+.svg {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+    overflow: visible;
+}
+
+.quadLabel {
+    user-select: none;
+    pointer-events: none;
+    font-family: inherit;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.ringLabel {
+    user-select: none;
+    pointer-events: none;
+    font-family: inherit;
+    letter-spacing: 0.04em;
+}
+
+/* ── Blip interaction ────────────────────────────────────────────────────── */
+.blipGroup {
+    transition: opacity 0.15s;
+}
+.blipGroup:hover { opacity: 1; }
+
+/* ── Detail panel ────────────────────────────────────────────────────────── */
+.detail {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(16, 185, 129, 0.20);
+    background: rgba(255, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.detail_high   { border-color: rgba(248, 113, 113, 0.30); background: rgba(248, 113, 113, 0.05); }
+.detail_medium { border-color: rgba(245, 158, 11,  0.28); background: rgba(245, 158, 11,  0.04); }
+.detail_low    { border-color: rgba(74,  222, 128, 0.25); background: rgba(74,  222, 128, 0.04); }
+
+.detailHeader {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.detailDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.detailName {
+    font-size: 12px;
+    font-weight: 700;
+    color: #C8CDD4;
+    flex: 1;
+}
+
+.detailSeverity {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.detailRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.detailLabel {
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #3E4560;
+}
+
+.detailVal {
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #C8CDD4;
+}
+
+.detailDelta {
+    font-size: 11px;
+    font-weight: 600;
+    color: #F87171;
+}
+
+.detailRatio {
+    font-size: 10px;
+    color: #8896B3;
+}
+
+/* ── Waterfall cross-reference tooltip ───────────────────────────────────── */
+.waterfallLink {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 2px;
+    padding: 7px 9px;
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    border-radius: 6px;
+    font-size: 10px;
+    line-height: 1.5;
+    color: #F59E0B;
+    font-weight: 600;
+}
+
+.waterfallLink svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: #F59E0B;
+}
+
+/* ── Legend ──────────────────────────────────────────────────────────────── */
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    justify-content: center;
+    padding-top: 2px;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #3E4560;
+}
+
+.legendDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ── Light mode overrides ────────────────────────────────────────────────── */
+:global(.light) .wrapper {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+:global(.light) .detailName  { color: #1F2937; }
+:global(.light) .detailLabel { color: #9CA3AF; }
+:global(.light) .detailVal   { color: #374151; }
+:global(.light) .detailDelta { color: #DC2626; }
+:global(.light) .detailRatio { color: #6B7280; }
+
+:global(.light) .detail {
+    background: rgba(255, 255, 255, 0.60);
+}
+
+:global(.light) .waterfallLink {
+    background: rgba(245, 158, 11, 0.08);
+}
+
+:global(.light) .legendItem  { color: #6B7280; }
+
+:global(.light) .quadLabel   { fill: rgba(0, 0, 0, 0.35) !important; }

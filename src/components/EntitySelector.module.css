@@ -1,0 +1,174 @@
+/* ── EntitySelector — Sovereign Entity Switcher ──────────────────────────────
+   Glassmorphic pill at the top of the Home Screen.
+   Uses app theme tokens so it works in both light + dark mode.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── Wrapper (relative for dropdown positioning) ─────────────────────────── */
+.wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* ── Trigger pill ─────────────────────────────────────────────────────────── */
+.trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px 7px 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+    font-family: inherit;
+    color: inherit;
+}
+
+.trigger:hover {
+    border-color: rgba(99, 102, 241, 0.35);
+    background: var(--bg-tertiary);
+}
+
+.triggerOpen {
+    border-color: rgba(99, 102, 241, 0.45);
+}
+
+/* Entity colour dot */
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Entity name */
+.entityName {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--text-primary);
+    text-align: start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Health score badge */
+.scoreBadge {
+    font-size: 10px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    padding: 1px 6px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+/* Chevron */
+.chevron {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    line-height: 1;
+}
+.chevronOpen { transform: rotate(180deg); }
+
+/* ── Dropdown panel ───────────────────────────────────────────────────────── */
+.dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(99, 102, 241, 0.22);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+    z-index: 100;
+}
+
+/* ── Dropdown item ────────────────────────────────────────────────────────── */
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    font-family: inherit;
+    transition: background 0.12s;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.item:last-child { border-bottom: none; }
+
+.item:hover { background: var(--bg-tertiary); }
+
+.itemActive { background: rgba(99, 102, 241, 0.06); }
+
+/* Item dot (larger than trigger dot) */
+.itemDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Item text block */
+.itemMeta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    text-align: start;
+}
+
+.itemName {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+}
+
+.itemIndustry {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* Item score */
+.itemScore {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+    flex-shrink: 0;
+}
+
+.itemScoreVal {
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+.itemScoreLabel {
+    font-size: 7px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--text-tertiary);
+}
+
+/* Active check */
+.itemCheck {
+    font-size: 12px;
+    flex-shrink: 0;
+    color: var(--success);
+    width: 14px;
+}
