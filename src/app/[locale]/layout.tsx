@@ -53,6 +53,7 @@ export default async function RootLayout({
                   var t = localStorage.getItem('thabat-theme');
                   if (t === 'light' || t === 'dark') {
                     document.documentElement.setAttribute('data-theme', t);
+                    if (t === 'light') document.documentElement.classList.add('light');
                   }
                   // Default is dark (set in HTML attribute), no system preference override
                 } catch(e) {}
