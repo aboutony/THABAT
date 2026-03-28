@@ -109,6 +109,26 @@
     padding: 4px 0 2px;
 }
 
+/* ── Arabic At-Risk header — Sovereign RTL Anchor (Command #53) ──────────────
+   Applied only when locale = 'ar'. Forces right-anchor independently of the
+   parent flex container, with the "Adonis Offset": 24px right + 16px top margin.
+   width: calc(100% - 48px) maintains a professional safe zone from both edges.
+   ─────────────────────────────────────────────────────────────────────────── */
+.sectionHeaderArabic {
+    display: flex !important;
+    justify-content: flex-end !important;   /* flex-end = right side → anchors "ر" in "خطر" */
+    width: calc(100% - 48px);              /* safe zone: never touches glass edge */
+    margin-inline-end: 24px;              /* Adonis Offset: 24px (6.3mm) right margin */
+    margin-top: 16px;                      /* 4.2mm separation from Constellation above */
+    font-size: 4.2mm;                      /* 16px — matches English header density */
+    font-weight: 700;
+    line-height: 1.4;
+    color: #E2E8F0;                        /* Slate-200 — high contrast on dark bg */
+    letter-spacing: 0;                     /* reset uppercase tracking — Arabic doesn't use it */
+    text-transform: none;                  /* sectionLabel sets uppercase; neutralise for Arabic */
+    overflow: visible;
+}
+
 /* ── At-risk client cards ────────────────────────────────────────────────── */
 
 .clientCard {
