@@ -32,6 +32,7 @@ export default function RitualScreen() {
     const tR  = useTranslations('report');
     const { user } = useAuth();
     const router   = useRouter();
+    const locale   = useLocale();
 
     // CLIENT first-session redirect to Settings (once per browser session)
     useEffect(() => {
@@ -48,7 +49,6 @@ export default function RitualScreen() {
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);
     const [now, setNow] = useState(() => new Date());
-    const locale = useLocale();
 
     // Live clock — refresh every minute
     useEffect(() => {
