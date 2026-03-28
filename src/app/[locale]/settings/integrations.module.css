@@ -292,6 +292,13 @@
     transform: scale(0.98);
 }
 
+/* ── Mobile: Save Changes button 10mm below last input (6.7" ref) ─────────── */
+@media (max-width: 767px) {
+    .modalFooter {
+        padding-top: 10mm;
+    }
+}
+
 /* Account Section */
 .accountSection {
     display: flex;

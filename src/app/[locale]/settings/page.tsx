@@ -5,7 +5,6 @@ import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ERP_CONFIGS, type ERPProvider } from '@/connectors';
 import PageHeader from '@/components/PageHeader';
-import OrgSwitcher from '@/components/OrgSwitcher';
 import Shell from '@/components/Shell';
 import { useAuth } from '@/context/AuthContext';
 import styles from './integrations.module.css';
@@ -111,9 +110,6 @@ export default function IntegrationsPage() {
         <Shell>
             <div className={styles.page}>
                 <PageHeader title={t('title')} subtitle={t('subtitle')} />
-
-                {/* Demo Org Switcher */}
-                <OrgSwitcher />
 
                 {/* Status Message */}
                 <AnimatePresence>

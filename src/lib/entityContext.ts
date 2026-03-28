@@ -28,8 +28,8 @@ export interface Entity {
 export const DEMO_ENTITIES: Entity[] = [
     {
         id:          'ENT_01',
-        name:        'PAC Technologies',
-        nameAr:      'باك للتقنية',
+        name:        'The Digital Transformation Agency',
+        nameAr:      'وكالة التحول الرقمي',
         industry:    'Technology',
         industryAr:  'التقنية',
         healthScore: 87,
@@ -37,8 +37,8 @@ export const DEMO_ENTITIES: Entity[] = [
     },
     {
         id:          'ENT_02',
-        name:        'Al-Noor Medical',
-        nameAr:      'النور الطبي',
+        name:        'The Medical Equipment Factory',
+        nameAr:      'مصنع المعدات الطبية',
         industry:    'Healthcare',
         industryAr:  'الرعاية الصحية',
         healthScore: 72,

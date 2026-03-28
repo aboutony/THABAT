@@ -172,3 +172,27 @@
     color: var(--success);
     width: 14px;
 }
+
+/* ── Mobile dropdown calibration (SSM Command #47) ───────────────────────────
+   Thumb-reach spec for 6.7" viewports:
+   - 12mm row height, 3.5mm type, 4mm horizontal padding
+   - Active row: 0.5mm Sovereign Gold bottom border ─────────────────────────── */
+@media (max-width: 767px) {
+    .item {
+        min-height: 12mm;
+        padding: 0 4mm;
+        font-size: 3.5mm;
+    }
+
+    .itemName {
+        font-size: 3.5mm;
+    }
+
+    .itemIndustry {
+        font-size: 2.8mm; /* proportionally smaller than name */
+    }
+
+    .itemActive {
+        border-bottom: 0.5mm solid #D4AF37 !important; /* Sovereign Gold active indicator */
+    }
+}
