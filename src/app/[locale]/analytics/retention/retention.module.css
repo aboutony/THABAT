@@ -6,10 +6,10 @@
     gap: 14px;
     height: 100%;
     min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* iOS Safari momentum scroll for inner containers */
+    overflow-y: scroll; /* 'scroll' not 'auto' — iOS Safari honours scroll on overflow:hidden parents */
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    padding: 16px 16px 80px;
+    padding: 16px 16px 140px; /* 140px: THABAT nav (86px) + Safari browser chrome (54px) */
     scrollbar-width: none;
 }
 

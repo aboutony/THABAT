@@ -84,7 +84,6 @@ export default function ClientConstellation() {
             <svg
                 viewBox={`0 0 ${W} ${H}`}
                 width="100%"
-                height="auto"
                 className={s.svg}
                 preserveAspectRatio="xMidYMid meet"
                 aria-hidden="true"

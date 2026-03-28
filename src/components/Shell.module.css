@@ -82,6 +82,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    -webkit-overflow-scrolling: touch; /* allow inner pages to scroll on iOS */
     min-height: 0;
     background: var(--bg-primary);
 }
