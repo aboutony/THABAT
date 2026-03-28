@@ -156,25 +156,29 @@
     font-weight: 800;
 }
 
-/* Vault alert glow — pulses when active risks exist */
-.navAlertGlow svg {
-    color: var(--amber-action);
-    filter: drop-shadow(0 0 5px var(--amber-action-glow));
+/* Vault alert glow — amber pulse matches desktop amber-pulse cadence (2s) */
+.navAlertGlow {
+    animation: vault-glow 2s ease-in-out infinite;
 }
 
-.navAlertGlow {
-    animation: vault-glow 2.5s ease-in-out infinite;
+/* Icon glow — separate animation on the SVG so the amber ray is distinct */
+.navAlertGlow svg {
+    color: var(--amber-action);
+    animation: vault-icon-glow 2s ease-in-out infinite;
 }
 
 @keyframes vault-glow {
     0%, 100% {
-        color: var(--amber-action);
-        filter: drop-shadow(0 0 4px var(--amber-action-glow));
+        box-shadow: var(--neu-raised-xs), 0 0 6px  var(--amber-action-glow);
     }
     50% {
-        color: var(--amber-action);
-        filter: drop-shadow(0 0 10px var(--amber-action-glow));
+        box-shadow: var(--neu-raised-xs), 0 0 18px var(--amber-action-glow);
     }
+}
+
+@keyframes vault-icon-glow {
+    0%, 100% { filter: drop-shadow(0 0 3px var(--amber-action-glow)); }
+    50%       { filter: drop-shadow(0 0 10px var(--amber-action)); }
 }
 
 /* ── Globe badge — Sovereign Gold pulse for external events ─────────────── */

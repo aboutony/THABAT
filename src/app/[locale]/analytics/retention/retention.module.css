@@ -113,7 +113,9 @@
     background: var(--glass-bg);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    overflow: hidden;
+    /* overflow:hidden removed — iOS Safari compositing bug: transform+opacity
+       on an overflow:hidden element prevents child content from painting.
+       .expandSection already has overflow:hidden for the height:0 animation. */
     transition: border-color 0.2s;
 }
 
@@ -358,7 +360,7 @@
 
 /* ── Mobile responsive ───────────────────────────────────────────────────── */
 @media (max-width: 767px) {
-    /* Stat boxes: reduce horizontal squishing on small screens */
+    /* Stats: reduce padding from 14px/18px to 10px/12px — prevents squishing */
     .statsRow {
         padding: 10px 12px;
     }
@@ -372,29 +374,22 @@
         letter-spacing: 0.05em;
     }
 
-    /* At-risk client cards: guarantee height: auto so children never collapse */
-    .clientCard {
-        height: auto;
-        min-height: 0;
-        overflow: hidden; /* keep for expand animation */
-    }
-
-    .cardHeader {
-        height: auto;
-        min-height: 44px; /* Apple/Google touch-target standard */
-        padding: 10px 12px;
-    }
-
+    /* Text clipping fix: remove fixed max-width; flex parent (.clientMeta)
+       already has min-width:0 so ellipsis trims naturally without overflow */
     .clientName {
-        max-width: 130px;
+        max-width: none;
+        width: 100%;
         font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .healthNum {
         font-size: 18px;
     }
 
-    /* Outreach button — 44px min touch target while keeping sleek look */
+    /* Touch target: 44px min per Apple HIG / Google Material (button only) */
     .outreachBtn {
         min-height: 44px;
         padding: 10px 16px;

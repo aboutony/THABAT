@@ -55,6 +55,7 @@
 .svg {
     width: 100%;
     height: auto;
+    aspect-ratio: 340 / 130; /* prevents Safari mobile SVG height collapse */
     overflow: visible;
     display: block;
 }
@@ -145,26 +146,19 @@
 
 /* ── Mobile responsive ───────────────────────────────────────────────────── */
 @media (max-width: 767px) {
+    /* Tighten padding on mobile — no forced aspect-ratio; the SVG viewBox
+       + preserveAspectRatio handles proportional scaling at any width     */
     .wrapper {
-        aspect-ratio: 16 / 9;
         padding: 10px 12px 8px;
     }
 
+    /* SVG scales naturally: width:100% + viewBox drives the height */
     .svg {
         width: 100%;
-        height: 100%;
-        flex: 1;
-        min-height: 0;
+        height: auto;
     }
 
-    /* Scale each client star down 20% so the full map stays in-frame */
-    .starGroup {
-        transform-box: fill-box;
-        transform-origin: center;
-        transform: scale(0.8);
-    }
-
-    /* Re-assert constellation lines on mobile — prevent any cascade reset */
+    /* Re-assert stroke on mobile — guard against any cascade reset */
     .constellationLine {
         stroke-opacity: 1;
         opacity: 0.55;
