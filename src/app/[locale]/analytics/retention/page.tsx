@@ -184,14 +184,21 @@ export default function RetentionSentinelPage() {
                                 className={s.cardHeader}
                                 onClick={() => setExpanded(isExpanded ? null : client.id)}
                             >
-                                <div className={s.clientMeta}>
-                                    <span className={s.clientName}>
+                                <div
+                                    className={s.clientMeta}
+                                    style={isAr ? { alignItems: 'flex-end' } : undefined}
+                                >
+                                    <span
+                                        className={s.clientName}
+                                        style={isAr ? { marginLeft: 'auto', textAlign: 'right' } : undefined}
+                                    >
                                         {isAr ? client.name.ar : client.name.en}
                                     </span>
                                     <span className={s.riskBadge} style={{
                                         color: client.color,
                                         background: `${client.color}18`,
                                         borderColor: `${client.color}30`,
+                                        ...(isAr ? { marginLeft: 'auto' } : {}),
                                     }}>
                                         {riskLabel(client.riskLevel)}
                                     </span>
