@@ -109,23 +109,23 @@
     padding: 4px 0 2px;
 }
 
-/* ── Arabic At-Risk header — Sovereign RTL Anchor (Command #53) ──────────────
-   Applied only when locale = 'ar'. Forces right-anchor independently of the
-   parent flex container, with the "Adonis Offset": 24px right + 16px top margin.
-   width: calc(100% - 48px) maintains a professional safe zone from both edges.
+/* ── Arabic At-Risk header — Sovereign RTL Anchor ────────────────────────────
+   Applied only when locale = 'ar'. The parent .page is a flex-column with
+   padding: 16px on both sides — children stretch to full content width.
+   Simple block + text-align: right is the only reliable cross-browser anchor.
+   No flex tricks, no logical-property confusion.
    ─────────────────────────────────────────────────────────────────────────── */
 .sectionHeaderArabic {
-    display: flex !important;
-    justify-content: flex-end !important;   /* flex-end = right side → anchors "ر" in "خطر" */
-    width: calc(100% - 48px);              /* safe zone: never touches glass edge */
-    margin-inline-end: 24px;              /* Adonis Offset: 24px (6.3mm) right margin */
-    margin-top: 16px;                      /* 4.2mm separation from Constellation above */
-    font-size: 4.2mm;                      /* 16px — matches English header density */
+    display: block;
+    width: 100%;                /* stretch to full content area — same as cards below */
+    text-align: right;          /* hard right — "ر" aligns with card right edge */
+    margin-top: 16px;           /* 4.2mm separation from Constellation above */
+    font-size: 4.2mm;           /* 16px — matches English header visual density */
     font-weight: 700;
-    line-height: 1.4;
-    color: #E2E8F0;                        /* Slate-200 — high contrast on dark bg */
-    letter-spacing: 0;                     /* reset uppercase tracking — Arabic doesn't use it */
-    text-transform: none;                  /* sectionLabel sets uppercase; neutralise for Arabic */
+    line-height: 1.4;           /* diacritic headroom */
+    color: #E2E8F0;             /* Slate-200 — high contrast on dark background */
+    letter-spacing: 0;          /* no uppercase tracking for Arabic */
+    text-transform: none;       /* override sectionLabel uppercase */
     overflow: visible;
 }
 
@@ -456,27 +456,7 @@
         padding: 15px 14px; /* ~8mm vertical rhythm between rows */
     }
 
-    /* ── Arabic section header calibration (Command #52.1) ──────────────────
-       'أعلى 5 عملاء في خطر' must anchor to the right edge of the container
-       and align vertically with the right edge of the client cards below.
-       ─────────────────────────────────────────────────────────────────────── */
-    :global([dir="rtl"]) .sectionLabel {
-        /* Layout: full-width flex row, text anchors to the inline-end (right) */
-        display: flex;
-        width: 100%;
-        justify-content: flex-start;   /* flex-start = right side in RTL */
-        overflow: visible;             /* prevent text from being clipped */
-
-        /* Spacing: 6mm right padding so "أعلى" clears the container edge */
-        padding-inline-end: 6mm;
-        margin-inline-start: auto;     /* pushes block to the right anchor */
-
-        /* Typography */
-        font-size: 4.2mm;              /* 16px — matches English header visual density */
-        font-weight: 600;
-        line-height: 1.4;              /* breathing room for Arabic glyphs */
-        text-align: end;
-    }
+    /* .sectionHeaderArabic handles the Arabic at-risk label — no override needed here */
 }
 
 /* ── RTL overrides ───────────────────────────────────────────────────────── */
