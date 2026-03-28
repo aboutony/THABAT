@@ -10,6 +10,49 @@
     gap: 16px;
 }
 
+/* ── CLIENT ghost state (Command #56) ───────────────────────────── */
+.ghostWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 0 16px;
+}
+
+.ghostBar {
+    height: 32px;
+    border-radius: 6px;
+    background: rgba(100, 116, 139, 0.15);
+    animation: ghost-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ghost-pulse {
+    0%, 100% { opacity: 0.5; }
+    50%       { opacity: 1;   }
+}
+
+.ghostOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ghostCta {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.40);
+    color: #D4AF37;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    cursor: pointer;
+    animation: ghost-pulse 2s ease-in-out infinite;
+}
+
 /* ── Header ────────────────────────────────────────────────────── */
 .header {
     display: flex;

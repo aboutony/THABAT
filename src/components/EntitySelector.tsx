@@ -4,11 +4,17 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import { useEntity } from '@/context/EntityContext';
+import { useIdentity } from '@/hooks/useIdentity';
 import s from './EntitySelector.module.css';
 
 export default function EntitySelector() {
     const locale = useLocale();
     const { activeEntity, entities, switchEntity } = useEntity();
+    const { isCommander } = useIdentity();
+
+    // Hard gate — only COMMANDER (adonis@thabat.app) sees the entity switcher
+    if (!isCommander) return null;
+
     const [open, setOpen] = useState(false);
     const wrapRef = useRef<HTMLDivElement>(null);
 

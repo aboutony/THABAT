@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
 import OracleBriefing from '@/components/OracleBriefing';
@@ -30,6 +31,19 @@ export default function RitualScreen() {
     const tSC = useTranslations('scenario');
     const tR  = useTranslations('report');
     const { user } = useAuth();
+    const router   = useRouter();
+
+    // CLIENT first-session redirect to Settings (once per browser session)
+    useEffect(() => {
+        if (user?.role === 'CLIENT') {
+            const key = 'thabat-client-onboarded';
+            if (!sessionStorage.getItem(key)) {
+                sessionStorage.setItem(key, '1');
+                router.push(`/${locale}/settings`);
+            }
+        }
+    }, [user, locale, router]);
+
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);

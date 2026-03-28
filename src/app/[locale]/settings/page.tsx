@@ -170,7 +170,7 @@ export default function IntegrationsPage() {
                                     ) : (
                                         provider === 'sap' ? (
                                             <a
-                                                className={styles.connectBtn}
+                                                className={`${styles.connectBtn} ${styles.connectBtnSap}`}
                                                 href={`/${locale}/onboarding`}
                                             >
                                                 {t('connect')}

@@ -129,6 +129,19 @@
     margin-inline-start: auto;
 }
 
+/* ── SAP connect button — Sovereign Gold pulse (Command #56) ── */
+.connectBtnSap {
+    background: rgba(212, 175, 55, 0.12);
+    color: #D4AF37;
+    border: 1px solid rgba(212, 175, 55, 0.45) !important;
+    animation: sap-sovereign-pulse 2s ease-in-out infinite;
+}
+
+@keyframes sap-sovereign-pulse {
+    0%, 100% { box-shadow: 0 0 0   0   rgba(212, 175, 55, 0);   }
+    50%       { box-shadow: 0 0 12px 3px rgba(212, 175, 55, 0.28); }
+}
+
 .syncBtn {
     background: rgba(0, 108, 53, 0.15);
     color: var(--success);
