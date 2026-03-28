@@ -32,6 +32,7 @@ const TIER_KEYS = {
     red:       'tierRed',
 } as const satisfies Record<NitaqatTier, string>;
 
+import { useIdentity } from '@/hooks/useIdentity';
 import s from './nitaqat.module.css';
 
 // ── UNIMED demo workforce ─────────────────────────────────────────────────
@@ -66,6 +67,8 @@ export default function NitaqatPage() {
     const isAr    = locale === 'ar';
     const router  = useRouter();
     const t       = useTranslations('nitaqat');
+
+    const { isClient } = useIdentity();
 
     const [plannedExpats,      setPlannedExpats]      = useState(0);
     const [finalized,          setFinalized]          = useState(false);
@@ -174,26 +177,30 @@ export default function NitaqatPage() {
             {/* ── Gauge card ──────────────────────────────────────────────── */}
             <div className={`glass-card ${s.gaugeCard}`}>
                 <NitaqatShield
-                    saudizationPct={plannedExpats > 0 ? sim.newWeightedPct : saudizationPct}
-                    tier={plannedExpats > 0 ? sim.newTier : currentTier}
-                    tierLabel={plannedExpats > 0 ? simLabel : currentLabel}
+                    saudizationPct={isClient ? 0 : (plannedExpats > 0 ? sim.newWeightedPct : saudizationPct)}
+                    tier={isClient ? 'red' : (plannedExpats > 0 ? sim.newTier : currentTier)}
+                    tierLabel={isClient
+                        ? (isAr ? 'في انتظار تكامل GOSI' : 'Awaiting GOSI Integration')
+                        : (plannedExpats > 0 ? simLabel : currentLabel)
+                    }
                     isAr={isAr}
                 />
                 <div className={s.gaugeMeta}>
                     <span className={s.gaugeMetaItem}>
                         <span className={s.metaLabel}>{t('totalEmployees')}</span>
                         <span className={s.metaVal}>
-                            {plannedExpats > 0 ? sim.newTotal : DEMO_WORKFORCE.totalEmployees}
+                            {isClient ? 0 : (plannedExpats > 0 ? sim.newTotal : DEMO_WORKFORCE.totalEmployees)}
                         </span>
                     </span>
                     <span className={s.gaugeMetaItem}>
                         <span className={s.metaLabel}>{t('saudiWeighted')}</span>
-                        <span className={s.metaVal}>{weightedSaudi.toFixed(1)}</span>
+                        <span className={s.metaVal}>{isClient ? '0.0' : weightedSaudi.toFixed(1)}</span>
                     </span>
                 </div>
             </div>
 
-            {/* ── Supplier Trust Shield — margin linkage ──────────────────── */}
+            {/* ── Supplier Trust Shield — hidden for CLIENT ───────────────── */}
+            {!isClient && (
             <Link
                 href={`/${locale}/analytics/supply-chain`}
                 className={`glass-card ${s.supplierCard}`}
@@ -219,8 +226,10 @@ export default function NitaqatPage() {
                     <span className={s.supplierMargin}>{t('supplierMarginNote')}</span>
                 </div>
             </Link>
+            )}
 
-            {/* ── Visa interlink — full-width, high-context after gauge ────── */}
+            {/* ── Visa interlink — hidden for CLIENT ──────────────────────── */}
+            {!isClient && (
             <div className={`glass-card ${s.visaCard}`}>
                 <span className={s.visaIcon}>🛂</span>
                 <div className={s.visaText}>
@@ -234,6 +243,7 @@ export default function NitaqatPage() {
                     {t('viewWaterfall')} →
                 </Link>
             </div>
+            )}
 
             {/* ── Workforce snapshot ──────────────────────────────────────── */}
             <div className={`glass-card ${s.card}`}>

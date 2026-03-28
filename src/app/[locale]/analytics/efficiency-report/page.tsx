@@ -175,10 +175,13 @@ export default function EfficiencyReportPage() {
                             />
                         </svg>
                         <div className={styles.dialCenter}>
-                            <span className={styles.dialValue}>{formatNumber(VELOCITY.orderToCash, locale)}</span>
-                            <span className={styles.dialUnit}>{t('days')}</span>
+                            <span className={styles.dialValue}>
+                                {isClient ? '---' : formatNumber(VELOCITY.orderToCash, locale)}
+                            </span>
+                            <span className={styles.dialUnit}>{isClient ? '' : t('days')}</span>
                         </div>
                     </div>
+                    {!isClient && (
                     <div className={styles.dialMeta}>
                         <div className={styles.dialMetaItem}>
                             <span className={styles.sectorDot} />
@@ -188,6 +191,7 @@ export default function EfficiencyReportPage() {
                             ↗ {formatNumber(VELOCITY.improvement, locale)}% {t('fasterThanSector')}
                         </div>
                     </div>
+                    )}
                 </motion.div>
 
                 {/* Fulfillment Pipeline */}
@@ -199,24 +203,23 @@ export default function EfficiencyReportPage() {
                 >
                     <div className={styles.pipelineHeader}>
                         <span className={styles.pipelineTitle}>{t('fulfillmentStatus')}</span>
-                        <span className={styles.pipelinePO}>{formatNumber('PO 4100000309', locale)}</span>
+                        {!isClient && <span className={styles.pipelinePO}>{formatNumber('PO 4100000309', locale)}</span>}
                     </div>
                     <div className={styles.stageList}>
                         {FULFILLMENT_STAGES.map((stage, i) => (
                             <div key={stage.key} className={styles.stageRow}>
-                                <div className={`${styles.stageIcon} ${stage.status === 'complete' ? styles.stageComplete :
-                                        stage.status === 'active' ? styles.stageActive :
-                                            styles.stagePending
-                                    }`}>
-                                    {stage.status === 'complete' ? '✓' : stage.status === 'active' ? '◉' : '○'}
-                                </div>
+                                <div className={`${styles.stageIcon} ${styles.stagePending}`}>○</div>
                                 {i < FULFILLMENT_STAGES.length - 1 && (
-                                    <div className={`${styles.stageConnector} ${stage.status === 'complete' ? styles.connectorDone : ''
-                                        }`} />
+                                    <div className={styles.stageConnector} />
                                 )}
                                 <div className={styles.stageContent}>
-                                    <span className={styles.stageName}>{t(stage.key)}</span>
-                                    {stage.status !== 'pending' && (
+                                    <span className={styles.stageName}>
+                                        {isClient
+                                            ? (isAr ? 'في انتظار أمر الشراء' : 'Awaiting PO')
+                                            : t(stage.key)
+                                        }
+                                    </span>
+                                    {!isClient && stage.status !== 'pending' && (
                                         <span className={styles.stageDays}>
                                             {formatNumber(stage.daysSpent, locale)} {t('days')}
                                         </span>
@@ -236,24 +239,9 @@ export default function EfficiencyReportPage() {
                 >
                     <div className={styles.inventoryTitle}>{t('inventoryCriticality')}</div>
                     {isClient ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                            {[0.85, 0.60, 0.45].map((w, i) => (
-                                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                                    <div style={{
-                                        height: 10, borderRadius: 5,
-                                        width: `${w * 55}%`,
-                                        background: 'rgba(148,163,184,0.12)',
-                                        animation: `ghost-pulse 1.8s ease-in-out ${i * 0.2}s infinite`,
-                                    }} />
-                                    <div style={{
-                                        height: 7, borderRadius: 4,
-                                        width: `${w * 100}%`,
-                                        background: 'rgba(148,163,184,0.08)',
-                                        animation: `ghost-pulse 1.8s ease-in-out ${i * 0.2 + 0.1}s infinite`,
-                                    }} />
-                                </div>
-                            ))}
-                        </div>
+                        <p style={{ color: 'rgba(148,163,184,0.5)', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>
+                            {isAr ? 'لا توجد مخزونات نشطة مُتتبَّعة' : 'No active inventory tracked.'}
+                        </p>
                     ) : INVENTORY.map((item) => {
                         const stockPercent = (item.stock / item.maxDays) * 100;
                         const isCritical = stockPercent < 20;
@@ -305,7 +293,6 @@ export default function EfficiencyReportPage() {
                         );
                     })}
                 </motion.div>
-                <style>{`@keyframes ghost-pulse{0%,100%{opacity:.4}50%{opacity:.9}}`}</style>
             </div>
         </Shell>
         <ActionToast result={toastResult} onDismiss={dismissToast} />

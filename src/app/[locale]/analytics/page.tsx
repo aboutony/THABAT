@@ -90,8 +90,22 @@ export default function AnalyticsPage() {
                     }
                 />
 
-                {/* Industry Percentile Badge */}
-                <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: locale === 'ar' ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
+                {/* Industry Percentile Badge — replaced with inactive notice for CLIENT */}
+                {isClient ? (
+                    <div style={{
+                        padding: '10px 14px', borderRadius: 8,
+                        background: 'rgba(148,163,184,0.06)',
+                        border: '1px solid rgba(148,163,184,0.12)',
+                        fontSize: 12, color: 'rgba(148,163,184,0.55)',
+                        textAlign: 'center', lineHeight: 1.5,
+                    }}>
+                        {isAr
+                            ? 'مقارنة القطاع: غير نشطة. تتطلب 30 يومًا من استيعاب البيانات التاريخية.'
+                            : 'Sector Benchmarking: Inactive. Requires 30 days of historical data ingestion.'}
+                    </div>
+                ) : (
+                    <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: isAr ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
+                )}
 
                 {/* Stability Ring — with shimmer on compute */}
                 {score && (

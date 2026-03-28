@@ -139,21 +139,21 @@ export default function RetentionSentinelPage() {
                 <div className={s.statsRow}>
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#4ADE80' }}>
-                            {CLIENT_HEALTH_RESULTS.length}
+                            {isClient ? '---' : CLIENT_HEALTH_RESULTS.length}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'عملاء' : 'Clients'}</span>
                     </div>
                     <div className={s.statDivider} />
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#F59E0B' }}>
-                            {atRiskCount}
+                            {isClient ? '---' : atRiskCount}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'في خطر' : 'At Risk'}</span>
                     </div>
                     <div className={s.statDivider} />
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#4ADE80' }}>
-                            {healthy.length}
+                            {isClient ? '---' : healthy.length}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'بصحة جيدة' : 'Healthy'}</span>
                     </div>

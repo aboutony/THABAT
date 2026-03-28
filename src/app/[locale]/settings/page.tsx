@@ -108,6 +108,50 @@ export default function IntegrationsPage() {
 
     const providers: ERPProvider[] = ['odoo', 'sap', 'dynamics'];
 
+    // Display-only gateway cards for CLIENT tier (includes Oracle Fusion + ZATCA Phase 2)
+    const GATEWAY_CARDS = [
+        {
+            key: 'sap',
+            nameEN: 'SAP Business One',
+            nameAR: 'ساب بزنس ون',
+            descEN: 'Connect via SAP Service Layer REST API',
+            descAR: 'الاتصال عبر واجهة Service Layer REST',
+            icon: '🔷',
+        },
+        {
+            key: 'odoo',
+            nameEN: 'Odoo',
+            nameAR: 'أودو',
+            descEN: 'Connect to Odoo ERP via XML-RPC API',
+            descAR: 'الاتصال بنظام أودو عبر واجهة XML-RPC',
+            icon: '🟣',
+        },
+        {
+            key: 'dynamics',
+            nameEN: 'Microsoft Dynamics 365',
+            nameAR: 'مايكروسوفت دايناميكس ٣٦٥',
+            descEN: 'Connect via Azure OAuth2 & OData API v2.0',
+            descAR: 'الاتصال عبر Azure OAuth2 وواجهة OData v2.0',
+            icon: '🟦',
+        },
+        {
+            key: 'oracle',
+            nameEN: 'Oracle Fusion',
+            nameAR: 'أوراكل فيوجن',
+            descEN: 'Connect via Oracle REST Data Services',
+            descAR: 'الاتصال عبر Oracle REST Data Services',
+            icon: '🔴',
+        },
+        {
+            key: 'zatca',
+            nameEN: 'ZATCA Phase 2',
+            nameAR: 'فاتورة — المرحلة الثانية',
+            descEN: 'Fatoora e-invoicing compliance integration',
+            descAR: 'تكامل الفوترة الإلكترونية — منظومة فاتورة',
+            icon: '🇸🇦',
+        },
+    ];
+
     return (
         <Shell>
             <div className={styles.page}>
@@ -127,7 +171,44 @@ export default function IntegrationsPage() {
                     )}
                 </AnimatePresence>
 
-                {/* ERP Cards + modal — hidden for CLIENT tier */}
+                {/* ── CLIENT: Gateway cards (all 5 providers) ────────────── */}
+                {isClient && (
+                    <div className={styles.erpGrid}>
+                        {GATEWAY_CARDS.map((card, i) => (
+                            <motion.div
+                                key={card.key}
+                                className={`glass-card ${styles.erpCard}`}
+                                initial={{ opacity: 0, y: 16 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 + i * 0.08, duration: 0.4 }}
+                                whileHover={{ scale: 1.015 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                <div className={styles.erpHeader}>
+                                    <span className={styles.erpIcon}>{card.icon}</span>
+                                    <div>
+                                        <div className={styles.erpName}>
+                                            {locale === 'ar' ? card.nameAR : card.nameEN}
+                                        </div>
+                                        <div className={styles.erpDesc}>
+                                            {locale === 'ar' ? card.descAR : card.descEN}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.erpActions}>
+                                    <a
+                                        className={`${styles.connectBtn} ${styles.connectBtnSap}`}
+                                        href={`/${locale}/onboarding`}
+                                    >
+                                        {t('connect')}
+                                    </a>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
+
+                {/* ── COMMANDER/GUEST: Full ERP grid + wizard ─────────────── */}
                 {!isClient && (<><div className={styles.erpGrid}>
                     {providers.map((provider, i) => {
                         const config = ERP_CONFIGS[provider];

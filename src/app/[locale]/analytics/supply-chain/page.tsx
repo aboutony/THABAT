@@ -1,13 +1,14 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 import Shell from '@/components/Shell';
 import LeadTimePulse from '@/components/LeadTimePulse';
 import SupplierCard from '@/components/SupplierCard';
 import { DEMO_SUPPLIERS } from '@/lib/calculateTrustScore';
+import { useIdentity } from '@/hooks/useIdentity';
 
 import s from './supply-chain.module.css';
 
@@ -83,6 +84,7 @@ export default function SupplyChainPage() {
     const locale = useLocale();
     const isAr   = locale === 'ar';
     const t      = useTranslations('supplyChain');
+    const { isClient } = useIdentity();
 
     return (
         <Shell>
@@ -98,6 +100,28 @@ export default function SupplyChainPage() {
                     <h2 className={s.title}>{t('title')}</h2>
                     <p className={s.subtitle}>{t('subtitle')}</p>
                 </div>
+
+                {/* ── CLIENT ghost state ─────────────────────────────────── */}
+                {isClient && (
+                    <motion.div
+                        {...fadeUp(0.05)}
+                        className={`glass-card ${s.card}`}
+                        style={{ textAlign: 'center', padding: '48px 24px' }}
+                    >
+                        <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.25 }}>📦</div>
+                        <p style={{ fontSize: 15, fontWeight: 600, color: 'rgba(148,163,184,0.5)', marginBottom: 6 }}>
+                            {isAr ? 'بيانات الخدمات اللوجستية: غير متصلة' : 'Logistics Data: Offline'}
+                        </p>
+                        <p style={{ fontSize: 12, color: 'rgba(148,163,184,0.3)', lineHeight: 1.6 }}>
+                            {isAr
+                                ? 'يتطلب ربط نظام ERP لتفعيل تتبع الشحنات في الوقت الفعلي.'
+                                : 'Requires ERP integration to activate real-time shipment tracking.'}
+                        </p>
+                    </motion.div>
+                )}
+
+                {/* ── Live content (non-CLIENT only) ────────────────────── */}
+                {!isClient && (<>
 
                 {/* ── Hero: LeadTimePulse ────────────────────────────────── */}
                 <motion.div {...fadeUp(0.05)} className={`glass-card ${s.card}`}>
@@ -225,6 +249,8 @@ export default function SupplyChainPage() {
                         </div>
                     </div>
                 </motion.div>
+
+                </>)}
 
             </div>
         </Shell>
