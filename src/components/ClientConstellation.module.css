@@ -56,6 +56,7 @@
     width: 100%;
     height: auto;
     aspect-ratio: 340 / 130; /* prevents Safari mobile SVG height collapse */
+    min-height: 100px;       /* hard floor: older Safari ignores aspect-ratio on SVG */
     overflow: visible;
     display: block;
 }
