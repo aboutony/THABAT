@@ -82,8 +82,19 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    -webkit-overflow-scrolling: touch; /* allow inner pages to scroll on iOS */
     min-height: 0;
     background: var(--bg-primary);
+}
+
+/* Mobile: move scroll responsibility from .page to .main so height:auto
+   pages can expand naturally and iOS touch-scroll is guaranteed          */
+@media (max-width: 767px) {
+    .main {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
 }
 
 /* ---- Neumorphic Bottom Navigation ---- */
