@@ -178,7 +178,16 @@
     border-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Connective lines — Steel Blue / Slate-500, solid and unmistakable */
+/* Dark mode: luminous white network — overrides faint rgba(165,180,252,0.12)
+   inline attribute. CSS class > SVG presentation attribute in specificity.   */
+:global([data-theme="dark"]) .constellationLine {
+    stroke: #FFFFFF;
+    stroke-opacity: 0.65;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 4;
+}
+
+/* Connective lines — Steel Blue / Slate-500, unmistakable on Frosted Pearl */
 :global(.light) .constellationLine {
     stroke: #64748B;
     stroke-width: 1.5;
