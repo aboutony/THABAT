@@ -310,7 +310,7 @@
         "drillDown": "تفصيل",
         "collapse": "طي",
         "auditBtn": "مراجعة هذا القسم",
-        "topDriversBtn": "أعلى 5 محركات تكلفة",
+        "topDriversBtn": "عرض أعلى المنفقين",
         "overAverage": "{pct}% فوق المتوسط 6 أشهر",
         "leakageHighlight": "أعلى تسرب للتكاليف",
         "movingAvgAlert": "فوق المتوسط المتحرك",

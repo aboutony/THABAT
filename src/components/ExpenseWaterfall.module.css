@@ -364,6 +364,33 @@
     color: var(--text-secondary);
 }
 
+/* ── Mobile responsive (SSM Action Bar Calibration — Command #46) ─────────
+   Problem: two buttons fight for horizontal space in a ~77mm viewport.
+   Solution: vertical stacking, 100% width, physical-mm dimensions.
+   Total action area: 1mm top + 10mm btn + 4mm gap + 10mm btn + 1mm bottom = 26mm ── */
+
+@media (max-width: 767px) {
+    .actionRow {
+        flex-direction: column;
+        gap: 4mm;                   /* exactly 4mm vertical gap between buttons */
+        padding: 1mm 0 1mm 0;       /* 1mm top + 1mm bottom = 2mm safety → 26mm total */
+    }
+
+    [dir='rtl'] .actionRow {
+        padding: 1mm 0 1mm 0;
+    }
+
+    .actionBtn {
+        width: 100%;                /* span full card width — no clipping */
+        height: 10mm;               /* 10mm fixed touch target */
+        font-size: 3.2mm;           /* ~12px — legible at arm's length */
+        text-align: center;
+        white-space: normal;        /* allow wrap if locale string is long */
+        padding: 0 8px;
+        border-radius: 8px;
+    }
+}
+
 /* ── Dark-mode overrides ───────────────────────────────────────── */
 [data-theme='dark'] .rowLeakage {
     background: rgba(250, 179, 135, 0.05);

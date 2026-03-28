@@ -310,7 +310,7 @@
         "drillDown": "Drill Down",
         "collapse": "Collapse",
         "auditBtn": "Audit This Department",
-        "topDriversBtn": "View Top 5 Cost Drivers",
+        "topDriversBtn": "View Top Spenders",
         "overAverage": "{pct}% above 6-month avg",
         "leakageHighlight": "Highest cost leakage",
         "movingAvgAlert": "Above 6-month avg",
