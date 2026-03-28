@@ -108,8 +108,8 @@ export default function RitualScreen() {
         fetchLatest();
     }, []);
 
-    const score = latestData?.score.overall ?? DEMO_SCORE;
-    const trend = latestData?.score.trend ?? DEMO_TREND;
+    const score = isClient ? 0 : (latestData?.score.overall ?? DEMO_SCORE);
+    const trend = isClient ? 'stable' : (latestData?.score.trend ?? DEMO_TREND);
 
     const [totalAvoided, setTotalAvoided] = useState(0);
     useEffect(() => {
@@ -129,8 +129,8 @@ export default function RitualScreen() {
             ),
             label: t('revenue'),
             description: t('revenueDesc'),
-            value: latestData ? formatPercent(((latestData.metrics.revenue - latestData.metrics.expenses) / Math.max(latestData.metrics.revenue, 1) * 100), locale) : formatPercent(12.4, locale),
-            trend: 'up' as const,
+            value: isClient ? '---' : (latestData ? formatPercent(((latestData.metrics.revenue - latestData.metrics.expenses) / Math.max(latestData.metrics.revenue, 1) * 100), locale) : formatPercent(12.4, locale)),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/sales-report`,
         },
         {
@@ -144,8 +144,8 @@ export default function RitualScreen() {
             ),
             label: t('retention'),
             description: t('retentionDesc'),
-            value: latestData ? formatPercent(latestData.score.receivables, locale) : formatPercent(94.2, locale),
-            trend: 'up' as const,
+            value: isClient ? '---' : (latestData ? formatPercent(latestData.score.receivables, locale) : formatPercent(94.2, locale)),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/retention`,
         },
         {
@@ -156,8 +156,8 @@ export default function RitualScreen() {
             ),
             label: t('efficiency'),
             description: t('efficiencyDesc'),
-            value: latestData ? formatPercent(latestData.score.margins, locale) : formatPercent(88.7, locale),
-            trend: 'up' as const,
+            value: isClient ? '---' : (latestData ? formatPercent(latestData.score.margins, locale) : formatPercent(88.7, locale)),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/efficiency-report`,
         },
         {
@@ -169,8 +169,8 @@ export default function RitualScreen() {
             ),
             label: t('compliance'),
             description: t('complianceDesc'),
-            value: locale === 'ar' ? 'بلاتيني' : 'Platinum',
-            trend: 'up' as const,
+            value: isClient ? '---' : (locale === 'ar' ? 'بلاتيني' : 'Platinum'),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/nitaqat`,
         },
     ];
@@ -193,6 +193,7 @@ export default function RitualScreen() {
                 {showExport && (
                     <ExportPortal
                         healthScore={score}
+                        isClient={isClient}
                         onClose={() => setShowExport(false)}
                     />
                 )}

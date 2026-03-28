@@ -262,10 +262,10 @@ export default function NitaqatPage() {
                 </div>
                 <div className={s.workerGrid}>
                     {WORKER_ROWS.map(({ key, labelKey, weight, primary }) => {
-                        const count  = DEMO_WORKFORCE[key];
-                        const wValue = key === 'saudiSpecialNeeds'
+                        const count  = isClient ? 0 : DEMO_WORKFORCE[key];
+                        const wValue = isClient ? 0 : (key === 'saudiSpecialNeeds'
                             ? Math.min(count, Math.floor(DEMO_WORKFORCE.totalEmployees * 0.10)) * 4.0
-                            : count * parseFloat(weight);
+                            : count * parseFloat(weight));
                         return (
                             <div
                                 key={key}
@@ -284,9 +284,9 @@ export default function NitaqatPage() {
                     })}
                     <div className={`${s.workerRow} ${s.workerTotal}`}>
                         <span className={s.workerLabel}>{t('totalEmployees')}</span>
-                        <span className={s.workerCount}>{DEMO_WORKFORCE.totalEmployees}</span>
+                        <span className={s.workerCount}>{isClient ? 0 : DEMO_WORKFORCE.totalEmployees}</span>
                         <span className={s.workerWeight}/>
-                        <span className={s.workerWeighted}>{weightedSaudi.toFixed(1)}</span>
+                        <span className={s.workerWeighted}>{isClient ? '0.0' : weightedSaudi.toFixed(1)}</span>
                     </div>
                 </div>
             </div>
@@ -386,10 +386,14 @@ export default function NitaqatPage() {
                 <p className={s.cardTitle}>{t('maxExpatsSafe')}</p>
                 <div className={s.insightRow}>
                     <div className={s.insightStat}>
-                        <span className={s.insightNum} style={{ color: TIER_COLORS[currentTier] }}>
-                            {safeWindow}
+                        <span className={s.insightNum} style={{ color: isClient ? 'rgba(148,163,184,0.3)' : TIER_COLORS[currentTier] }}>
+                            {isClient ? '---' : safeWindow}
                         </span>
-                        <span className={s.insightDesc}>{t('maxExpatsText', { n: safeWindow })}</span>
+                        <span className={s.insightDesc}>
+                            {isClient
+                                ? (isAr ? 'في انتظار تكامل GOSI' : 'Awaiting GOSI Integration')
+                                : t('maxExpatsText', { n: safeWindow })}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -399,7 +403,9 @@ export default function NitaqatPage() {
                 <motion.button
                     className={s.finalizeBtn}
                     onClick={handleFinalize}
-                    whileTap={{ scale: 0.97 }}
+                    whileTap={isClient ? undefined : { scale: 0.97 }}
+                    disabled={isClient}
+                    style={isClient ? { opacity: 0.35, cursor: 'not-allowed' } : undefined}
                 >
                     {t('finalizeBtn')}
                 </motion.button>
