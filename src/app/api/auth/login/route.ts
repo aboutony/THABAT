@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/db';
 import { verifyPassword, signJWT, COOKIE_NAME } from '@/lib/auth';
 
+// ── Static demo tier accounts — no DB dependency ──────────────────────────────
+const DEMO_TIER_ACCOUNTS: Record<string, { fullName: string; orgName: string }> = {
+    'guest@thabat.app':  { fullName: 'Guest Commander',  orgName: 'Guest Preview'  },
+    'client@thabat.app': { fullName: 'Client Commander', orgName: 'Client Preview' },
+};
+const DEMO_TIER_PASSWORD = 'Demo2026!';
+
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
@@ -12,6 +19,39 @@ export async function POST(request: NextRequest) {
                 { error: 'Email and password required' },
                 { status: 400 }
             );
+        }
+
+        // ── Static tier account short-circuit (no DB required) ────────────────
+        const tierAccount = DEMO_TIER_ACCOUNTS[email.toLowerCase()];
+        if (tierAccount) {
+            if (password !== DEMO_TIER_PASSWORD) {
+                return NextResponse.json(
+                    { error: 'Invalid email or password' },
+                    { status: 401 }
+                );
+            }
+            const staticId = email.replace(/[@.]/g, '_');
+            const token = await signJWT({ userId: staticId, orgId: staticId, role: 'viewer' });
+            const response = NextResponse.json({
+                user: {
+                    id:                 staticId,
+                    orgId:              staticId,
+                    email,
+                    fullName:           tierAccount.fullName,
+                    role:               'viewer',
+                    languagePreference: 'en',
+                    themePreference:    'dark',
+                    orgName:            tierAccount.orgName,
+                },
+            });
+            response.cookies.set(COOKIE_NAME, token, {
+                httpOnly: true,
+                secure:   process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge:   60 * 60 * 24 * 7,
+                path:     '/',
+            });
+            return response;
         }
 
         // Find user (no RLS — cross-tenant lookup for auth)
