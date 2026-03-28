@@ -1,16 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import ClientConstellation from '@/components/ClientConstellation';
+import ActionToast from '@/components/ActionToast';
 import {
     CLIENT_HEALTH_RESULTS,
     getAtRiskClients,
     type ClientHealthResult,
 } from '@/lib/calculateClientHealth';
+import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
 import s from './retention.module.css';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -77,17 +79,29 @@ function ScoreBreakdown({ client }: { client: ClientHealthResult }) {
 export default function RetentionSentinelPage() {
     const locale  = useLocale();
     const isAr    = locale === 'ar';
-    const [outreachSent, setOutreachSent] = useState<Record<string, boolean>>({});
-    const [expanded, setExpanded]         = useState<string | null>(null);
+    const [outreachSent,  setOutreachSent]  = useState<Record<string, boolean>>({});
+    const [expanded,      setExpanded]      = useState<string | null>(null);
+    const [toastResult,   setToastResult]   = useState<ActionResult | null>(null);
 
-    const atRisk  = getAtRiskClients().slice(0, 5);     // top 5 worst
-    const healthy = CLIENT_HEALTH_RESULTS.filter(c => !c.isFlickering);
+    const atRisk      = getAtRiskClients().slice(0, 5);
+    const healthy     = CLIENT_HEALTH_RESULTS.filter(c => !c.isFlickering);
     const atRiskCount = CLIENT_HEALTH_RESULTS.filter(c => c.isFlickering).length;
 
-    const handleOutreach = (id: string) => {
-        setOutreachSent(prev => ({ ...prev, [id]: true }));
-        setTimeout(() => setOutreachSent(prev => ({ ...prev, [id]: false })), 3000);
-    };
+    const handleOutreach = useCallback(async (client: ClientHealthResult) => {
+        if (outreachSent[client.id]) return;
+        setOutreachSent(prev => ({ ...prev, [client.id]: true }));
+        const result = await executeActionBridge({
+            type:    'EMAIL_OUTREACH',
+            target:  isAr ? client.name.ar : client.name.en,
+            subject: `Health score ${client.healthScore} — proactive retention outreach`,
+            priority: 'high',
+        });
+        setToastResult(result);
+        // "Signal Sent" state persists for 5 s
+        setTimeout(() => setOutreachSent(prev => ({ ...prev, [client.id]: false })), 5000);
+    }, [outreachSent, isAr]);
+
+    const dismissToast = useCallback(() => setToastResult(null), []);
 
     const riskLabel = (r: ClientHealthResult['riskLevel']) => {
         const map: Record<typeof r, { en: string; ar: string }> = {
@@ -100,6 +114,7 @@ export default function RetentionSentinelPage() {
     };
 
     return (
+        <>
         <Shell>
             <div className={s.page}>
                 <Link href={`/${locale}/analytics`} className={s.backLink}>
@@ -210,11 +225,11 @@ export default function RetentionSentinelPage() {
 
                                         <button
                                             className={`${s.outreachBtn} ${outreachSent[client.id] ? s.outreachSent : ''}`}
-                                            onClick={() => handleOutreach(client.id)}
+                                            onClick={() => handleOutreach(client)}
                                             disabled={outreachSent[client.id]}
                                         >
                                             {outreachSent[client.id]
-                                                ? (isAr ? '✓ تم إرسال التواصل' : '✓ Outreach Initiated')
+                                                ? (isAr ? '✓ تم إرسال الإشارة' : '✓ Signal Sent')
                                                 : (isAr ? 'بدء التواصل' : 'Initiate Outreach')}
                                         </button>
                                     </motion.div>
@@ -248,5 +263,7 @@ export default function RetentionSentinelPage() {
                 )}
             </div>
         </Shell>
+        <ActionToast result={toastResult} onDismiss={dismissToast} />
+        </>
     );
 }

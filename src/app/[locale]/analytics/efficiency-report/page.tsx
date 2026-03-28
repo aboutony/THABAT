@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import EfficiencyRadar from '@/components/EfficiencyRadar';
+import ActionToast from '@/components/ActionToast';
 import { formatNumber } from '@/lib/locale-utils';
+import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
 import styles from './efficiency.module.css';
 
 const VELOCITY = {
@@ -57,7 +59,24 @@ export default function EfficiencyReportPage() {
     const isAr = locale === 'ar';
     const t = useTranslations('efficiency');
     const tc = useTranslations('common');
-    const [restockSent, setRestockSent] = useState<Record<string, boolean>>({});
+    const [restockSent,  setRestockSent]  = useState<Record<string, boolean>>({});
+    const [toastResult,  setToastResult]  = useState<ActionResult | null>(null);
+    const [fixSent,      setFixSent]      = useState<Record<string, boolean>>({});
+
+    const handleFixBottleneck = useCallback(async (stageKey: string, stageLabel: string) => {
+        if (fixSent[stageKey]) return;
+        setFixSent(prev => ({ ...prev, [stageKey]: true }));
+        const result = await executeActionBridge({
+            type:     'INTERNAL_TICKET',
+            target:   stageLabel,
+            subject:  'Prioritize friction resolution',
+            priority: 'high',
+        });
+        setToastResult(result);
+        setTimeout(() => setFixSent(prev => ({ ...prev, [stageKey]: false })), 5000);
+    }, [fixSent]);
+
+    const dismissToast = useCallback(() => setToastResult(null), []);
 
     const L = (obj: { en: string; ar: string }) => isAr ? obj.ar : obj.en;
 
@@ -77,6 +96,7 @@ export default function EfficiencyReportPage() {
     const sectorAngle = (VELOCITY.sectorAverage / maxDays) * 270 - 135;
 
     return (
+        <>
         <Shell>
             <div className={styles.page}>
                 <Link href={`/${locale}`} className={styles.backLink}>
@@ -99,7 +119,7 @@ export default function EfficiencyReportPage() {
                                 : 'Closer to centre = higher friction'}
                         </span>
                     </div>
-                    <EfficiencyRadar showWaterfallLink />
+                    <EfficiencyRadar showWaterfallLink onFixBottleneck={handleFixBottleneck} />
                 </motion.div>
 
                 {/* Velocity Dial */}
@@ -266,5 +286,7 @@ export default function EfficiencyReportPage() {
                 </motion.div>
             </div>
         </Shell>
+        <ActionToast result={toastResult} onDismiss={dismissToast} />
+        </>
     );
 }

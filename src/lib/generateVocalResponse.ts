@@ -36,8 +36,8 @@ export function generateVocalResponse(
             const name = isAr ? top.name.ar : top.name.en;
 
             return isAr
-                ? `لدينا ${count} ${count === 1 ? 'عميل' : 'عملاء'} في خطر. ${name} هو الأولوية القصوى بدرجة صحة ${top.healthScore} من 100.`
-                : `We have ${count} client${count === 1 ? '' : 's'} at risk. ${name} is the highest priority with a health score of ${top.healthScore}.`;
+                ? `مفهوم. لدينا ${count} ${count === 1 ? 'عميل' : 'عملاء'} في خطر. تم صياغة رسالة تواصل لـ ${name} — الأولوية القصوى بدرجة صحة ${top.healthScore}.`
+                : `Understood. We have ${count} client${count === 1 ? '' : 's'} at risk. Outreach drafted for ${name} — highest priority at health score ${top.healthScore}.`;
         }
 
         case 'OPERATIONAL_FRICTION': {
@@ -53,9 +53,10 @@ export function generateVocalResponse(
             const top  = high[0] ?? med[0];
             const name = isAr ? top.label.ar : top.label.en;
 
+            // Action-confirming vocal response — the bridge dispatch happens in OracleBriefing
             return isAr
-                ? `أعلى احتكاك في مرحلة ${name} — تأخر ${top.delayHours} ساعة عن الأساسي. نسبة الاحتكاك ${top.frictionRatio.toFixed(1)}×.`
-                : `Highest friction in ${name} — ${top.delayHours}h over baseline at ${top.frictionRatio.toFixed(1)}× friction ratio.`;
+                ? `مفهوم. تم إرسال إشارة إلى فريق ${name} لتحديد أولوية العقود المعلّقة.`
+                : `Understood. Signal sent to the ${name} team to prioritize the pending contracts.`;
         }
 
         case 'FINANCIAL_HEALTH': {

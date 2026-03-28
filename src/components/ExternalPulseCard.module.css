@@ -1,0 +1,205 @@
+/* ── ExternalPulseCard — Phase 14: RealitySeed ───────────────────────────────
+   Sovereign Gold (#D4AF37) accent throughout — visually distinct from the
+   internal Amber risk warnings.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Card shell ──────────────────────────────────────────────────────────── */
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-radius: var(--radius-sm);
+    background: var(--glass-bg);
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.globeIcon {
+    font-size: 14px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: #D4AF37;
+    flex: 1;
+}
+
+.sourceTag {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(212, 175, 55, 0.55);
+    padding: 2px 7px;
+    border: 1px solid rgba(212, 175, 55, 0.20);
+    border-radius: 10px;
+    background: rgba(212, 175, 55, 0.06);
+}
+
+/* ── Pulse list ──────────────────────────────────────────────────────────── */
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Single pulse item ───────────────────────────────────────────────────── */
+.item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.07);
+    transition: background 0.15s;
+}
+
+.item:last-child { border-bottom: none; }
+
+.item:hover { background: rgba(212, 175, 55, 0.04); }
+
+/* Severity left border accent */
+.item_alert { border-left: 2px solid rgba(212, 175, 55, 0.70); }
+.item_watch { border-left: 2px solid rgba(212, 175, 55, 0.38); }
+.item_info  { border-left: 2px solid rgba(212, 175, 55, 0.18); }
+
+/* Left column */
+.itemLeft {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding-top: 1px;
+    flex-shrink: 0;
+}
+
+.categoryIcon {
+    font-size: 13px;
+    line-height: 1;
+    opacity: 0.80;
+}
+
+/* "New" pulsing gold dot */
+.newDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #D4AF37;
+    box-shadow: 0 0 5px #D4AF37;
+    animation: new-pulse 2s ease-in-out infinite;
+}
+
+@keyframes new-pulse {
+    0%, 100% { box-shadow: 0 0 4px #D4AF37; }
+    50%       { box-shadow: 0 0 10px #D4AF37; }
+}
+
+/* Body column */
+.itemBody {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.itemMeta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.itemSource {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #D4AF37;
+}
+
+.itemSeverity {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1px 5px;
+    border-radius: 8px;
+}
+
+.severity_alert { color: #D4AF37; background: rgba(212,175,55,0.14); border: 1px solid rgba(212,175,55,0.30); }
+.severity_watch { color: rgba(212,175,55,0.75); background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.18); }
+.severity_info  { color: rgba(212,175,55,0.50); background: rgba(212,175,55,0.05); border: 1px solid rgba(212,175,55,0.12); }
+
+.itemDate {
+    font-size: 8px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    margin-inline-start: auto;
+}
+
+.itemHeadline {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin: 0;
+}
+
+.itemBody2 {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px 8px;
+    border-top: 1px solid rgba(212, 175, 55, 0.08);
+    background: rgba(212, 175, 55, 0.03);
+}
+
+.footerDot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #D4AF37;
+    opacity: 0.55;
+    flex-shrink: 0;
+}
+
+.footerText {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: rgba(212, 175, 55, 0.45);
+}
+
+/* ── Light mode ──────────────────────────────────────────────────────────── */
+:global(.light) .card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-color: rgba(212, 175, 55, 0.30);
+}
+
+:global(.light) .header     { border-bottom-color: rgba(212,175,55,0.18); }
+:global(.light) .item        { border-bottom-color: rgba(212,175,55,0.10); }
+:global(.light) .itemHeadline { color: #1E293B; }
+:global(.light) .itemBody2   { color: #475569; }

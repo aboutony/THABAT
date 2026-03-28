@@ -580,3 +580,84 @@
 :global(.light) .drawerTitle       { color: #4F46E5; }
 :global(.light) .drawerHandleBar   { background: #CBD5E1; }
 :global(.light) .reasoningText     { color: #0F172A; }
+
+/* ── Economic Stress toggle ──────────────────────────────────────────────── */
+.stressToggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    background: rgba(212, 175, 55, 0.05);
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.18s, background 0.18s;
+    text-align: start;
+}
+
+.stressToggle:hover {
+    border-color: rgba(212, 175, 55, 0.40);
+    background: rgba(212, 175, 55, 0.09);
+}
+
+.stressToggleActive {
+    border-color: rgba(212, 175, 55, 0.55);
+    background: rgba(212, 175, 55, 0.10);
+    animation: stress-breathe 3s ease-in-out infinite;
+}
+
+@keyframes stress-breathe {
+    0%, 100% { border-color: rgba(212,175,55,0.45); }
+    50%       { border-color: rgba(212,175,55,0.70); }
+}
+
+.stressIcon {
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.stressLabel {
+    font-size: 11px;
+    font-weight: 700;
+    color: #D4AF37;
+    flex: 1;
+}
+
+.stressEffect {
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(212, 175, 55, 0.60);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.stressPill {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 10px;
+    color: rgba(212, 175, 55, 0.55);
+    border: 1px solid rgba(212, 175, 55, 0.20);
+    background: transparent;
+    flex-shrink: 0;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.stressPillOn {
+    color: #D4AF37;
+    border-color: rgba(212, 175, 55, 0.50);
+    background: rgba(212, 175, 55, 0.14);
+}
+
+/* Light mode */
+:global(.light) .stressToggle { background: rgba(212,175,55,0.06); border-color: rgba(212,175,55,0.28); }
+:global(.light) .stressLabel  { color: #92720A; }
+:global(.light) .stressEffect { color: rgba(146,114,10,0.65); }
+:global(.light) .stressPill   { color: rgba(146,114,10,0.60); border-color: rgba(146,114,10,0.25); }
+:global(.light) .stressPillOn { color: #92720A; border-color: rgba(146,114,10,0.55); background: rgba(146,114,10,0.10); }
+

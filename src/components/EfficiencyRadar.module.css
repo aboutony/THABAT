@@ -172,10 +172,10 @@
 
 /* ── Light mode overrides ────────────────────────────────────────────────── */
 :global(.light) .wrapper {
-    background: rgba(255, 255, 255, 0.72);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-color: rgba(16, 185, 129, 0.25);
+    background: rgba(255, 255, 255, 0.88) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-color: rgba(16, 185, 129, 0.25) !important;
 }
 
 /* Grid: concentric rings → Slate-300 */
@@ -205,6 +205,35 @@
 :global(.light) .detailRatio  { color: #475569; }
 
 :global(.light) .waterfallLink { background: rgba(245, 158, 11, 0.08); }
+
+/* ── Fix Bottleneck button ───────────────────────────────────────────────── */
+.fixBtn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    background: rgba(248, 113, 113, 0.08);
+    color: #F87171;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    text-align: start;
+}
+.fixBtn:hover {
+    background: rgba(248, 113, 113, 0.14);
+    border-color: rgba(248, 113, 113, 0.55);
+}
+:global(.light) .fixBtn {
+    border-color: rgba(220, 38, 38, 0.30);
+    background: rgba(220, 38, 38, 0.06);
+    color: #DC2626;
+}
 
 /* Radar fill + sweep elements — light mode */
 :global(.light) .radarBgCircle { fill: rgba(99, 102, 241, 0.04) !important; }

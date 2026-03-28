@@ -84,6 +84,7 @@ export default function ClientConstellation() {
             <svg
                 viewBox={`0 0 ${W} ${H}`}
                 className={s.svg}
+                preserveAspectRatio="xMidYMid meet"
                 aria-hidden="true"
             >
                 <defs>
@@ -123,6 +124,7 @@ export default function ClientConstellation() {
 
                     return (
                         <g key={client.id}
+                            className={s.starGroup}
                             style={{ cursor: 'pointer' }}
                             onClick={e => {
                                 e.preventDefault();

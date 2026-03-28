@@ -24,6 +24,7 @@ const STORAGE_KEY = 'thabat-theme';
 
 function applyTheme(t: Theme) {
     document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.classList.toggle('light', t === 'light');
     // Update meta theme-color for mobile browsers
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {

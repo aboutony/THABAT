@@ -7,10 +7,12 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Shell from '@/components/Shell';
 import StockHourglass from '@/components/StockHourglass';
+import ExternalPulseCard from '@/components/ExternalPulseCard';
 import { useAuth } from '@/context/AuthContext';
 import { calculateStockGap, DEMO_STOCK_GAP_INPUT, DEMO_NEXT_SHIPMENT_DAYS } from '@/lib/stockGap';
 import { DEMO_NITAQAT_TIER } from '@/lib/generateBriefing';
 import { hasRetentionRisk, getAtRiskClients } from '@/lib/calculateClientHealth';
+import { hasNewExternalEvents } from '@/lib/fetchExternalPulse';
 
 // Receivables risk threshold: score below 70 triggers a vault warning
 const DEMO_RECEIVABLES_SCORE = 62;
@@ -49,6 +51,7 @@ export default function ExecutiveVault() {
     const retentionRisk      = hasRetentionRisk();
     const atRiskCount        = retentionRisk ? getAtRiskClients().length : 0;
     const hasReceivablesRisk = DEMO_RECEIVABLES_SCORE < 70;
+    const externalPulseNew   = hasNewExternalEvents();
 
     // ── Build warning cards ──────────────────────────────────────────────
     const warnings: WarningCard[] = [];
@@ -196,6 +199,14 @@ export default function ExecutiveVault() {
                         </motion.div>
                     ))
                 )}
+
+                {/* ── External Pulse ─────────────────────────────────── */}
+                <div className={styles.sectionLabel}>
+                    {externalPulseNew && <span style={{ color: '#D4AF37', marginInlineEnd: 4 }}>🌐</span>}
+                    {isAr ? 'النبضة الخارجية' : 'External Pulse'}
+                </div>
+
+                <ExternalPulseCard />
 
             </div>
         </Shell>

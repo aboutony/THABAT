@@ -86,13 +86,21 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
         expatsHired:       0,
         materialCostDelta: 0,
     });
-    const [optimizedKeys,  setOptimizedKeys]  = useState<Set<LeverKey>>(new Set());
-    const [optimalResult,  setOptimalResult]  = useState<OptimalResult | null>(null);
-    const [drawerOpen,     setDrawerOpen]     = useState(false);
-    const [saved,          setSaved]          = useState(false);
-    const [adopted,        setAdopted]        = useState(false);
+    const [optimizedKeys,   setOptimizedKeys]   = useState<Set<LeverKey>>(new Set());
+    const [optimalResult,   setOptimalResult]   = useState<OptimalResult | null>(null);
+    const [drawerOpen,      setDrawerOpen]      = useState(false);
+    const [saved,           setSaved]           = useState(false);
+    const [adopted,         setAdopted]         = useState(false);
+    const [economicStress,  setEconomicStress]  = useState(false);
 
-    const projection = useMemo(() => projectScenarioImpact(levers), [levers]);
+    // Economic Stress applies a +15 pp material cost headwind on top of the slider
+    const STRESS_SHIFT = 15;
+    const effectiveLevers = useMemo(() => economicStress
+        ? { ...levers, materialCostDelta: Math.min(50, levers.materialCostDelta + STRESS_SHIFT) }
+        : levers,
+    [levers, economicStress]);
+
+    const projection = useMemo(() => projectScenarioImpact(effectiveLevers), [effectiveLevers]);
 
     // Persist current lever state to sessionStorage so ExportPortal can include
     // live What-If values in the Capital Report even without saving to ledger.
@@ -198,6 +206,26 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
                             <p className={s.sectionLabel}>{t('leversTitle')}</p>
                             <OptimizerWidget onOptimize={handleOptimize} />
                         </div>
+
+                        {/* Economic Stress toggle */}
+                        <button
+                            className={`${s.stressToggle} ${economicStress ? s.stressToggleActive : ''}`}
+                            onClick={() => setEconomicStress(v => !v)}
+                            type="button"
+                        >
+                            <span className={s.stressIcon}>⚡</span>
+                            <span className={s.stressLabel}>
+                                {locale === 'ar' ? 'وضع الضغط الاقتصادي' : 'Economic Stress Mode'}
+                            </span>
+                            <span className={s.stressEffect}>
+                                {locale === 'ar' ? `+${STRESS_SHIFT}% تكلفة مواد` : `+${STRESS_SHIFT}% material cost`}
+                            </span>
+                            <span className={`${s.stressPill} ${economicStress ? s.stressPillOn : ''}`}>
+                                {economicStress
+                                    ? (locale === 'ar' ? 'مُفعَّل' : 'ON')
+                                    : (locale === 'ar' ? 'مُعطَّل' : 'OFF')}
+                            </span>
+                        </button>
 
                         {LEVERS.map(lever => {
                             const val     = levers[lever.key];

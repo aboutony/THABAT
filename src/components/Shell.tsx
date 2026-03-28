@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
 import { DEMO_NITAQAT_TIER } from '@/lib/generateBriefing';
 import { hasRetentionRisk } from '@/lib/calculateClientHealth';
+import { hasNewExternalEvents } from '@/lib/fetchExternalPulse';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import ExportButton from './ExportButton';
@@ -32,6 +33,7 @@ export default function Shell({ children }: ShellProps) {
     const hasNitaqatDanger   = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
     const hasReceivablesRisk = 62 < 70; // matches DEMO_RECEIVABLES_SCORE in Vault
     const vaultHasAlerts     = stockGap.isAtRisk || hasNitaqatDanger || hasRetentionRisk() || hasReceivablesRisk;
+    const hasExternalPulse   = hasNewExternalEvents();
 
     // Active tab detection
     const isActive = (path: string) => {
@@ -71,10 +73,15 @@ export default function Shell({ children }: ShellProps) {
             adminOnly: true,
             alertGlow: vaultHasAlerts, // Pulse amber when active risks detected
             icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
+                <div className={styles.iconWrapper}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                    {hasExternalPulse && (
+                        <span className={styles.globeBadge}>🌐</span>
+                    )}
+                </div>
             ),
         },
         {
