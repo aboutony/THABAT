@@ -9,6 +9,7 @@ import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
 import { getRevenueForecast, formatSARShort, type ForecastResult } from '@/lib/forecast';
 import ExpenseWaterfall from '@/components/ExpenseWaterfall';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './sales.module.css';
 
 // ─── NUPCO Purchase Order Data ───────────────────────────────────────────────
@@ -235,6 +236,26 @@ function ForecastChart({ forecast, isAr }: ForecastChartProps) {
     );
 }
 
+// ─── Ghost Forecast Chart (CLIENT zero state) ─────────────────────────────────
+function GhostForecastChart() {
+    const W = 320, H = 130;
+    const PAD = { top: 14, right: 10, bottom: 30, left: 46 };
+    const midY = PAD.top + (H - PAD.top - PAD.bottom) / 2;
+    return (
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block' }} aria-hidden="true">
+            {[0.1, 0.5, 0.9].map((f, i) => {
+                const y = PAD.top + (H - PAD.top - PAD.bottom) * (1 - f);
+                return (
+                    <line key={i} x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
+                        stroke="rgba(148,163,184,0.08)" strokeWidth="0.8" strokeDasharray="3 3" />
+                );
+            })}
+            <line x1={PAD.left} y1={midY} x2={W - PAD.right} y2={midY}
+                stroke="rgba(148,163,184,0.30)" strokeWidth="1.5" strokeDasharray="6 4" />
+        </svg>
+    );
+}
+
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function SalesReportPage() {
     const locale = useLocale();
@@ -242,6 +263,7 @@ export default function SalesReportPage() {
     const router = useRouter();
     const t = useTranslations('salesReport');
     const tc = useTranslations('common');
+    const { isClient } = useIdentity();
     const [volumeMultiplier, setVolumeMultiplier] = useState(100);
     const [alertDismissed, setAlertDismissed] = useState(false);
 
@@ -317,7 +339,9 @@ export default function SalesReportPage() {
                     )}
                 </AnimatePresence>
 
-                {/* ── Pipeline ── */}
+                {/* ── Pipeline + Slider (live data only) ── */}
+                {!isClient && (
+                    <>
                 <motion.div
                     className={`glass-card ${styles.pipelineCard}`}
                     initial={{ opacity: 0, y: 20 }}
@@ -375,6 +399,8 @@ export default function SalesReportPage() {
                         </div>
                     </div>
                 </motion.div>
+                    </>
+                )}
 
                 {/* ── Predictive Revenue Overlay ── */}
                 <motion.div
@@ -388,51 +414,60 @@ export default function SalesReportPage() {
                             <div className={styles.forecastTitle}>{t('forecastTitle')}</div>
                             <div className={styles.forecastSubtitle}>{t('scenariosLabel')}</div>
                         </div>
-                        <span className={`${styles.trendBadge} ${styles[`trend_${revenueForecast.overallTrend}`]}`}>
-                            {trendIcon} {t(trendKey)}
-                        </span>
+                        {!isClient && (
+                            <span className={`${styles.trendBadge} ${styles[`trend_${revenueForecast.overallTrend}`]}`}>
+                                {trendIcon} {t(trendKey)}
+                            </span>
+                        )}
                     </div>
 
-                    <ForecastChart forecast={revenueForecast} isAr={isAr} />
+                    {isClient
+                        ? <GhostForecastChart />
+                        : <ForecastChart forecast={revenueForecast} isAr={isAr} />
+                    }
 
-                    {/* Legend */}
-                    <div className={styles.chartLegend}>
-                        <span className={styles.legendItem}>
-                            <span className={`${styles.legendDot} ${styles.legendBase}`} />
-                            {t('legendBase')}
-                        </span>
-                        <span className={styles.legendItem}>
-                            <span className={`${styles.legendLine} ${styles.legendBull}`} />
-                            {t('legendBull')}
-                        </span>
-                        <span className={styles.legendItem}>
-                            <span className={`${styles.legendLine} ${styles.legendBear}`} />
-                            {t('legendBear')}
-                        </span>
-                    </div>
-
-                    {/* Peak / Floor callouts */}
-                    <div className={styles.forecastCallouts}>
-                        <div className={styles.callout}>
-                            <span className={styles.calloutLabel}>{t('peakBull')}</span>
-                            <span className={`${styles.calloutVal} ${styles.calloutGreen}`}>
-                                {tc('sar')} {formatSARShort(revenueForecast.peakBull)}
+                    {!isClient && (
+                        <>
+                        {/* Legend */}
+                        <div className={styles.chartLegend}>
+                            <span className={styles.legendItem}>
+                                <span className={`${styles.legendDot} ${styles.legendBase}`} />
+                                {t('legendBase')}
+                            </span>
+                            <span className={styles.legendItem}>
+                                <span className={`${styles.legendLine} ${styles.legendBull}`} />
+                                {t('legendBull')}
+                            </span>
+                            <span className={styles.legendItem}>
+                                <span className={`${styles.legendLine} ${styles.legendBear}`} />
+                                {t('legendBear')}
                             </span>
                         </div>
-                        {revenueForecast.marginRiskMonths > 0 && (
-                            <div className={`${styles.callout} ${styles.calloutRisk}`}>
-                                <span className={styles.calloutLabel}>
-                                    {t('marginRiskWarning', { months: formatNumber(revenueForecast.marginRiskMonths, locale) })}
+
+                        {/* Peak / Floor callouts */}
+                        <div className={styles.forecastCallouts}>
+                            <div className={styles.callout}>
+                                <span className={styles.calloutLabel}>{t('peakBull')}</span>
+                                <span className={`${styles.calloutVal} ${styles.calloutGreen}`}>
+                                    {tc('sar')} {formatSARShort(revenueForecast.peakBull)}
                                 </span>
                             </div>
-                        )}
-                        <div className={styles.callout}>
-                            <span className={styles.calloutLabel}>{t('worstBear')}</span>
-                            <span className={`${styles.calloutVal} ${styles.calloutAmber}`}>
-                                {tc('sar')} {formatSARShort(revenueForecast.worstBear)}
-                            </span>
+                            {revenueForecast.marginRiskMonths > 0 && (
+                                <div className={`${styles.callout} ${styles.calloutRisk}`}>
+                                    <span className={styles.calloutLabel}>
+                                        {t('marginRiskWarning', { months: formatNumber(revenueForecast.marginRiskMonths, locale) })}
+                                    </span>
+                                </div>
+                            )}
+                            <div className={styles.callout}>
+                                <span className={styles.calloutLabel}>{t('worstBear')}</span>
+                                <span className={`${styles.calloutVal} ${styles.calloutAmber}`}>
+                                    {tc('sar')} {formatSARShort(revenueForecast.worstBear)}
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                        </>
+                    )}
                 </motion.div>
 
                 {/* ── Executive Expense Waterfall (Phase 03) ── */}
@@ -450,7 +485,9 @@ export default function SalesReportPage() {
                     />
                 </motion.div>
 
-                {/* ── Liquidity Timeline ── */}
+                {/* ── Liquidity Timeline + Product Breakdown (live data only) ── */}
+                {!isClient && (
+                    <>
                 <motion.div
                     className={`glass-card ${styles.timelineCard}`}
                     initial={{ opacity: 0, y: 16 }}
@@ -493,7 +530,6 @@ export default function SalesReportPage() {
                     </div>
                 </motion.div>
 
-                {/* ── Product Breakdown ── */}
                 <motion.div
                     className={`glass-card ${styles.breakdownCard}`}
                     initial={{ opacity: 0, y: 16 }}
@@ -518,6 +554,8 @@ export default function SalesReportPage() {
                         </div>
                     ))}
                 </motion.div>
+                    </>
+                )}
             </div>
         </Shell>
     );

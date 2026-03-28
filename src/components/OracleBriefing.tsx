@@ -13,6 +13,7 @@ import type { BriefingContext, RiskKey, ActionKey } from '@/lib/generateBriefing
 import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
 import { hasRetentionRisk } from '@/lib/calculateClientHealth';
 import { useEntity } from '@/context/EntityContext';
+import { useIdentity } from '@/hooks/useIdentity';
 import { useVoiceOracle } from '@/hooks/useVoiceOracle';
 import { processVoiceIntent, INTENT_ROUTE } from '@/lib/processVoiceIntent';
 import type { VoiceIntent } from '@/lib/processVoiceIntent';
@@ -84,6 +85,7 @@ export default function OracleBriefing({
     const locale           = useLocale();
     const t                = useTranslations('oracle');
     const { activeEntity } = useEntity();
+    const { isClient }     = useIdentity();
     const isAr             = locale === 'ar';
     const router           = useRouter();
 
@@ -182,6 +184,24 @@ export default function OracleBriefing({
         : `/${locale}/analytics`;
 
     const dashOffset = oeeOffset(oeePercent);
+
+    // ── CLIENT standby mode ──────────────────────────────────────────────────
+    if (isClient) {
+        const standbyMsg = isAr
+            ? 'القائد، أنا في وضع الانتظار. قم بتوصيل نظامك (SAP أو Odoo أو Dynamics) في الإعدادات لتفعيل طبقة الذكاء.'
+            : 'Commander, I am in Standby Mode. Connect your ERP (SAP, Odoo, or Dynamics) in Settings to ignite the Intelligence Layer.';
+        return (
+            <div className={`glass-card ${s.card} ${s.glowIndigo}`}>
+                <div className={s.header}>
+                    <span className={s.oracleIcon}>✦</span>
+                    <p className={s.sectionLabel}>{t('section')}</p>
+                </div>
+                <p className={s.sentence} style={{ opacity: 0.75, lineHeight: 1.6 }}>
+                    {standbyMsg}
+                </p>
+            </div>
+        );
+    }
 
     return (
         <>

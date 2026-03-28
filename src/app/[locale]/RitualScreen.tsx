@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import StabilityRing from '@/components/StabilityRing';
 import DriverCard from '@/components/DriverCard';
 import OracleBriefing from '@/components/OracleBriefing';
@@ -10,6 +11,7 @@ import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
 import EntitySelector from '@/components/EntitySelector';
 import { useAuth } from '@/context/AuthContext';
+import { useIdentity } from '@/hooks/useIdentity';
 import { formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
 import type { ScoreBreakdown, RawMetrics } from '@/lib/scoring';
@@ -30,11 +32,25 @@ export default function RitualScreen() {
     const tSC = useTranslations('scenario');
     const tR  = useTranslations('report');
     const { user } = useAuth();
+    const { isClient } = useIdentity();
+    const router   = useRouter();
+    const locale   = useLocale();
+
+    // CLIENT first-session redirect to Settings (once per browser session)
+    useEffect(() => {
+        if (user?.role === 'CLIENT') {
+            const key = 'thabat-client-onboarded';
+            if (!sessionStorage.getItem(key)) {
+                sessionStorage.setItem(key, '1');
+                router.push(`/${locale}/settings`);
+            }
+        }
+    }, [user, locale, router]);
+
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);
     const [now, setNow] = useState(() => new Date());
-    const locale = useLocale();
 
     // Live clock — refresh every minute
     useEffect(() => {
@@ -92,8 +108,8 @@ export default function RitualScreen() {
         fetchLatest();
     }, []);
 
-    const score = latestData?.score.overall ?? DEMO_SCORE;
-    const trend = latestData?.score.trend ?? DEMO_TREND;
+    const score = isClient ? 0 : (latestData?.score.overall ?? DEMO_SCORE);
+    const trend = isClient ? 'stable' : (latestData?.score.trend ?? DEMO_TREND);
 
     const [totalAvoided, setTotalAvoided] = useState(0);
     useEffect(() => {
@@ -113,8 +129,8 @@ export default function RitualScreen() {
             ),
             label: t('revenue'),
             description: t('revenueDesc'),
-            value: latestData ? formatPercent(((latestData.metrics.revenue - latestData.metrics.expenses) / Math.max(latestData.metrics.revenue, 1) * 100), locale) : formatPercent(12.4, locale),
-            trend: 'up' as const,
+            value: isClient ? '---' : (latestData ? formatPercent(((latestData.metrics.revenue - latestData.metrics.expenses) / Math.max(latestData.metrics.revenue, 1) * 100), locale) : formatPercent(12.4, locale)),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/sales-report`,
         },
         {
@@ -128,8 +144,8 @@ export default function RitualScreen() {
             ),
             label: t('retention'),
             description: t('retentionDesc'),
-            value: latestData ? formatPercent(latestData.score.receivables, locale) : formatPercent(94.2, locale),
-            trend: 'up' as const,
+            value: isClient ? '---' : (latestData ? formatPercent(latestData.score.receivables, locale) : formatPercent(94.2, locale)),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/retention`,
         },
         {
@@ -140,8 +156,8 @@ export default function RitualScreen() {
             ),
             label: t('efficiency'),
             description: t('efficiencyDesc'),
-            value: latestData ? formatPercent(latestData.score.margins, locale) : formatPercent(88.7, locale),
-            trend: 'up' as const,
+            value: isClient ? '---' : (latestData ? formatPercent(latestData.score.margins, locale) : formatPercent(88.7, locale)),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/efficiency-report`,
         },
         {
@@ -153,13 +169,14 @@ export default function RitualScreen() {
             ),
             label: t('compliance'),
             description: t('complianceDesc'),
-            value: locale === 'ar' ? 'بلاتيني' : 'Platinum',
-            trend: 'up' as const,
+            value: isClient ? '---' : (locale === 'ar' ? 'بلاتيني' : 'Platinum'),
+            trend: (isClient ? 'neutral' : 'up') as 'neutral' | 'up',
             href: `/${locale}/analytics/nitaqat`,
         },
     ];
 
     return (
+        <>
         <div className={styles.ritual}>
             {/* ── Entity Switcher — COMMANDER only ─────────────────────── */}
             {user?.role === 'COMMANDER' && (
@@ -176,13 +193,14 @@ export default function RitualScreen() {
                 {showExport && (
                     <ExportPortal
                         healthScore={score}
+                        isClient={isClient}
                         onClose={() => setShowExport(false)}
                     />
                 )}
             </AnimatePresence>
             {/* Stability Ring — sticky visual anchor */}
             <section className={styles.ringSection}>
-                <StabilityRing score={score} trend={trend} locale={locale} />
+                <StabilityRing score={score} trend={trend} locale={locale} standby={isClient} />
             </section>
 
             {/* Scrollable content below the ring */}
@@ -243,5 +261,15 @@ export default function RitualScreen() {
                 </div>
             </section>
         </div>
+
+        {/* ── CLIENT Ignition Overlay ─────────────────────────────────── */}
+        {isClient && (
+            <div className={styles.ignitionOverlay}>
+                <a href={`/${locale}/settings`} className={styles.ignitionBtn}>
+                    {locale === 'ar' ? '⚡ تفعيل التغذية المالية' : '⚡ Initiate Financial Feed'}
+                </a>
+            </div>
+        )}
+        </>
     );
 }

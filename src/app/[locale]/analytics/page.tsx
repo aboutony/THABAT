@@ -10,6 +10,7 @@ import PercentileBadge from '@/components/PercentileBadge';
 import StabilityRing from '@/components/StabilityRing';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './analytics.module.css';
 
 interface ScoreResult {
@@ -35,6 +36,8 @@ export default function AnalyticsPage() {
     const [score, setScore] = useState<ScoreResult | null>(null);
     const [fetchingLatest, setFetchingLatest] = useState(true);
     const locale = useLocale();
+    const { isClient } = useIdentity();
+    const isAr = locale === 'ar';
 
     // Fetch latest score on mount
     const fetchLatest = useCallback(async () => {
@@ -67,6 +70,7 @@ export default function AnalyticsPage() {
     };
 
     return (
+        <>
         <Shell>
             <div className={styles.page}>
                 <PageHeader
@@ -86,11 +90,25 @@ export default function AnalyticsPage() {
                     }
                 />
 
-                {/* Industry Percentile Badge */}
-                <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: locale === 'ar' ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
+                {/* Industry Percentile Badge — replaced with inactive notice for CLIENT */}
+                {isClient ? (
+                    <div style={{
+                        padding: '10px 14px', borderRadius: 8,
+                        background: 'rgba(148,163,184,0.06)',
+                        border: '1px solid rgba(148,163,184,0.12)',
+                        fontSize: 12, color: 'rgba(148,163,184,0.55)',
+                        textAlign: 'center', lineHeight: 1.5,
+                    }}>
+                        {isAr
+                            ? 'مقارنة القطاع: غير نشطة. تتطلب 30 يومًا من استيعاب البيانات التاريخية.'
+                            : 'Sector Benchmarking: Inactive. Requires 30 days of historical data ingestion.'}
+                    </div>
+                ) : (
+                    <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: isAr ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
+                )}
 
-                {/* Stability Ring — with shimmer on compute */}
-                {score && (
+                {/* Stability Ring — hidden for CLIENT (no data baseline) */}
+                {score && !isClient && (
                     <motion.div
                         className={styles.ringContainer}
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -105,8 +123,8 @@ export default function AnalyticsPage() {
                     </motion.div>
                 )}
 
-                {/* Score Preview (if calculated) */}
-                {score && !fetchingLatest && (
+                {/* Score Preview — hidden for CLIENT */}
+                {score && !fetchingLatest && !isClient && (
                     <motion.div
                         className={`glass-card ${styles.scorePreview}`}
                         initial={{ opacity: 0, scale: 0.95 }}
@@ -279,12 +297,24 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* ── Executive Action Ledger ───────────────────────────── */}
-                <div className={styles.moduleHub}>
-                    <p className={styles.moduleHubTitle}>{t('actionLedger')}</p>
-                    <ActionLedger />
-                </div>
+                {!isClient && (
+                    <div className={styles.moduleHub}>
+                        <p className={styles.moduleHubTitle}>{t('actionLedger')}</p>
+                        <ActionLedger />
+                    </div>
+                )}
 
             </div>
         </Shell>
+
+        {/* ── CLIENT Ignition Overlay ─────────────────────────── */}
+        {isClient && (
+            <div className={styles.ignitionOverlay}>
+                <Link href={`/${locale}/settings`} className={styles.ignitionBtn}>
+                    {isAr ? '⚡ تفعيل التغذية المالية' : '⚡ Initiate Financial Feed'}
+                </Link>
+            </div>
+        )}
+        </>
     );
 }

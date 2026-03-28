@@ -26,6 +26,7 @@ import {
     getEntityDataset,
 } from '@/lib/entityDatasets';
 import type { ClientHealthResult } from '@/lib/calculateClientHealth';
+import { useIdentity } from '@/hooks/useIdentity';
 import s from './ClientConstellation.module.css';
 
 // ── SVG canvas dimensions ─────────────────────────────────────────────────────
@@ -61,10 +62,40 @@ export default function ClientConstellation() {
     const isAr   = locale === 'ar';
     const [active, setActive] = useState<ClientHealthResult | null>(null);
 
-    const { activeEntity } = useEntity();
+    const { activeEntity }  = useEntity();
+    const { isClient }      = useIdentity();
     const clients           = getEntityClientHealth(activeEntity.id);
     const maxACV            = getEntityMaxACV(activeEntity.id);
     const constellationLines = getEntityDataset(activeEntity.id).constellationLines;
+
+    // ── CLIENT ghost state ────────────────────────────────────────────────────
+    if (isClient) {
+        const scanLabel = isAr ? 'جارٍ رصد إشارات النظام البيئي...' : 'Scanning for Ecosystem Signals...';
+        // Faint static grid of 8 nodes — no connections, no interactions
+        const ghostNodes = [
+            { x: 40,  y: 40  }, { x: 120, y: 25  }, { x: 200, y: 50  }, { x: 290, y: 30  },
+            { x: 70,  y: 100 }, { x: 160, y: 90  }, { x: 250, y: 110 }, { x: 320, y: 80  },
+        ];
+        return (
+            <div className={s.wrapper} style={{ pointerEvents: 'none' }}>
+                <div className={s.labelRow}>
+                    <span className={s.icon}>⬡</span>
+                    <span className={s.label} style={{ color: 'rgba(148,163,184,0.5)' }}>
+                        {scanLabel}
+                    </span>
+                </div>
+                <svg viewBox={`0 0 ${W} ${H}`} width="100%" className={s.svg}
+                    preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    {ghostNodes.map((n, i) => (
+                        <circle key={i} cx={n.x} cy={n.y} r="5"
+                            fill="rgba(148,163,184,0.12)"
+                            stroke="rgba(148,163,184,0.20)"
+                            strokeWidth="1" />
+                    ))}
+                </svg>
+            </div>
+        );
+    }
 
     return (
         <Link

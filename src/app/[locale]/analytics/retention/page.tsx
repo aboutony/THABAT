@@ -13,6 +13,7 @@ import {
     type ClientHealthResult,
 } from '@/lib/calculateClientHealth';
 import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
+import { useIdentity } from '@/hooks/useIdentity';
 import s from './retention.module.css';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -83,6 +84,7 @@ export default function RetentionSentinelPage() {
     const [expanded,      setExpanded]      = useState<string | null>(null);
     const [toastResult,   setToastResult]   = useState<ActionResult | null>(null);
 
+    const { isClient } = useIdentity();
     const atRisk      = getAtRiskClients().slice(0, 5);
     const healthy     = CLIENT_HEALTH_RESULTS.filter(c => !c.isFlickering);
     const atRiskCount = CLIENT_HEALTH_RESULTS.filter(c => c.isFlickering).length;
@@ -137,21 +139,21 @@ export default function RetentionSentinelPage() {
                 <div className={s.statsRow}>
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#4ADE80' }}>
-                            {CLIENT_HEALTH_RESULTS.length}
+                            {isClient ? '---' : CLIENT_HEALTH_RESULTS.length}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'عملاء' : 'Clients'}</span>
                     </div>
                     <div className={s.statDivider} />
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#F59E0B' }}>
-                            {atRiskCount}
+                            {isClient ? '---' : atRiskCount}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'في خطر' : 'At Risk'}</span>
                     </div>
                     <div className={s.statDivider} />
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#4ADE80' }}>
-                            {healthy.length}
+                            {isClient ? '---' : healthy.length}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'بصحة جيدة' : 'Healthy'}</span>
                     </div>
@@ -160,12 +162,17 @@ export default function RetentionSentinelPage() {
                 {/* ── Constellation ────────────────────────────────────── */}
                 <ClientConstellation />
 
-                {/* ── At-risk client list ──────────────────────────────── */}
-                <div className={isAr ? s.sectionHeaderArabic : s.sectionLabel}>
+                {/* ── At-risk client list (hidden for CLIENT tier) ─────── */}
+                {!isClient && (
+                <div
+                    className={isAr ? s.sectionHeaderArabic : s.sectionLabel}
+                    style={isAr ? { textAlign: 'right', width: '100%' } : undefined}
+                >
                     {isAr ? 'أعلى 5 عملاء في خطر' : 'Top 5 At-Risk Clients'}
                 </div>
+                )}
 
-                {atRisk.map((client, i) => {
+                {!isClient && atRisk.map((client, i) => {
                     const isExpanded = expanded === client.id;
                     return (
                         <motion.div
@@ -181,14 +188,21 @@ export default function RetentionSentinelPage() {
                                 className={s.cardHeader}
                                 onClick={() => setExpanded(isExpanded ? null : client.id)}
                             >
-                                <div className={s.clientMeta}>
-                                    <span className={s.clientName}>
+                                <div
+                                    className={s.clientMeta}
+                                    style={isAr ? { alignItems: 'flex-end' } : undefined}
+                                >
+                                    <span
+                                        className={s.clientName}
+                                        style={isAr ? { marginLeft: 'auto', textAlign: 'right' } : undefined}
+                                    >
                                         {isAr ? client.name.ar : client.name.en}
                                     </span>
                                     <span className={s.riskBadge} style={{
                                         color: client.color,
                                         background: `${client.color}18`,
                                         borderColor: `${client.color}30`,
+                                        ...(isAr ? { marginLeft: 'auto' } : {}),
                                     }}>
                                         {riskLabel(client.riskLevel)}
                                     </span>
@@ -239,8 +253,8 @@ export default function RetentionSentinelPage() {
                     );
                 })}
 
-                {/* ── Healthy clients ──────────────────────────────────── */}
-                {healthy.length > 0 && (
+                {/* ── Healthy clients (hidden for CLIENT tier) ─────────── */}
+                {!isClient && healthy.length > 0 && (
                     <div className={s.healthySection}>
                         <div className={s.sectionLabel}>
                             {isAr ? 'العملاء بصحة جيدة' : 'Healthy Clients'}

@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { formatNumber, toArabicDigits } from '@/lib/locale-utils';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './ExportButton.module.css';
 
 export default function ExportButton() {
@@ -10,6 +11,7 @@ export default function ExportButton() {
     const isAr = locale === 'ar';
     const t = useTranslations('export');
     const [exporting, setExporting] = useState(false);
+    const { isClient } = useIdentity();
 
     const fn = (v: number | string) => formatNumber(v, locale);
     const today = new Date().toLocaleDateString(isAr ? 'ar-SA' : 'en-US', {
@@ -145,24 +147,24 @@ td { font-size: 12px; color: #E0E0E0; padding: 10px 8px; border-bottom: 1px soli
 <div class="section">
     <div class="section-label">${t('stabilityScore')}</div>
     <div class="score-row">
-        <div class="score-circle"><span class="score-num">${fn(87)}</span></div>
+        <div class="score-circle"><span class="score-num" style="color:${isClient ? 'rgba(148,163,184,0.25)' : '#006C35'}">${isClient ? '---' : fn(87)}</span></div>
         <div>
-            <div class="score-trend">↗ ${t('strengthening')}</div>
-            <div class="score-desc">${t('scoreDesc')}</div>
+            ${isClient ? '' : `<div class="score-trend">↗ ${t('strengthening')}</div>`}
+            <div class="score-desc">${isClient ? (isAr ? 'في انتظار التغذية المالية' : 'Awaiting Financial Feed') : t('scoreDesc')}</div>
         </div>
     </div>
     <div class="kpi-grid">
         <div class="kpi-item">
             <span class="kpi-label">${t('revenueGrowth')}</span>
-            <span class="kpi-value">${fn(12.4)}%</span>
+            <span class="kpi-value">${isClient ? '---' : `${fn(12.4)}%`}</span>
         </div>
         <div class="kpi-item">
             <span class="kpi-label">${t('clientRetention')}</span>
-            <span class="kpi-value">${fn(94.2)}%</span>
+            <span class="kpi-value">${isClient ? '---' : `${fn(94.2)}%`}</span>
         </div>
         <div class="kpi-item">
             <span class="kpi-label">${t('opEfficiency')}</span>
-            <span class="kpi-value">${fn(88.7)}%</span>
+            <span class="kpi-value">${isClient ? '---' : `${fn(88.7)}%`}</span>
         </div>
     </div>
 </div>
@@ -171,13 +173,13 @@ td { font-size: 12px; color: #E0E0E0; padding: 10px 8px; border-bottom: 1px soli
     <div class="section-label">${t('velocityTitle')}</div>
     <div class="velocity-row">
         <div>
-            <span class="velocity-num">${fn(142)}</span>
-            <span class="velocity-unit">${t('days')}</span>
+            <span class="velocity-num" style="color:${isClient ? 'rgba(148,163,184,0.25)' : '#006C35'}">${isClient ? '---' : fn(142)}</span>
+            ${isClient ? '' : `<span class="velocity-unit">${t('days')}</span>`}
         </div>
-        <div class="velocity-meta">
+        ${isClient ? '' : `<div class="velocity-meta">
             ${t('sectorAvg')}: ${fn(160)} ${t('days')}
             <span class="velocity-good">↗ ${fn(11.3)}% ${t('faster')}</span>
-        </div>
+        </div>`}
     </div>
 </div>
 

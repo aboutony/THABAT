@@ -9,6 +9,7 @@ import EfficiencyRadar from '@/components/EfficiencyRadar';
 import ActionToast from '@/components/ActionToast';
 import { formatNumber } from '@/lib/locale-utils';
 import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './efficiency.module.css';
 
 const VELOCITY = {
@@ -59,6 +60,7 @@ export default function EfficiencyReportPage() {
     const isAr = locale === 'ar';
     const t = useTranslations('efficiency');
     const tc = useTranslations('common');
+    const { isClient } = useIdentity();
     const [restockSent,  setRestockSent]  = useState<Record<string, boolean>>({});
     const [toastResult,  setToastResult]  = useState<ActionResult | null>(null);
     const [fixSent,      setFixSent]      = useState<Record<string, boolean>>({});
@@ -173,10 +175,13 @@ export default function EfficiencyReportPage() {
                             />
                         </svg>
                         <div className={styles.dialCenter}>
-                            <span className={styles.dialValue}>{formatNumber(VELOCITY.orderToCash, locale)}</span>
-                            <span className={styles.dialUnit}>{t('days')}</span>
+                            <span className={styles.dialValue}>
+                                {isClient ? '---' : formatNumber(VELOCITY.orderToCash, locale)}
+                            </span>
+                            <span className={styles.dialUnit}>{isClient ? '' : t('days')}</span>
                         </div>
                     </div>
+                    {!isClient && (
                     <div className={styles.dialMeta}>
                         <div className={styles.dialMetaItem}>
                             <span className={styles.sectorDot} />
@@ -186,6 +191,7 @@ export default function EfficiencyReportPage() {
                             ↗ {formatNumber(VELOCITY.improvement, locale)}% {t('fasterThanSector')}
                         </div>
                     </div>
+                    )}
                 </motion.div>
 
                 {/* Fulfillment Pipeline */}
@@ -197,24 +203,23 @@ export default function EfficiencyReportPage() {
                 >
                     <div className={styles.pipelineHeader}>
                         <span className={styles.pipelineTitle}>{t('fulfillmentStatus')}</span>
-                        <span className={styles.pipelinePO}>{formatNumber('PO 4100000309', locale)}</span>
+                        {!isClient && <span className={styles.pipelinePO}>{formatNumber('PO 4100000309', locale)}</span>}
                     </div>
                     <div className={styles.stageList}>
                         {FULFILLMENT_STAGES.map((stage, i) => (
                             <div key={stage.key} className={styles.stageRow}>
-                                <div className={`${styles.stageIcon} ${stage.status === 'complete' ? styles.stageComplete :
-                                        stage.status === 'active' ? styles.stageActive :
-                                            styles.stagePending
-                                    }`}>
-                                    {stage.status === 'complete' ? '✓' : stage.status === 'active' ? '◉' : '○'}
-                                </div>
+                                <div className={`${styles.stageIcon} ${styles.stagePending}`}>○</div>
                                 {i < FULFILLMENT_STAGES.length - 1 && (
-                                    <div className={`${styles.stageConnector} ${stage.status === 'complete' ? styles.connectorDone : ''
-                                        }`} />
+                                    <div className={styles.stageConnector} />
                                 )}
                                 <div className={styles.stageContent}>
-                                    <span className={styles.stageName}>{t(stage.key)}</span>
-                                    {stage.status !== 'pending' && (
+                                    <span className={styles.stageName}>
+                                        {isClient
+                                            ? (isAr ? 'في انتظار أمر الشراء' : 'Awaiting PO')
+                                            : t(stage.key)
+                                        }
+                                    </span>
+                                    {!isClient && stage.status !== 'pending' && (
                                         <span className={styles.stageDays}>
                                             {formatNumber(stage.daysSpent, locale)} {t('days')}
                                         </span>
@@ -233,7 +238,11 @@ export default function EfficiencyReportPage() {
                     transition={{ delay: 0.4, duration: 0.5 }}
                 >
                     <div className={styles.inventoryTitle}>{t('inventoryCriticality')}</div>
-                    {INVENTORY.map((item) => {
+                    {isClient ? (
+                        <p style={{ color: 'rgba(148,163,184,0.5)', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>
+                            {isAr ? 'لا توجد مخزونات نشطة مُتتبَّعة' : 'No active inventory tracked.'}
+                        </p>
+                    ) : INVENTORY.map((item) => {
                         const stockPercent = (item.stock / item.maxDays) * 100;
                         const isCritical = stockPercent < 20;
                         return (

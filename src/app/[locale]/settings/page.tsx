@@ -7,6 +7,7 @@ import { ERP_CONFIGS, type ERPProvider } from '@/connectors';
 import PageHeader from '@/components/PageHeader';
 import Shell from '@/components/Shell';
 import { useAuth } from '@/context/AuthContext';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './integrations.module.css';
 
 interface Connection {
@@ -15,17 +16,50 @@ interface Connection {
     created_at: string;
 }
 
+interface CustomFields {
+    url: string;
+    apiKey: string;
+    authType: 'bearer' | 'oauth2' | 'basic';
+}
+
+const ERP_SYSTEMS: {
+    value: string;
+    labelEN: string;
+    labelAR: string;
+    provider: ERPProvider | null;
+}[] = [
+    { value: 'infor',    labelEN: 'Infor',                  labelAR: 'إنفور',                     provider: null       },
+    { value: 'dynamics', labelEN: 'Microsoft Dynamics 365', labelAR: 'مايكروسوفت دايناميكس ٣٦٥',  provider: 'dynamics' },
+    { value: 'odoo',     labelEN: 'Odoo',                   labelAR: 'أودو',                       provider: 'odoo'     },
+    { value: 'oracle',   labelEN: 'Oracle Fusion',          labelAR: 'أوراكل فيوجن',               provider: null       },
+    { value: 'sap-b1',   labelEN: 'SAP Business One',       labelAR: 'ساب بزنس ون',                provider: 'sap'      },
+    { value: 'sap-s4',   labelEN: 'SAP S/4HANA',            labelAR: 'ساب S/4HANA',                provider: null       },
+    { value: 'other',    labelEN: 'Other ERP (Custom API)', labelAR: 'نظام ERP آخر (API مخصص)',    provider: null       },
+];
+
 export default function IntegrationsPage() {
     const t = useTranslations('integrations');
     const tSettings = useTranslations('settings');
     const locale = useLocale();
+    const isAr = locale === 'ar';
     const { user, logout } = useAuth();
+    const { isClient } = useIdentity();
     const [connections, setConnections] = useState<Connection[]>([]);
     const [selectedERP, setSelectedERP] = useState<ERPProvider | null>(null);
     const [credentials, setCredentials] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
     const [syncing, setSyncing] = useState<string | null>(null);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+    // Sovereign Connector Hub state
+    const [selectedSystem, setSelectedSystem] = useState('');
+    const [showCustomPanel, setShowCustomPanel] = useState(false);
+    const [customSaved, setCustomSaved] = useState(false);
+    const [customFields, setCustomFields] = useState<CustomFields>({
+        url: '',
+        apiKey: '',
+        authType: 'bearer',
+    });
 
     const fetchConnections = useCallback(async () => {
         try {
@@ -39,11 +73,31 @@ export default function IntegrationsPage() {
 
     useEffect(() => { fetchConnections(); }, [fetchConnections]);
 
-    const isConnected = (provider: string) =>
-        connections.some(c => c.provider === provider);
+    const handleConnect = () => {
+        if (!selectedSystem) return;
+        const system = ERP_SYSTEMS.find(s => s.value === selectedSystem);
+        if (!system) return;
 
-    const handleSelectERP = (provider: ERPProvider) => {
-        setSelectedERP(provider);
+        // CLIENT always routes to onboarding
+        if (isClient) {
+            window.location.href = `/${locale}/onboarding`;
+            return;
+        }
+
+        // "Other ERP" or provider with no connector → custom API panel
+        if (system.value === 'other' || system.provider === null) {
+            setShowCustomPanel(true);
+            return;
+        }
+
+        // SAP Business One → onboarding wizard
+        if (system.provider === 'sap') {
+            window.location.href = `/${locale}/onboarding`;
+            return;
+        }
+
+        // Real connector (odoo / dynamics) → credential wizard modal
+        setSelectedERP(system.provider);
         setCredentials({});
         setMessage(null);
     };
@@ -90,10 +144,7 @@ export default function IntegrationsPage() {
             const data = await res.json();
 
             if (res.ok) {
-                setMessage({
-                    type: 'success',
-                    text: `${data.sync.message}`,
-                });
+                setMessage({ type: 'success', text: `${data.sync.message}` });
             } else {
                 setMessage({ type: 'error', text: data.error || t('syncFailed') });
             }
@@ -104,7 +155,15 @@ export default function IntegrationsPage() {
         }
     };
 
-    const providers: ERPProvider[] = ['odoo', 'sap', 'dynamics'];
+    const handleSaveCustom = () => {
+        if (!customFields.url || !customFields.apiKey) return;
+        setCustomSaved(true);
+        setMessage({
+            type: 'success',
+            text: isAr ? 'تم حفظ إعدادات API بنجاح' : 'API configuration saved successfully.',
+        });
+        setTimeout(() => setCustomSaved(false), 3000);
+    };
 
     return (
         <Shell>
@@ -125,72 +184,153 @@ export default function IntegrationsPage() {
                     )}
                 </AnimatePresence>
 
-                {/* ERP Cards */}
-                <div className={styles.erpGrid}>
-                    {providers.map((provider, i) => {
-                        const config = ERP_CONFIGS[provider];
-                        const connected = isConnected(provider);
+                {/* ── Sovereign Connector Hub ─────────────────────────────── */}
+                <motion.div
+                    className={`glass-card ${styles.hubSection}`}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.08 }}
+                >
+                    <p className={styles.hubLabel}>
+                        {isAr ? 'مركز التكامل — الموصّل السيادي' : 'Integration Hub — Sovereign Connector'}
+                    </p>
 
-                        return (
+                    <select
+                        className={styles.systemSelect}
+                        value={selectedSystem}
+                        onChange={e => {
+                            setSelectedSystem(e.target.value);
+                            setShowCustomPanel(false);
+                            setCustomSaved(false);
+                        }}
+                        dir={isAr ? 'rtl' : 'ltr'}
+                    >
+                        <option value="">
+                            {isAr ? '— اختر نظام ERP الخاص بك —' : '— Select your ERP system —'}
+                        </option>
+                        {ERP_SYSTEMS.map(s => (
+                            <option key={s.value} value={s.value}>
+                                {isAr ? s.labelAR : s.labelEN}
+                            </option>
+                        ))}
+                    </select>
+
+                    <button
+                        className={styles.sovereignBtn}
+                        disabled={!selectedSystem}
+                        onClick={handleConnect}
+                    >
+                        {isAr ? 'ربط' : 'Connect'}
+                    </button>
+
+                    {/* ── Custom API Configuration Panel ───────────────────── */}
+                    <AnimatePresence>
+                        {showCustomPanel && (
                             <motion.div
-                                key={provider}
-                                className={`glass-card ${styles.erpCard} ${connected ? styles.connected : ''}`}
-                                initial={{ opacity: 0, y: 16 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 + i * 0.1, duration: 0.4 }}
-                                whileHover={{ scale: 1.015 }}
-                                whileTap={{ scale: 0.98 }}
+                                className={styles.customPanel}
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.28 }}
                             >
-                                <div className={styles.erpHeader}>
-                                    <span className={styles.erpIcon}>{config.icon}</span>
-                                    <div>
-                                        <div className={styles.erpName}>
-                                            {locale === 'ar' ? config.nameAR : config.nameEN}
-                                        </div>
-                                        <div className={styles.erpDesc}>
-                                            {locale === 'ar' ? config.descAR : config.descEN}
-                                        </div>
+                                <p className={styles.customPanelTitle}>
+                                    {isAr ? 'إعداد الـ API المخصص' : 'API Configuration'}
+                                </p>
+
+                                <div className={styles.customPanelField}>
+                                    <label className={styles.customPanelLabel}>
+                                        {isAr ? 'رابط النقطة الطرفية' : 'Endpoint URL'}
+                                    </label>
+                                    <input
+                                        type="url"
+                                        className={styles.customPanelInput}
+                                        placeholder="https://api.clienterp.com/v1"
+                                        value={customFields.url}
+                                        onChange={e => setCustomFields(p => ({ ...p, url: e.target.value }))}
+                                        dir="ltr"
+                                    />
+                                </div>
+
+                                <div className={styles.customPanelField}>
+                                    <label className={styles.customPanelLabel}>
+                                        {isAr ? 'مفتاح API / السر' : 'API Key / Secret'}
+                                    </label>
+                                    <input
+                                        type="password"
+                                        className={styles.customPanelInput}
+                                        placeholder="••••••••••••••••"
+                                        value={customFields.apiKey}
+                                        onChange={e => setCustomFields(p => ({ ...p, apiKey: e.target.value }))}
+                                        dir="ltr"
+                                        autoComplete="new-password"
+                                    />
+                                </div>
+
+                                <div className={styles.customPanelField}>
+                                    <label className={styles.customPanelLabel}>
+                                        {isAr ? 'نوع المصادقة' : 'Authentication Type'}
+                                    </label>
+                                    <select
+                                        className={styles.customPanelSelect}
+                                        value={customFields.authType}
+                                        onChange={e => setCustomFields(p => ({ ...p, authType: e.target.value as CustomFields['authType'] }))}
+                                        dir={isAr ? 'rtl' : 'ltr'}
+                                    >
+                                        <option value="bearer">Bearer Token</option>
+                                        <option value="oauth2">OAuth 2.0</option>
+                                        <option value="basic">Basic Auth</option>
+                                    </select>
+                                </div>
+
+                                <button
+                                    className={styles.customPanelSaveBtn}
+                                    onClick={handleSaveCustom}
+                                    disabled={!customFields.url || !customFields.apiKey}
+                                >
+                                    {customSaved
+                                        ? (isAr ? '✓ تم الحفظ' : '✓ Saved')
+                                        : (isAr ? 'حفظ الإعداد' : 'Save Configuration')
+                                    }
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </motion.div>
+
+                {/* ── Active connections (non-CLIENT) ──────────────────────── */}
+                {!isClient && connections.length > 0 && (
+                    <motion.div
+                        className={styles.connectedList}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.18 }}
+                    >
+                        {connections.map(conn => {
+                            const config = ERP_CONFIGS[conn.provider as ERPProvider];
+                            return (
+                                <div key={conn.id} className={styles.connectedItem}>
+                                    <span className={styles.connectedItemName}>
+                                        {config
+                                            ? (isAr ? config.nameAR : config.nameEN)
+                                            : conn.provider}
+                                    </span>
+                                    <div className={styles.connectedItemBadge}>
+                                        <span>● {t('connected')}</span>
+                                        <button
+                                            className={styles.syncBtn}
+                                            onClick={() => handleSync(conn.provider)}
+                                            disabled={syncing === conn.provider}
+                                        >
+                                            {syncing === conn.provider ? t('syncing') : t('sync')}
+                                        </button>
                                     </div>
                                 </div>
+                            );
+                        })}
+                    </motion.div>
+                )}
 
-                                <div className={styles.erpActions}>
-                                    {connected ? (
-                                        <>
-                                            <span className={styles.connectedBadge}>
-                                                ● {t('connected')}
-                                            </span>
-                                            <button
-                                                className={styles.syncBtn}
-                                                onClick={() => handleSync(provider)}
-                                                disabled={syncing === provider}
-                                            >
-                                                {syncing === provider ? t('syncing') : t('sync')}
-                                            </button>
-                                        </>
-                                    ) : (
-                                        provider === 'sap' ? (
-                                            <a
-                                                className={styles.connectBtn}
-                                                href={`/${locale}/onboarding`}
-                                            >
-                                                {t('connect')}
-                                            </a>
-                                        ) : (
-                                            <button
-                                                className={styles.connectBtn}
-                                                onClick={() => handleSelectERP(provider)}
-                                            >
-                                                {t('connect')}
-                                            </button>
-                                        )
-                                    )}
-                                </div>
-                            </motion.div>
-                        );
-                    })}
-                </div>
-
-                {/* Connection Wizard Modal */}
+                {/* ── Connection Wizard Modal ───────────────────────────────── */}
                 <AnimatePresence>
                     {selectedERP && (
                         <motion.div
@@ -213,7 +353,7 @@ export default function IntegrationsPage() {
                                     </span>
                                     <h3 className={styles.modalTitle}>
                                         {t('connectTo')}{' '}
-                                        {locale === 'ar'
+                                        {isAr
                                             ? ERP_CONFIGS[selectedERP].nameAR
                                             : ERP_CONFIGS[selectedERP].nameEN}
                                     </h3>
@@ -229,7 +369,7 @@ export default function IntegrationsPage() {
                                     {ERP_CONFIGS[selectedERP].fields.map((field) => (
                                         <div key={field.key} className={styles.field}>
                                             <label className={styles.fieldLabel}>
-                                                {locale === 'ar' ? field.labelAR : field.labelEN}
+                                                {isAr ? field.labelAR : field.labelEN}
                                             </label>
                                             <input
                                                 type={field.type}
