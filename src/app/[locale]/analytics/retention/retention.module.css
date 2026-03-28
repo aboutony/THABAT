@@ -467,6 +467,11 @@
     flex-direction: row-reverse;
 }
 
+/* ── RTL card alignment — match right edge to section header (22px) ── */
+:global([dir="rtl"]) .cardHeader {
+    padding-right: 22px;
+}
+
 :global([dir="rtl"]) .clientMeta {
     align-items: flex-end;
 }
