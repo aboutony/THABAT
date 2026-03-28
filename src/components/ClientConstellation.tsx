@@ -19,11 +19,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
+import { useEntity } from '@/context/EntityContext';
 import {
-    CLIENT_HEALTH_RESULTS,
-    MAX_CLIENT_ACV,
-    type ClientHealthResult,
-} from '@/lib/calculateClientHealth';
+    getEntityClientHealth,
+    getEntityMaxACV,
+    getEntityDataset,
+} from '@/lib/entityDatasets';
+import type { ClientHealthResult } from '@/lib/calculateClientHealth';
 import s from './ClientConstellation.module.css';
 
 // ── SVG canvas dimensions ─────────────────────────────────────────────────────
@@ -37,19 +39,14 @@ const BG_STARS = [
     { x: 90,  y: 120 }, { x: 230, y: 78 },
 ];
 
-// Constellation lines between adjacent client stars (index pairs in CLIENT_HEALTH_RESULTS)
-// Ordered: MoH(0)–NUPCO(1), MoH(0)–NG Health(2), NG Health(2)–KFSH(3),
-//          NG Health(2)–SGH(4), MoH(0)–KFSH(3)
-const CONSTELLATION_LINES: Array<[number, number]> = [
-    [0, 1], [0, 2], [2, 3], [2, 4], [0, 3],
-];
+// Constellation lines are now per-entity — loaded from entityDatasets.
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function starRadius(acv: number): number {
+function starRadius(acv: number, maxACV: number): number {
     // Range: 6–12 SVG units → at 0.8 scale (72mm viewport) = 1.27–2.54mm
     // matches spec: Active 2.5mm / Passive 1.2mm at mobile scale factor
-    return 6 + (acv / MAX_CLIENT_ACV) * 6;
+    return 6 + (acv / maxACV) * 6;
 }
 
 function starOpacity(healthScore: number): number {
@@ -64,7 +61,10 @@ export default function ClientConstellation() {
     const isAr   = locale === 'ar';
     const [active, setActive] = useState<ClientHealthResult | null>(null);
 
-    const clients = CLIENT_HEALTH_RESULTS;
+    const { activeEntity } = useEntity();
+    const clients           = getEntityClientHealth(activeEntity.id);
+    const maxACV            = getEntityMaxACV(activeEntity.id);
+    const constellationLines = getEntityDataset(activeEntity.id).constellationLines;
 
     return (
         <Link
@@ -107,7 +107,7 @@ export default function ClientConstellation() {
                 ))}
 
                 {/* Constellation lines */}
-                {CONSTELLATION_LINES.map(([a, b], i) => (
+                {constellationLines.map(([a, b], i) => (
                     <line key={i}
                         className={s.constellationLine}
                         x1={clients[a].starX} y1={clients[a].starY}
@@ -120,7 +120,7 @@ export default function ClientConstellation() {
 
                 {/* Client stars */}
                 {clients.map(client => {
-                    const r   = starRadius(client.acv);
+                    const r   = starRadius(client.acv, maxACV);
                     const op  = starOpacity(client.healthScore);
                     const isSelected = active?.id === client.id;
 
