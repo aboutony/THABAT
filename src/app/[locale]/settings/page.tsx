@@ -127,8 +127,8 @@ export default function IntegrationsPage() {
                     )}
                 </AnimatePresence>
 
-                {/* ERP Cards — hidden for CLIENT tier */}
-                {!isClient && <div className={styles.erpGrid}>
+                {/* ERP Cards + modal — hidden for CLIENT tier */}
+                {!isClient && (<><div className={styles.erpGrid}>
                     {providers.map((provider, i) => {
                         const config = ERP_CONFIGS[provider];
                         const connected = isConnected(provider);
@@ -269,7 +269,7 @@ export default function IntegrationsPage() {
                         </motion.div>
                     )}
                 </AnimatePresence>
-                }
+                </>)}
 
                 {/* Account Section */}
                 <div className={styles.accountSection}>

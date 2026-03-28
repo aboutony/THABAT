@@ -70,6 +70,7 @@ export default function AnalyticsPage() {
     };
 
     return (
+        <>
         <Shell>
             <div className={styles.page}>
                 <PageHeader
@@ -300,5 +301,6 @@ export default function AnalyticsPage() {
                 </Link>
             </div>
         )}
+        </>
     );
 }
