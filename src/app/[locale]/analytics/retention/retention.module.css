@@ -436,12 +436,25 @@
         padding: 15px 14px; /* ~8mm vertical rhythm between rows */
     }
 
-    /* ── Arabic section header calibration ──────────────────────────
-       'أعلى 5 عملاء في خطر' must not touch the screen edge in RTL.
-       Shrink from 10px to 4.2mm (~16px) and add 6mm start padding. */
+    /* ── Arabic section header calibration (Command #52.1) ──────────────────
+       'أعلى 5 عملاء في خطر' must anchor to the right edge of the container
+       and align vertically with the right edge of the client cards below.
+       ─────────────────────────────────────────────────────────────────────── */
     :global([dir="rtl"]) .sectionLabel {
-        font-size: 4.2mm;
+        /* Layout: full-width flex row, text anchors to the inline-end (right) */
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;   /* flex-start = right side in RTL */
+        overflow: visible;             /* prevent text from being clipped */
+
+        /* Spacing: 6mm right padding so "أعلى" clears the container edge */
         padding-inline-end: 6mm;
+        margin-inline-start: auto;     /* pushes block to the right anchor */
+
+        /* Typography */
+        font-size: 4.2mm;              /* 16px — matches English header visual density */
+        font-weight: 600;
+        line-height: 1.4;              /* breathing room for Arabic glyphs */
         text-align: end;
     }
 }
