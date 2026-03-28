@@ -143,6 +143,34 @@
     50%       { box-shadow: 0 0 10px #F59E0B; }
 }
 
+/* ── Mobile responsive ───────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    .wrapper {
+        aspect-ratio: 16 / 9;
+        padding: 10px 12px 8px;
+    }
+
+    .svg {
+        width: 100%;
+        height: 100%;
+        flex: 1;
+        min-height: 0;
+    }
+
+    /* Scale each client star down 20% so the full map stays in-frame */
+    .starGroup {
+        transform-box: fill-box;
+        transform-origin: center;
+        transform: scale(0.8);
+    }
+
+    /* Re-assert constellation lines on mobile — prevent any cascade reset */
+    .constellationLine {
+        stroke-opacity: 1;
+        opacity: 0.55;
+    }
+}
+
 /* ── Light mode ──────────────────────────────────────────────────────────── */
 :global(.light) .wrapper {
     background: rgba(255, 255, 255, 0.75);
@@ -183,3 +211,20 @@
 }
 :global(.light) .tooltipName  { color: #1E293B; }
 :global(.light) .tooltipLabel { color: #64748B; }
+
+/* ── Mobile light-mode ghosting hard-fix ────────────────────────────────── */
+/* Re-assert stroke explicitly inside the mobile breakpoint so no cascade
+   reset can re-introduce faded purple lines on small light-mode viewports  */
+@media (max-width: 767px) {
+    :global(.light) .constellationLine {
+        stroke: #94A3B8 !important;
+        stroke-width: 1.5 !important;
+        stroke-opacity: 1 !important;
+        opacity: 0.85 !important;
+    }
+
+    :global(.light) .bgStar {
+        fill: #CBD5E1 !important;
+        opacity: 1 !important;
+    }
+}

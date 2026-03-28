@@ -356,6 +356,61 @@
     font-variant-numeric: tabular-nums;
 }
 
+/* ── Mobile responsive ───────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+    /* Stat boxes: reduce horizontal squishing on small screens */
+    .statsRow {
+        padding: 10px 12px;
+    }
+
+    .statNum {
+        font-size: 22px;
+    }
+
+    .statLabel {
+        font-size: 9px;
+        letter-spacing: 0.05em;
+    }
+
+    /* At-risk client cards: guarantee height: auto so children never collapse */
+    .clientCard {
+        height: auto;
+        min-height: 0;
+        overflow: hidden; /* keep for expand animation */
+    }
+
+    .cardHeader {
+        height: auto;
+        min-height: 44px; /* Apple/Google touch-target standard */
+        padding: 10px 12px;
+    }
+
+    .clientName {
+        max-width: 130px;
+        font-size: 13px;
+    }
+
+    .healthNum {
+        font-size: 18px;
+    }
+
+    /* Outreach button — 44px min touch target while keeping sleek look */
+    .outreachBtn {
+        min-height: 44px;
+        padding: 10px 16px;
+    }
+
+    /* Breakdown section on mobile */
+    .breakdown {
+        padding: 10px;
+    }
+
+    .breakdownLabel {
+        width: 110px;
+        font-size: 9px;
+    }
+}
+
 /* ── RTL overrides ───────────────────────────────────────────────────────── */
 
 :global([dir="rtl"]) .backLink {
