@@ -116,18 +116,18 @@
    No flex tricks, no logical-property confusion.
    ─────────────────────────────────────────────────────────────────────────── */
 .sectionHeaderArabic {
-    display: flex !important;
-    flex-direction: row-reverse !important;  /* internal coord system starts from right */
-    justify-content: flex-start !important;  /* flex-start in row-reverse = far-right edge */
-    width: 100% !important;
+    /* Layout — inline style in JSX handles text-align:right to bypass cascade */
+    display: block;
+    width: 100%;
     margin-top: 16px;
-    padding-right: 22px;        /* 5.8mm — professional offset from glass edge */
-    font-size: 4.5mm;           /* 17px — executive presence */
+    padding-right: 22px;    /* 5.8mm safe zone from glass edge */
+    /* Typography */
+    font-size: 4.5mm;       /* 17px executive presence */
     font-weight: 800;
     line-height: 1.4;
-    color: #E2E8F0;             /* Slate-200 — high contrast on dark background */
+    color: #E2E8F0;         /* Slate-200 */
     letter-spacing: 0;
-    text-transform: none;       /* override sectionLabel uppercase */
+    text-transform: none;   /* neutralise sectionLabel uppercase */
     overflow: visible;
 }
 

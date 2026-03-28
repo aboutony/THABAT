@@ -161,7 +161,10 @@ export default function RetentionSentinelPage() {
                 <ClientConstellation />
 
                 {/* ── At-risk client list ──────────────────────────────── */}
-                <div className={isAr ? s.sectionHeaderArabic : s.sectionLabel}>
+                <div
+                    className={isAr ? s.sectionHeaderArabic : s.sectionLabel}
+                    style={isAr ? { textAlign: 'right', width: '100%' } : undefined}
+                >
                     {isAr ? 'أعلى 5 عملاء في خطر' : 'Top 5 At-Risk Clients'}
                 </div>
 
