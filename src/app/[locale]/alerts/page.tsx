@@ -201,12 +201,14 @@ export default function ExecutiveVault() {
                 )}
 
                 {/* ── External Pulse ─────────────────────────────────── */}
-                <div className={styles.sectionLabel}>
+                <div className={styles.sectionLabel} style={{ marginTop: '12mm' }}>
                     {externalPulseNew && <span style={{ color: '#D4AF37', marginInlineEnd: 4 }}>🌐</span>}
                     {isAr ? 'النبضة الخارجية' : 'External Pulse'}
                 </div>
 
-                <ExternalPulseCard />
+                <div className={styles.externalPulseContainer}>
+                    <ExternalPulseCard />
+                </div>
 
             </div>
         </Shell>

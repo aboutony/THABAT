@@ -9,6 +9,7 @@ import OracleBriefing from '@/components/OracleBriefing';
 import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
 import EntitySelector from '@/components/EntitySelector';
+import { useAuth } from '@/context/AuthContext';
 import { formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
 import type { ScoreBreakdown, RawMetrics } from '@/lib/scoring';
@@ -28,6 +29,7 @@ export default function RitualScreen() {
     const tL  = useTranslations('ledger');
     const tSC = useTranslations('scenario');
     const tR  = useTranslations('report');
+    const { user } = useAuth();
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);
@@ -159,10 +161,12 @@ export default function RitualScreen() {
 
     return (
         <div className={styles.ritual}>
-            {/* ── Entity Switcher ───────────────────────────────────────── */}
-            <div className={styles.entityRow}>
-                <EntitySelector />
-            </div>
+            {/* ── Entity Switcher — COMMANDER only ─────────────────────── */}
+            {user?.role === 'COMMANDER' && (
+                <div className={styles.entityRow}>
+                    <EntitySelector />
+                </div>
+            )}
 
             {/* ── Scenario Playground overlay ───────────────────────────── */}
             <AnimatePresence>

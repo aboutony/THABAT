@@ -35,6 +35,20 @@ interface SignupData {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+// ── Demo identity keys: email → role override ──────────────────────────────
+// adonis@thabat.app → COMMANDER (sees Entity Dropdown)
+// guest@thabat.app  → GUEST     (no Entity Dropdown, read-only)
+// all other emails  → CLIENT    (no Entity Dropdown, clean-slate data)
+function resolveRole(email: string): string {
+    if (email === 'adonis@thabat.app') return 'COMMANDER';
+    if (email === 'guest@thabat.app')  return 'GUEST';
+    return 'CLIENT';
+}
+
+function applyRoleOverride(user: User): User {
+    return { ...user, role: resolveRole(user.email) };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
@@ -66,8 +80,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 const res = await fetch('/api/auth/me');
                 if (res.ok) {
                     const data = await res.json();
-                    setUser(data.user);
-                    applyPreferences(data.user);
+                    const user = applyRoleOverride(data.user);
+                    setUser(user);
+                    applyPreferences(user);
                 }
             } catch {
                 // Not authenticated — that's fine
@@ -93,8 +108,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return { error: data.error || 'Login failed' };
             }
 
-            setUser(data.user);
-            applyPreferences(data.user);
+            const loggedInUser = applyRoleOverride(data.user);
+            setUser(loggedInUser);
+            applyPreferences(loggedInUser);
             return {};
         } catch {
             return { error: 'Network error' };
@@ -115,8 +131,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return { error: data.error || 'Signup failed' };
             }
 
-            setUser(data.user);
-            applyPreferences(data.user);
+            const signedUpUser = applyRoleOverride(data.user);
+            setUser(signedUpUser);
+            applyPreferences(signedUpUser);
             return {};
         } catch {
             return { error: 'Network error' };
