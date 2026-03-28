@@ -153,13 +153,14 @@
         padding: 10px 12px 8px;
     }
 
-    /* Explicit pixel height — Safari mobile gives SVG 0 intrinsic height
-       even when min-height is set, because it composites the content in
-       the 0px space before min-height inflates the box.
-       130px matches the viewBox height so the full galaxy is visible.  */
+    /* SSM spec: SVG container 72mm wide × 90mm tall (physical dimensions).
+       preserveAspectRatio="xMidYMid meet" scales viewBox(340×130) to fit,
+       centering the galaxy. Explicit mm values bypass Safari height:auto bug. */
     .svg {
-        height: 130px;
+        width: 72mm;
+        height: 90mm;
         flex-shrink: 0;
+        align-self: center;
     }
 
     /* Re-assert stroke on mobile — guard against any cascade reset */

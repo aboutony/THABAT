@@ -47,8 +47,9 @@ const CONSTELLATION_LINES: Array<[number, number]> = [
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function starRadius(acv: number): number {
-    // Range: 4–9px based on ACV fraction of max
-    return 4 + (acv / MAX_CLIENT_ACV) * 5;
+    // Range: 6–12 SVG units → at 0.8 scale (72mm viewport) = 1.27–2.54mm
+    // matches spec: Active 2.5mm / Passive 1.2mm at mobile scale factor
+    return 6 + (acv / MAX_CLIENT_ACV) * 6;
 }
 
 function starOpacity(healthScore: number): number {

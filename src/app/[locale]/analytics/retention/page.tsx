@@ -241,8 +241,8 @@ export default function RetentionSentinelPage() {
 
                 {/* ── Healthy clients ──────────────────────────────────── */}
                 {healthy.length > 0 && (
-                    <>
-                        <div className={s.sectionLabel} style={{ marginTop: 8 }}>
+                    <div className={s.healthySection}>
+                        <div className={s.sectionLabel}>
                             {isAr ? 'العملاء بصحة جيدة' : 'Healthy Clients'}
                         </div>
                         <div className={s.healthyList}>
@@ -259,7 +259,7 @@ export default function RetentionSentinelPage() {
                                 </div>
                             ))}
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
         </Shell>

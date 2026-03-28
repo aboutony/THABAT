@@ -311,6 +311,14 @@
     box-shadow: none !important;
 }
 
+/* ── Healthy clients section wrapper ─────────────────────────────────────── */
+
+.healthySection {
+    display: block;
+    position: relative;
+    margin-top: 8px;
+}
+
 /* ── Healthy clients list ────────────────────────────────────────────────── */
 
 .healthyList {
@@ -362,6 +370,15 @@
 
 /* ── Mobile responsive ───────────────────────────────────────────────────── */
 @media (max-width: 767px) {
+    /* SSM Hard-Fix: .pageWrapperMobile spec → height:auto + overflow-y:scroll.
+       Scroll is handled by .main (Shell) on mobile — .page expands naturally  */
+    .page {
+        height: auto !important;
+        min-height: 320mm; /* 320mm scrollable depth spec */
+        overflow-y: visible;
+        padding-bottom: 140px; /* THABAT nav 86px + Safari chrome 54px */
+    }
+
     /* Stats: reduce padding from 14px/18px to 10px/12px — prevents squishing */
     .statsRow {
         padding: 10px 12px;
@@ -405,6 +422,18 @@
     .breakdownLabel {
         width: 110px;
         font-size: 9px;
+    }
+
+    /* Healthy clients section: explicitly block + 16mm gap from last at-risk card */
+    .healthySection {
+        display: block !important;
+        position: relative;
+        margin-top: 16mm;
+    }
+
+    /* 8mm gap between each healthy client row */
+    .healthyItem {
+        padding: 15px 14px; /* ~8mm vertical rhythm between rows */
     }
 }
 

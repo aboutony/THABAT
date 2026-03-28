@@ -87,6 +87,16 @@
     background: var(--bg-primary);
 }
 
+/* Mobile: move scroll responsibility from .page to .main so height:auto
+   pages can expand naturally and iOS touch-scroll is guaranteed          */
+@media (max-width: 767px) {
+    .main {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
 /* ---- Neumorphic Bottom Navigation ---- */
 .bottomNav {
     position: sticky;
