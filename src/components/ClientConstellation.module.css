@@ -145,9 +145,11 @@
 
 /* ── Mobile responsive ───────────────────────────────────────────────────── */
 @media (max-width: 767px) {
+    /* aspect-ratio 4:3 gives the galaxy more vertical room on narrow screens */
     .wrapper {
-        aspect-ratio: 16 / 9;
+        aspect-ratio: 4 / 3;
         padding: 10px 12px 8px;
+        overflow: hidden;
     }
 
     .svg {
@@ -157,11 +159,12 @@
         min-height: 0;
     }
 
-    /* Scale each client star down 20% so the full map stays in-frame */
+    /* Scale each client star down 30% (0.7 factor) so the full galaxy
+       fits in-frame without clipping on any mobile viewport width */
     .starGroup {
         transform-box: fill-box;
         transform-origin: center;
-        transform: scale(0.8);
+        transform: scale(0.7);
     }
 
     /* Re-assert constellation lines on mobile — prevent any cascade reset */

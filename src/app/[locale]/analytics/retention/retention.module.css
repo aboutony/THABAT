@@ -358,7 +358,7 @@
 
 /* ── Mobile responsive ───────────────────────────────────────────────────── */
 @media (max-width: 767px) {
-    /* Stat boxes: reduce horizontal squishing on small screens */
+    /* Stat boxes: reduce from 14px/18px to 10px/12px to prevent squishing */
     .statsRow {
         padding: 10px 12px;
     }
@@ -372,29 +372,47 @@
         letter-spacing: 0.05em;
     }
 
-    /* At-risk client cards: guarantee height: auto so children never collapse */
+    /* AtRiskList data hydration fix:
+       Force height: auto + remove any max-height so child cards never collapse.
+       overflow: hidden is kept only to clip the expand animation, not the card list. */
+    .page {
+        height: auto;
+        min-height: 100%;
+        max-height: none;
+    }
+
     .clientCard {
         height: auto;
         min-height: 0;
-        overflow: hidden; /* keep for expand animation */
+        max-height: none;
+        overflow: hidden; /* retained for Framer Motion expand animation only */
     }
 
+    /* Touch target: 44px minimum per Apple HIG / Google Material guidelines */
     .cardHeader {
         height: auto;
-        min-height: 44px; /* Apple/Google touch-target standard */
+        min-height: 44px;
+        max-height: none;
         padding: 10px 12px;
     }
 
+    /* Text clipping fix: remove fixed max-width, let flex container
+       enforce width via min-width:0 on the parent (.clientMeta already
+       has min-width:0), then ellipsis trims naturally */
     .clientName {
-        max-width: 130px;
+        max-width: none;
+        width: 100%;
         font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .healthNum {
         font-size: 18px;
     }
 
-    /* Outreach button — 44px min touch target while keeping sleek look */
+    /* Outreach button — 44px touch target */
     .outreachBtn {
         min-height: 44px;
         padding: 10px 16px;
