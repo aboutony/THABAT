@@ -10,6 +10,7 @@ import PercentileBadge from '@/components/PercentileBadge';
 import StabilityRing from '@/components/StabilityRing';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './analytics.module.css';
 
 interface ScoreResult {
@@ -35,6 +36,8 @@ export default function AnalyticsPage() {
     const [score, setScore] = useState<ScoreResult | null>(null);
     const [fetchingLatest, setFetchingLatest] = useState(true);
     const locale = useLocale();
+    const { isClient } = useIdentity();
+    const isAr = locale === 'ar';
 
     // Fetch latest score on mount
     const fetchLatest = useCallback(async () => {
@@ -279,12 +282,23 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* ── Executive Action Ledger ───────────────────────────── */}
-                <div className={styles.moduleHub}>
-                    <p className={styles.moduleHubTitle}>{t('actionLedger')}</p>
-                    <ActionLedger />
-                </div>
+                {!isClient && (
+                    <div className={styles.moduleHub}>
+                        <p className={styles.moduleHubTitle}>{t('actionLedger')}</p>
+                        <ActionLedger />
+                    </div>
+                )}
 
             </div>
         </Shell>
+
+        {/* ── CLIENT Ignition Overlay ─────────────────────────── */}
+        {isClient && (
+            <div className={styles.ignitionOverlay}>
+                <Link href={`/${locale}/settings`} className={styles.ignitionBtn}>
+                    {isAr ? '⚡ تفعيل التغذية المالية' : '⚡ Initiate Financial Feed'}
+                </Link>
+            </div>
+        )}
     );
 }

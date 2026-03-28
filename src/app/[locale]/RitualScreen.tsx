@@ -11,6 +11,7 @@ import ScenarioPlayground from '@/components/ScenarioPlayground';
 import ExportPortal from '@/components/ExportPortal';
 import EntitySelector from '@/components/EntitySelector';
 import { useAuth } from '@/context/AuthContext';
+import { useIdentity } from '@/hooks/useIdentity';
 import { formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
 import type { ScoreBreakdown, RawMetrics } from '@/lib/scoring';
@@ -31,6 +32,7 @@ export default function RitualScreen() {
     const tSC = useTranslations('scenario');
     const tR  = useTranslations('report');
     const { user } = useAuth();
+    const { isClient } = useIdentity();
     const router   = useRouter();
     const locale   = useLocale();
 
@@ -174,6 +176,7 @@ export default function RitualScreen() {
     ];
 
     return (
+        <>
         <div className={styles.ritual}>
             {/* ── Entity Switcher — COMMANDER only ─────────────────────── */}
             {user?.role === 'COMMANDER' && (
@@ -257,5 +260,15 @@ export default function RitualScreen() {
                 </div>
             </section>
         </div>
+
+        {/* ── CLIENT Ignition Overlay ─────────────────────────────────── */}
+        {isClient && (
+            <div className={styles.ignitionOverlay}>
+                <a href={`/${locale}/settings`} className={styles.ignitionBtn}>
+                    {locale === 'ar' ? '⚡ تفعيل التغذية المالية' : '⚡ Initiate Financial Feed'}
+                </a>
+            </div>
+        )}
+        </>
     );
 }

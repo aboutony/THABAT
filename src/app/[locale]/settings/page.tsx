@@ -7,6 +7,7 @@ import { ERP_CONFIGS, type ERPProvider } from '@/connectors';
 import PageHeader from '@/components/PageHeader';
 import Shell from '@/components/Shell';
 import { useAuth } from '@/context/AuthContext';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './integrations.module.css';
 
 interface Connection {
@@ -20,6 +21,7 @@ export default function IntegrationsPage() {
     const tSettings = useTranslations('settings');
     const locale = useLocale();
     const { user, logout } = useAuth();
+    const { isClient } = useIdentity();
     const [connections, setConnections] = useState<Connection[]>([]);
     const [selectedERP, setSelectedERP] = useState<ERPProvider | null>(null);
     const [credentials, setCredentials] = useState<Record<string, string>>({});
@@ -125,8 +127,8 @@ export default function IntegrationsPage() {
                     )}
                 </AnimatePresence>
 
-                {/* ERP Cards */}
-                <div className={styles.erpGrid}>
+                {/* ERP Cards — hidden for CLIENT tier */}
+                {!isClient && <div className={styles.erpGrid}>
                     {providers.map((provider, i) => {
                         const config = ERP_CONFIGS[provider];
                         const connected = isConnected(provider);
@@ -267,6 +269,7 @@ export default function IntegrationsPage() {
                         </motion.div>
                     )}
                 </AnimatePresence>
+                }
 
                 {/* Account Section */}
                 <div className={styles.accountSection}>

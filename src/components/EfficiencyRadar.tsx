@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import { TTV_RESULTS, type TTVResult } from '@/lib/calculateTTV';
+import { useIdentity } from '@/hooks/useIdentity';
 import s from './EfficiencyRadar.module.css';
 
 // ── SVG geometry constants ────────────────────────────────────────────────────
@@ -65,11 +66,40 @@ interface EfficiencyRadarProps {
 }
 
 export default function EfficiencyRadar({ showWaterfallLink = true, onFixBottleneck }: EfficiencyRadarProps) {
-    const locale  = useLocale();
-    const isAr    = locale === 'ar';
-    const results = TTV_RESULTS;
+    const locale      = useLocale();
+    const isAr        = locale === 'ar';
+    const results     = TTV_RESULTS;
+    const { isClient } = useIdentity();
 
     const [active, setActive] = useState<TTVResult | null>(null);
+
+    // ── CLIENT ghost: grey grid only, no blips ────────────────────────────────
+    if (isClient) {
+        const awaitingLabel = isAr ? 'في انتظار نبضة التكامل' : 'Awaiting Integration Pulse';
+        return (
+            <div className={s.wrapper}>
+                <svg viewBox="0 0 220 220" className={s.svg} aria-hidden="true">
+                    {RINGS.map((r, i) => (
+                        <circle key={i} cx={CX} cy={CY} r={r} fill="none"
+                            stroke="rgba(148,163,184,0.10)"
+                            strokeWidth={i === RINGS.length - 1 ? 1.5 : 1}
+                            strokeDasharray={i < RINGS.length - 1 ? '3 4' : undefined}
+                        />
+                    ))}
+                    {AXES.map((ax, i) => (
+                        <line key={i} x1={ax.x1} y1={ax.y1} x2={ax.x2} y2={ax.y2}
+                            stroke="rgba(148,163,184,0.08)" strokeWidth="1" />
+                    ))}
+                    <circle cx={CX} cy={CY} r="3" fill="rgba(148,163,184,0.15)" />
+                    <text x={CX} y={CY + 18} textAnchor="middle"
+                        fontSize="8" fill="rgba(148,163,184,0.45)"
+                        fontWeight="600" letterSpacing="0.04em">
+                        {awaitingLabel}
+                    </text>
+                </svg>
+            </div>
+        );
+    }
 
     const quadrantLabels = [
         { angle: 45,  textX: CX + (R + 12) * 0.707, textY: CY - (R + 12) * 0.707, label: isAr ? 'المبيعات' : 'Sales'       },

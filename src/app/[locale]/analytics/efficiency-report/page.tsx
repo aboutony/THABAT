@@ -9,6 +9,7 @@ import EfficiencyRadar from '@/components/EfficiencyRadar';
 import ActionToast from '@/components/ActionToast';
 import { formatNumber } from '@/lib/locale-utils';
 import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
+import { useIdentity } from '@/hooks/useIdentity';
 import styles from './efficiency.module.css';
 
 const VELOCITY = {
@@ -59,6 +60,7 @@ export default function EfficiencyReportPage() {
     const isAr = locale === 'ar';
     const t = useTranslations('efficiency');
     const tc = useTranslations('common');
+    const { isClient } = useIdentity();
     const [restockSent,  setRestockSent]  = useState<Record<string, boolean>>({});
     const [toastResult,  setToastResult]  = useState<ActionResult | null>(null);
     const [fixSent,      setFixSent]      = useState<Record<string, boolean>>({});
@@ -233,7 +235,26 @@ export default function EfficiencyReportPage() {
                     transition={{ delay: 0.4, duration: 0.5 }}
                 >
                     <div className={styles.inventoryTitle}>{t('inventoryCriticality')}</div>
-                    {INVENTORY.map((item) => {
+                    {isClient ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                            {[0.85, 0.60, 0.45].map((w, i) => (
+                                <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                    <div style={{
+                                        height: 10, borderRadius: 5,
+                                        width: `${w * 55}%`,
+                                        background: 'rgba(148,163,184,0.12)',
+                                        animation: `ghost-pulse 1.8s ease-in-out ${i * 0.2}s infinite`,
+                                    }} />
+                                    <div style={{
+                                        height: 7, borderRadius: 4,
+                                        width: `${w * 100}%`,
+                                        background: 'rgba(148,163,184,0.08)',
+                                        animation: `ghost-pulse 1.8s ease-in-out ${i * 0.2 + 0.1}s infinite`,
+                                    }} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : INVENTORY.map((item) => {
                         const stockPercent = (item.stock / item.maxDays) * 100;
                         const isCritical = stockPercent < 20;
                         return (
@@ -284,6 +305,7 @@ export default function EfficiencyReportPage() {
                         );
                     })}
                 </motion.div>
+                <style>{`@keyframes ghost-pulse{0%,100%{opacity:.4}50%{opacity:.9}}`}</style>
             </div>
         </Shell>
         <ActionToast result={toastResult} onDismiss={dismissToast} />
