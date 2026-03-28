@@ -191,6 +191,38 @@
     color: rgba(212, 175, 55, 0.45);
 }
 
+/* ── Mobile responsive (SSM physical-dimension spec) ────────────────────── */
+@media (max-width: 767px) {
+    .item {
+        min-height: 32mm;   /* per-card minimum depth */
+        width: 72mm;        /* fixed card width matches constellation SVG column */
+    }
+
+    /* Sovereign Gold border: 1.5mm thickness per severity tier */
+    .item_alert { border-left-width: 1.5mm; }
+    .item_watch { border-left-width: 1.5mm; }
+    .item_info  { border-left-width: 1.5mm; }
+
+    /* Entity label: 3.2mm ≈ 12.1px */
+    .itemSource { font-size: 3.2mm; }
+
+    /* Headline: 4.5mm ≈ 17px */
+    .itemHeadline { font-size: 4.5mm; }
+
+    /* Timestamp: 2.8mm ≈ 10.6px, right-aligned */
+    .itemDate {
+        font-size: 2.8mm;
+        text-align: end;
+        margin-inline-start: auto;
+    }
+}
+
+/* ── Dark mode headline ──────────────────────────────────────────────────── */
+/* Force Slate-200 on dark backgrounds for maximum legibility */
+:global([data-theme="dark"]) .itemHeadline {
+    color: #E2E8F0;
+}
+
 /* ── Light mode ──────────────────────────────────────────────────────────── */
 :global(.light) .card {
     background: rgba(255, 255, 255, 0.82);
