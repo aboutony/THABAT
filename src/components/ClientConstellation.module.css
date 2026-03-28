@@ -55,6 +55,7 @@
 .svg {
     width: 100%;
     height: auto;
+    aspect-ratio: 340 / 130; /* prevents Safari mobile SVG height collapse */
     overflow: visible;
     display: block;
 }

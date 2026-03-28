@@ -113,7 +113,9 @@
     background: var(--glass-bg);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    overflow: hidden;
+    /* overflow:hidden removed — iOS Safari compositing bug: transform+opacity
+       on an overflow:hidden element prevents child content from painting.
+       .expandSection already has overflow:hidden for the height:0 animation. */
     transition: border-color 0.2s;
 }
 
