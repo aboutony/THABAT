@@ -2,11 +2,9 @@
 // Pure utility module (no React). Provides entity data, active-entity
 // localStorage read/write, and the namespaced ledger storage-key builder.
 //
-// Storage layout:
-//   thabat-active-entity         → 'ENT_01' | 'ENT_02' | 'ENT_03'
-//   thabat-ent_01-ledger         → JSON array (PAC Technologies)
-//   thabat-ent_02-ledger         → JSON array (Al-Noor Medical)
-//   thabat-ent_03-ledger         → JSON array (Salam Logistics)
+// Storage layout (8 Sovereign LoBs):
+//   thabat-active-entity         → 'ENT_01' .. 'ENT_08'
+//   thabat-ent_0X-ledger         → JSON action-ledger per entity
 //
 // This ensures data from one entity never bleeds into another.
 
@@ -46,12 +44,57 @@ export const DEMO_ENTITIES: Entity[] = [
     },
     {
         id:          'ENT_03',
-        name:        'Salam Logistics',
-        nameAr:      'سلام للوجستيات',
-        industry:    'Logistics',
-        industryAr:  'اللوجستيات',
+        name:        'The Hygienic Product Manufacturer',
+        nameAr:      'مصنع المستلزمات الصحية',
+        industry:    'Manufacturing',
+        industryAr:  'التصنيع',
+        healthScore: 68,
+        accent:      '#06B6D4',   // cyan
+    },
+    {
+        id:          'ENT_04',
+        name:        'The Pharmacies Chain',
+        nameAr:      'سلسلة الصيدليات',
+        industry:    'Retail Pharmacy',
+        industryAr:  'الصيدلة',
+        healthScore: 64,
+        accent:      '#A855F7',   // purple
+    },
+    {
+        id:          'ENT_05',
+        name:        'The Real-Estate Developer',
+        nameAr:      'المطور العقاري',
+        industry:    'Real Estate',
+        industryAr:  'العقارات',
+        healthScore: 59,
+        accent:      '#F97316',   // orange
+    },
+    {
+        id:          'ENT_06',
+        name:        'The Hospital',
+        nameAr:      'المستشفى',
+        industry:    'Healthcare',
+        industryAr:  'الرعاية الصحية',
+        healthScore: 79,
+        accent:      '#FB7185',   // rose
+    },
+    {
+        id:          'ENT_07',
+        name:        'The Food Processing Manufacturer',
+        nameAr:      'مصنع المنتجات الغذائية',
+        industry:    'Food Manufacturing',
+        industryAr:  'تصنيع الأغذية',
+        healthScore: 74,
+        accent:      '#D4AF37',   // sovereign gold — high priority
+    },
+    {
+        id:          'ENT_08',
+        name:        'The F&B Distributor',
+        nameAr:      'موزع المأكل والمشرب',
+        industry:    'Distribution',
+        industryAr:  'التوزيع',
         healthScore: 61,
-        accent:      '#D4AF37',   // gold
+        accent:      '#84CC16',   // lime
     },
 ];
 

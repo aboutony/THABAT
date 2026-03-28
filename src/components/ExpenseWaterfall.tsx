@@ -19,27 +19,14 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { formatSARShort } from '@/lib/forecast';
+import { useEntity } from '@/context/EntityContext';
+import { getEntityDataset, type EntityCostRates } from '@/lib/entityDatasets';
 import styles from './ExpenseWaterfall.module.css';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-/** Cost split (must sum: variable = 0.72, fixed = 0.10, matching forecast.ts) */
-const COST_RATES = {
-    rawMaterials: { variable: 0.43, fixed: 0.00 },
-    logistics:    { variable: 0.14, fixed: 0.00 },
-    people:       { variable: 0.11, fixed: 0.03 },
-    govt:         { variable: 0.04, fixed: 0.07 },
-} as const;
-
-/** Demo 6-month historical average factors.
- *  current_cost / historical_avg = 1 / factor.
- *  factor < (1 / 1.15) ≈ 0.87 → over threshold → pulse. */
-const HIST_FACTORS = {
-    rawMaterials: 0.97,   //  3 % over  → no pulse
-    logistics:    0.84,   // 19 % over  → PULSE ✓
-    people:       0.98,   //  2 % over  → no pulse
-    govt:         0.94,   //  6 % over  → no pulse
-} as const;
+// Cost rates and historical factors are now per-entity — loaded from entityDatasets.
+// Fallback values (ENT_02 medical factory) kept here for reference only.
 
 const OVER_THRESHOLD = 0.15; // > 15 % above moving average → pulse + action
 
@@ -101,13 +88,12 @@ interface WaterfallRow {
 
 // ─── Cost computation ────────────────────────────────────────────────────────
 
-function computeCosts(revenue: number, baseRevenue: number) {
-    const c = COST_RATES;
+function computeCosts(revenue: number, baseRevenue: number, rates: EntityCostRates) {
     return {
-        rawMaterials: revenue * c.rawMaterials.variable + baseRevenue * c.rawMaterials.fixed,
-        logistics:    revenue * c.logistics.variable    + baseRevenue * c.logistics.fixed,
-        people:       revenue * c.people.variable       + baseRevenue * c.people.fixed,
-        govt:         revenue * c.govt.variable         + baseRevenue * c.govt.fixed,
+        rawMaterials: revenue * rates.rawMaterials.variable + baseRevenue * rates.rawMaterials.fixed,
+        logistics:    revenue * rates.logistics.variable    + baseRevenue * rates.logistics.fixed,
+        people:       revenue * rates.people.variable       + baseRevenue * rates.people.fixed,
+        govt:         revenue * rates.govt.variable         + baseRevenue * rates.govt.fixed,
     };
 }
 
@@ -131,12 +117,15 @@ export default function ExpenseWaterfall({
     const t  = useTranslations('waterfall');
     const tc = useTranslations('common');
 
+    const { activeEntity } = useEntity();
+
     const [expandedId,  setExpandedId]  = useState<CategoryId | null>(null);
     const [auditModeId, setAuditModeId] = useState<CategoryId | null>(null);
 
     // ── Derive waterfall rows ────────────────────────────────────────────────
     const { rows, netProfit, netProfitPct, netProfitOffset } = useMemo(() => {
-        const costs = computeCosts(revenue, baseRevenue);
+        const { costRates, histFactors } = getEntityDataset(activeEntity.id);
+        const costs = computeCosts(revenue, baseRevenue, costRates);
         const ORDER: CategoryId[] = ['rawMaterials', 'logistics', 'people', 'govt'];
         const LABELS: Record<CategoryId, string> = {
             rawMaterials: 'rawMaterials',
@@ -155,7 +144,7 @@ export default function ExpenseWaterfall({
         const rows: WaterfallRow[] = ORDER.map(id => {
             const amount = costs[id];
             const pct    = (amount / revenue) * 100;
-            const hf     = HIST_FACTORS[id];
+            const hf     = histFactors[id];
             const isOver = (1 / hf) - 1 > OVER_THRESHOLD;
 
             const subDefs = (SUB_DEFS as Record<string, typeof SUB_DEFS[keyof typeof SUB_DEFS]>)[id] ?? [];
@@ -181,7 +170,7 @@ export default function ExpenseWaterfall({
         const netProfitOffset = 100 - netProfitPct;
 
         return { rows, netProfit, netProfitPct, netProfitOffset };
-    }, [revenue, baseRevenue]);
+    }, [revenue, baseRevenue, activeEntity.id]);
 
     // ── Leakage detection (Phase 02 interconnect) ────────────────────────────
     const leakageId = useMemo<CategoryId | null>(() => {

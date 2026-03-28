@@ -173,11 +173,19 @@
     width: 14px;
 }
 
-/* ── Mobile dropdown calibration (SSM Command #47) ───────────────────────────
-   Thumb-reach spec for 6.7" viewports:
+/* ── Mobile dropdown calibration (SSM Command #47 / #48) ─────────────────────
+   Thumb-reach spec for 6.7" viewports (8 LoBs):
    - 12mm row height, 3.5mm type, 4mm horizontal padding
-   - Active row: 0.5mm Sovereign Gold bottom border ─────────────────────────── */
+   - Active row: 0.5mm Sovereign Gold bottom border
+   - 8mm gap after last item (8 LoBs total)
+   - 2.5mm diameter Sovereign Gold checkmark disc ─────────────────────────── */
 @media (max-width: 767px) {
+    /* ── Dropdown panel: 8mm clearance after 8th item ── */
+    .dropdown {
+        padding-bottom: 8mm;
+    }
+
+    /* ── List items ── */
     .item {
         min-height: 12mm;
         padding: 0 4mm;
@@ -189,10 +197,27 @@
     }
 
     .itemIndustry {
-        font-size: 2.8mm; /* proportionally smaller than name */
+        font-size: 2.8mm;
     }
 
     .itemActive {
         border-bottom: 0.5mm solid #D4AF37 !important; /* Sovereign Gold active indicator */
+    }
+
+    /* ── Active checkmark: 2.5mm Sovereign Gold disc ── */
+    .itemCheck {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5mm;
+        height: 2.5mm;
+        font-size: 0;          /* hide the '✓' character */
+        color: transparent;
+    }
+
+    .itemActive .itemCheck {
+        border-radius: 50%;
+        background: #D4AF37;   /* Sovereign Gold */
+        box-shadow: 0 0 4px #D4AF3788;
     }
 }
