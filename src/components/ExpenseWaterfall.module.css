@@ -371,9 +371,9 @@
 
 @media (max-width: 767px) {
     .actionRow {
-        flex-direction: column;
-        gap: 4mm;                   /* exactly 4mm vertical gap between buttons */
-        padding: 1mm 0 1mm 0;       /* 1mm top + 1mm bottom = 2mm safety → 26mm total */
+        flex-direction: column !important;  /* force stack — overrides any inherited row layout */
+        gap: 4mm;                           /* exactly 4mm vertical gap between buttons */
+        padding: 1mm 0 1mm 0;               /* 1mm top + 1mm bottom = 2mm safety → 26mm total */
     }
 
     [dir='rtl'] .actionRow {
@@ -381,11 +381,12 @@
     }
 
     .actionBtn {
-        width: 100%;                /* span full card width — no clipping */
+        width: 100%;                /* span full card width */
         height: 10mm;               /* 10mm fixed touch target */
         font-size: 3.2mm;           /* ~12px — legible at arm's length */
         text-align: center;
-        white-space: normal;        /* allow wrap if locale string is long */
+        white-space: nowrap;        /* single-line label — never wraps mid-word */
+        overflow: visible;          /* guarantee zero clipping on label text */
         padding: 0 8px;
         border-radius: 8px;
     }

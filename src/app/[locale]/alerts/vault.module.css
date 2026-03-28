@@ -126,6 +126,14 @@
     transform: translateX(2px);
 }
 
+/* ── Oracle warnings list wrapper ───────────────────────────────────────── */
+
+.warningsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
 /* ── Oracle warning cards ────────────────────────────────────────────────── */
 
 .warningCard {
@@ -253,6 +261,11 @@
 
     .externalPulseContainer {
         display: block !important;
+    }
+
+    /* Alert list: 120mm minimum ensures no clipping on 6.7" display */
+    .warningsList {
+        min-height: 120mm;
     }
 }
 

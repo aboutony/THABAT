@@ -26,7 +26,7 @@ export default function Shell({ children }: ShellProps) {
 
     // Detect locale from pathname
     const locale = pathname.startsWith('/ar') ? 'ar' : 'en';
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.role === 'COMMANDER';
 
     // Vault alert glow — pulse amber when any active risk exists
     const stockGap           = calculateStockGap(DEMO_STOCK_GAP_INPUT);

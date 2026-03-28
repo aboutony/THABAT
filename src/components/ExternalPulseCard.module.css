@@ -28,6 +28,12 @@
     font-size: 14px;
     line-height: 1;
     flex-shrink: 0;
+    animation: globe-pulse 2s ease-in-out infinite;
+}
+
+@keyframes globe-pulse {
+    0%, 100% { opacity: 1;    transform: scale(1);    }
+    50%       { opacity: 0.6; transform: scale(1.18); }
 }
 
 .title {
