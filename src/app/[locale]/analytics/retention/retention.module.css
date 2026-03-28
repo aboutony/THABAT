@@ -109,6 +109,28 @@
     padding: 4px 0 2px;
 }
 
+/* ── Arabic At-Risk header — Sovereign RTL Anchor ────────────────────────────
+   Applied only when locale = 'ar'. The parent .page is a flex-column with
+   padding: 16px on both sides — children stretch to full content width.
+   Simple block + text-align: right is the only reliable cross-browser anchor.
+   No flex tricks, no logical-property confusion.
+   ─────────────────────────────────────────────────────────────────────────── */
+.sectionHeaderArabic {
+    display: flex !important;
+    flex-direction: row-reverse !important;  /* internal coord system starts from right */
+    justify-content: flex-start !important;  /* flex-start in row-reverse = far-right edge */
+    width: 100% !important;
+    margin-top: 16px;
+    padding-right: 22px;        /* 5.8mm — professional offset from glass edge */
+    font-size: 4.5mm;           /* 17px — executive presence */
+    font-weight: 800;
+    line-height: 1.4;
+    color: #E2E8F0;             /* Slate-200 — high contrast on dark background */
+    letter-spacing: 0;
+    text-transform: none;       /* override sectionLabel uppercase */
+    overflow: visible;
+}
+
 /* ── At-risk client cards ────────────────────────────────────────────────── */
 
 .clientCard {
@@ -436,14 +458,7 @@
         padding: 15px 14px; /* ~8mm vertical rhythm between rows */
     }
 
-    /* ── Arabic section header calibration ──────────────────────────
-       'أعلى 5 عملاء في خطر' must not touch the screen edge in RTL.
-       Shrink from 10px to 4.2mm (~16px) and add 6mm start padding. */
-    :global([dir="rtl"]) .sectionLabel {
-        font-size: 4.2mm;
-        padding-inline-end: 6mm;
-        text-align: end;
-    }
+    /* .sectionHeaderArabic handles the Arabic at-risk label — no override needed here */
 }
 
 /* ── RTL overrides ───────────────────────────────────────────────────────── */
