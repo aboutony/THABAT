@@ -385,7 +385,8 @@
         height: 10mm;               /* 10mm fixed touch target */
         font-size: 3.2mm;           /* ~12px — legible at arm's length */
         text-align: center;
-        white-space: normal;        /* allow wrap if locale string is long */
+        white-space: normal;        /* allow wrap — overrides base nowrap */
+        overflow: visible;          /* guarantee zero clipping on label text */
         padding: 0 8px;
         border-radius: 8px;
     }
