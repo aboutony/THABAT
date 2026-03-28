@@ -12,9 +12,10 @@ interface StabilityRingProps {
     trend: Trend;
     locale?: string;
     loading?: boolean;   // Show shimmer 'Computing...' state
+    standby?: boolean;   // CLIENT mode: show '---', empty grey ring, no trend arrow
 }
 
-export default function StabilityRing({ score, trend, locale = 'en', loading = false }: StabilityRingProps) {
+export default function StabilityRing({ score, trend, locale = 'en', loading = false, standby = false }: StabilityRingProps) {
     const t = useTranslations('stability');
 
     // SVG geometry — pixel-locked 220px diameter
@@ -156,6 +157,16 @@ export default function StabilityRing({ score, trend, locale = 'en', loading = f
                         >
                             {locale === 'ar' ? 'جارٍ الحساب...' : 'Computing...'}
                         </motion.div>
+                    ) : standby ? (
+                        <motion.div
+                            className={styles.scoreValue}
+                            style={{ fontSize: 28, color: 'rgba(148,163,184,0.3)' }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.6, delay: 0.3 }}
+                        >
+                            ---
+                        </motion.div>
                     ) : (
                         <motion.div
                             className={styles.scoreValue}
@@ -168,8 +179,8 @@ export default function StabilityRing({ score, trend, locale = 'en', loading = f
                     )}
                     <div className={styles.scoreLabel}>{t('score')}</div>
 
-                    {/* Trajectory Arrow */}
-                    <motion.div
+                    {/* Trajectory Arrow — hidden in standby mode */}
+                    {!standby && <motion.div
                         className={styles.trendRow}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -195,7 +206,7 @@ export default function StabilityRing({ score, trend, locale = 'en', loading = f
                         <span className={styles.trendLabel} style={{ color: getTrendColor() }}>
                             {getTrendLabel()}
                         </span>
-                    </motion.div>
+                    </motion.div>}
                 </div>
             </div>
         </div>

@@ -107,8 +107,8 @@ export default function AnalyticsPage() {
                     <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: isAr ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
                 )}
 
-                {/* Stability Ring — with shimmer on compute */}
-                {score && (
+                {/* Stability Ring — hidden for CLIENT (no data baseline) */}
+                {score && !isClient && (
                     <motion.div
                         className={styles.ringContainer}
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -123,8 +123,8 @@ export default function AnalyticsPage() {
                     </motion.div>
                 )}
 
-                {/* Score Preview (if calculated) */}
-                {score && !fetchingLatest && (
+                {/* Score Preview — hidden for CLIENT */}
+                {score && !fetchingLatest && !isClient && (
                     <motion.div
                         className={`glass-card ${styles.scorePreview}`}
                         initial={{ opacity: 0, scale: 0.95 }}

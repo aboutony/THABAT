@@ -200,7 +200,7 @@ export default function RitualScreen() {
             </AnimatePresence>
             {/* Stability Ring — sticky visual anchor */}
             <section className={styles.ringSection}>
-                <StabilityRing score={score} trend={trend} locale={locale} />
+                <StabilityRing score={score} trend={trend} locale={locale} standby={isClient} />
             </section>
 
             {/* Scrollable content below the ring */}

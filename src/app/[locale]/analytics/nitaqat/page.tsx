@@ -291,8 +291,8 @@ export default function NitaqatPage() {
                 </div>
             </div>
 
-            {/* ── Expansion simulator ─────────────────────────────────────── */}
-            <div className={`glass-card ${s.card}`}>
+            {/* ── Expansion simulator — hidden for CLIENT ─────────────────── */}
+            {!isClient && <div className={`glass-card ${s.card}`}>
                 <div className={s.simHeader}>
                     <p className={s.cardTitle}>{t('simulatorTitle')}</p>
                     <p className={s.cardSubtitle}>{t('simulatorSubtitle')}</p>
@@ -379,7 +379,7 @@ export default function NitaqatPage() {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </div>
+            </div>}
 
             {/* ── Safe expansion window ────────────────────────────────────── */}
             <div className={`glass-card ${s.card}`}>

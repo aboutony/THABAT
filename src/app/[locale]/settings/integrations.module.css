@@ -373,3 +373,216 @@
 .logoutBtn:active {
     transform: scale(0.98);
 }
+
+/* ── Sovereign Connector Hub ── */
+.hubSection {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px;
+}
+
+.hubLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(192, 192, 192, 0.4);
+}
+
+.systemSelect {
+    width: 100%;
+    padding: 12px 36px 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(192%2C192%2C192%2C0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color var(--transition-fast);
+}
+
+.systemSelect:focus {
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.08);
+}
+
+.systemSelect option {
+    background: #0a0d14;
+    color: var(--text-primary);
+}
+
+.sovereignBtn {
+    width: 100%;
+    max-width: 120mm;
+    height: 12mm;
+    min-height: 40px;
+    background: #D4AF37;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    transition: box-shadow 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+    align-self: flex-start;
+}
+
+.sovereignBtn:hover:not(:disabled) {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.45);
+}
+
+.sovereignBtn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.sovereignBtn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+@media (max-width: 767px) {
+    .sovereignBtn {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Custom API Configuration Panel */
+.customPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    background: rgba(212, 175, 55, 0.04);
+    border: 1px solid rgba(212, 175, 55, 0.18);
+    border-radius: var(--radius-sm);
+}
+
+.customPanelTitle {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: #D4AF37;
+    letter-spacing: 0.03em;
+}
+
+.customPanelField {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.customPanelLabel {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(192, 192, 192, 0.45);
+}
+
+.customPanelInput,
+.customPanelSelect {
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.customPanelSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(192%2C192%2C192%2C0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-inline-end: 32px;
+}
+
+.customPanelSelect option {
+    background: #0a0d14;
+}
+
+.customPanelInput:focus,
+.customPanelSelect:focus {
+    border-color: rgba(212, 175, 55, 0.45);
+}
+
+.customPanelInput::placeholder {
+    color: var(--text-tertiary);
+    opacity: 0.4;
+}
+
+.customPanelSaveBtn {
+    padding: 11px;
+    background: #D4AF37;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.customPanelSaveBtn:hover {
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
+}
+
+.customPanelSaveBtn:active {
+    transform: scale(0.98);
+}
+
+.customPanelSaveBtn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Existing connections sub-list */
+.connectedList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.connectedItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: rgba(0, 108, 53, 0.06);
+    border: 1px solid rgba(0, 108, 53, 0.18);
+    border-radius: var(--radius-sm);
+}
+
+.connectedItemName {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.connectedItemBadge {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
