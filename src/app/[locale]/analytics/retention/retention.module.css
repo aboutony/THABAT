@@ -435,6 +435,15 @@
     .healthyItem {
         padding: 15px 14px; /* ~8mm vertical rhythm between rows */
     }
+
+    /* ── Arabic section header calibration ──────────────────────────
+       'أعلى 5 عملاء في خطر' must not touch the screen edge in RTL.
+       Shrink from 10px to 4.2mm (~16px) and add 6mm start padding. */
+    :global([dir="rtl"]) .sectionLabel {
+        font-size: 4.2mm;
+        padding-inline-end: 6mm;
+        text-align: end;
+    }
 }
 
 /* ── RTL overrides ───────────────────────────────────────────────────────── */
