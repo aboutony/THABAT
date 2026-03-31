@@ -7,71 +7,23 @@ import Link from 'next/link';
 import Shell from '@/components/Shell';
 import LeadTimePulse from '@/components/LeadTimePulse';
 import SupplierCard from '@/components/SupplierCard';
-import { DEMO_SUPPLIERS } from '@/lib/calculateTrustScore';
+import { getEntitySuppliers } from '@/lib/calculateTrustScore';
+import { getEntitySupplyChainContent } from '@/lib/entityDemoContent';
 import { useIdentity } from '@/hooks/useIdentity';
+import { useEntity } from '@/context/EntityContext';
 
 import s from './supply-chain.module.css';
 
-// ── Demo shipment data (UNIMED context) ───────────────────────────────────────
-const SHIPMENTS = [
-    {
-        id:     'SHP-2841',
-        product: 'Ultrasound Probe Array',
-        productAr: 'مجموعة مسابير الموجات الفوق صوتية',
-        origin:  'Hamburg, DE',
-        dest:    'Riyadh',
-        destAr:  'الرياض',
-        day:     18,
-        status:  'transit' as const,
-    },
-    {
-        id:     'SHP-2840',
-        product: 'MRI Contrast Agent',
-        productAr: 'عامل تباين الرنين المغناطيسي',
-        origin:  'Shanghai, CN',
-        dest:    'Jeddah',
-        destAr:  'جدة',
-        day:     7,
-        status:  'customs' as const,
-    },
-    {
-        id:     'SHP-2838',
-        product: 'Surgical Instrument Set',
-        productAr: 'طقم أدوات جراحية',
-        origin:  'Boston, MA',
-        dest:    'Jeddah',
-        destAr:  'جدة',
-        day:     29,
-        status:  'delivered' as const,
-    },
-    {
-        id:     'SHP-2836',
-        product: 'Lab Analyzer Cartridges',
-        productAr: 'خراطيش محلل مختبري',
-        origin:  'Stuttgart, DE',
-        dest:    'Riyadh',
-        destAr:  'الرياض',
-        day:     3,
-        status:  'transit' as const,
-    },
-] as const;
-
-const STATUS_LABEL_EN: Record<typeof SHIPMENTS[number]['status'], string> = {
+const STATUS_LABEL_EN: Record<'transit' | 'customs' | 'delivered', string> = {
     transit:   'In Transit',
     customs:   'At Customs',
     delivered: 'Delivered',
 };
-const STATUS_LABEL_AR: Record<typeof SHIPMENTS[number]['status'], string> = {
+const STATUS_LABEL_AR: Record<'transit' | 'customs' | 'delivered', string> = {
     transit:   'في الطريق',
     customs:   'في الجمارك',
     delivered: 'تم التسليم',
 };
-
-// ── KPI summaries ─────────────────────────────────────────────────────────────
-const KPI_AVG_LEAD  = 14.8;
-const KPI_ON_TIME   = 73;
-const KPI_FRICTION  = 8;
-const KPI_ACTIVE    = 4;
 
 // ── Stagger helper ────────────────────────────────────────────────────────────
 const fadeUp = (delay = 0) => ({
@@ -85,6 +37,9 @@ export default function SupplyChainPage() {
     const isAr   = locale === 'ar';
     const t      = useTranslations('supplyChain');
     const { isClient } = useIdentity();
+    const { activeEntity } = useEntity();
+    const content = getEntitySupplyChainContent(activeEntity.id);
+    const suppliers = getEntitySuppliers(activeEntity.id);
 
     return (
         <Shell>
@@ -130,9 +85,9 @@ export default function SupplyChainPage() {
                         <p className={s.cardSubtitle}>{t('pulseSubtitle')}</p>
                     </div>
                     <LeadTimePulse
-                        currentDay={18}
+                        currentDay={content.currentDay}
                         isAr={isAr}
-                        shipmentCount={KPI_ACTIVE}
+                        shipmentCount={content.kpis.activeShipments}
                     />
                 </motion.div>
 
@@ -141,15 +96,15 @@ export default function SupplyChainPage() {
 
                     <div className={`glass-card ${s.kpiTile}`}>
                         <span className={`${s.kpiNum} ${s.neutral}`}>
-                            {KPI_AVG_LEAD}
+                            {content.kpis.avgLeadTime}
                             <span className={s.kpiSuffix}>{t('days')}</span>
                         </span>
                         <span className={s.kpiLabel}>{t('avgLeadTime')}</span>
                     </div>
 
                     <div className={`glass-card ${s.kpiTile}`}>
-                        <span className={`${s.kpiNum} ${KPI_ON_TIME >= 85 ? s.success : s.warning}`}>
-                            {KPI_ON_TIME}
+                        <span className={`${s.kpiNum} ${content.kpis.onTime >= 85 ? s.success : s.warning}`}>
+                            {content.kpis.onTime}
                             <span className={s.kpiSuffix}>%</span>
                         </span>
                         <span className={s.kpiLabel}>{t('onTimeRate')}</span>
@@ -157,7 +112,7 @@ export default function SupplyChainPage() {
 
                     <div className={`glass-card ${s.kpiTile}`}>
                         <span className={`${s.kpiNum} ${s.warning}`}>
-                            {KPI_FRICTION}
+                            {content.kpis.friction}
                             <span className={s.kpiSuffix}>{t('days')}</span>
                         </span>
                         <span className={s.kpiLabel}>{t('frictionDays')}</span>
@@ -165,7 +120,7 @@ export default function SupplyChainPage() {
 
                     <div className={`glass-card ${s.kpiTile}`}>
                         <span className={`${s.kpiNum} ${s.indigo}`}>
-                            {KPI_ACTIVE}
+                            {content.kpis.activeShipments}
                         </span>
                         <span className={s.kpiLabel}>{t('activeShipments')}</span>
                     </div>
@@ -176,7 +131,7 @@ export default function SupplyChainPage() {
                 <motion.div {...fadeUp(0.18)} className={`glass-card ${s.card}`}>
                     <p className={s.cardTitle}>{t('shipmentsTitle')}</p>
                     <div className={s.shipList}>
-                        {SHIPMENTS.map((ship, i) => (
+                        {content.shipments.map((ship, i) => (
                             <motion.div
                                 key={ship.id}
                                 className={s.shipRow}
@@ -191,11 +146,11 @@ export default function SupplyChainPage() {
                                 <div className={s.shipBody}>
                                     <span className={s.shipId}>{ship.id}</span>
                                     <span className={s.shipMeta}>
-                                        {isAr ? ship.productAr : ship.product}
+                                        {isAr ? ship.product.ar : ship.product.en}
                                         {' · '}
                                         {ship.origin}
                                         {' → '}
-                                        {isAr ? ship.destAr : ship.dest}
+                                        {isAr ? ship.destination.ar : ship.destination.en}
                                     </span>
                                 </div>
 
@@ -222,7 +177,7 @@ export default function SupplyChainPage() {
                         <p className={s.cardSubtitle}>{t('suppliersSubtitle')}</p>
                     </div>
                     <div className={s.supplierList}>
-                        {DEMO_SUPPLIERS.map((sup, i) => (
+                        {suppliers.map((sup, i) => (
                             <motion.div
                                 key={sup.id}
                                 initial={{ opacity: 0, y: 8 }}
@@ -239,14 +194,15 @@ export default function SupplyChainPage() {
                 <motion.div {...fadeUp(0.26)} className={`glass-card ${s.card}`}>
                     <p className={s.cardTitle}>{t('riskTitle')}</p>
                     <div className={s.alertList}>
-                        <div className={`${s.alertRow} ${s.warn}`}>
-                            <span className={s.alertIcon}>⚠</span>
-                            <span>{t('riskCustoms')}</span>
-                        </div>
-                        <div className={`${s.alertRow} ${s.info}`}>
-                            <span className={s.alertIcon}>ℹ</span>
-                            <span>{t('riskPort')}</span>
-                        </div>
+                        {content.riskSignals.map((signal, index) => (
+                            <div
+                                key={index}
+                                className={`${s.alertRow} ${signal.tone === 'warn' ? s.warn : s.info}`}
+                            >
+                                <span className={s.alertIcon}>{signal.tone === 'warn' ? '⚠' : 'ℹ'}</span>
+                                <span>{isAr ? signal.text.ar : signal.text.en}</span>
+                            </div>
+                        ))}
                     </div>
                 </motion.div>
 

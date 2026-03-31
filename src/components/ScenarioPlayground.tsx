@@ -9,6 +9,7 @@ import { useIdentity } from '@/hooks/useIdentity';
 import type { NitaqatTierKey } from '@/lib/ledger';
 import type { OptimalResult } from '@/lib/findOptimalPath';
 import type { ScenarioLevers } from '@/lib/projectScenarioImpact';
+import { useEntity } from '@/context/EntityContext';
 import OptimizerWidget from './OptimizerWidget';
 import s from './ScenarioPlayground.module.css';
 
@@ -83,6 +84,7 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
     const locale   = useLocale();
     const isAr     = locale === 'ar';
     const { isClient } = useIdentity();
+    const { activeEntity } = useEntity();
 
     const [levers, setLevers] = useState<Record<LeverKey, number>>({
         salesGrowthPct:    0,
@@ -103,7 +105,10 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
         : levers,
     [levers, economicStress]);
 
-    const projection = useMemo(() => projectScenarioImpact(effectiveLevers), [effectiveLevers]);
+    const projection = useMemo(
+        () => projectScenarioImpact(effectiveLevers, activeEntity.id),
+        [activeEntity.id, effectiveLevers],
+    );
 
     // Persist current lever state to sessionStorage so ExportPortal can include
     // live What-If values in the Capital Report even without saving to ledger.

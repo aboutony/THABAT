@@ -25,7 +25,7 @@ interface EntityContextValue {
 }
 
 const EntityContext = createContext<EntityContextValue>({
-    activeEntity: DEMO_ENTITIES[0],
+    activeEntity: DEMO_ENTITIES.find(e => e.id === 'ENT_03') ?? DEMO_ENTITIES[0],
     entities:     DEMO_ENTITIES,
     switchEntity: () => {},
 });
@@ -34,7 +34,9 @@ const EntityContext = createContext<EntityContextValue>({
 
 export function EntityProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
-    const [activeEntity, setActiveEntityState] = useState<Entity>(DEMO_ENTITIES[0]);
+    const [activeEntity, setActiveEntityState] = useState<Entity>(
+        DEMO_ENTITIES.find(e => e.id === 'ENT_03') ?? DEMO_ENTITIES[0],
+    );
 
     useEffect(() => {
         const role = user?.role ?? null;
@@ -43,7 +45,7 @@ export function EntityProvider({ children }: { children: ReactNode }) {
         // CLIENT: entity is irrelevant (zero state), default to ENT_01
         // COMMANDER: read from localStorage as normal
         if (role === 'GUEST') {
-            const pinned = DEMO_ENTITIES.find(e => e.id === 'ENT_02') ?? DEMO_ENTITIES[0];
+            const pinned = DEMO_ENTITIES.find(e => e.id === 'ENT_03') ?? DEMO_ENTITIES[0];
             setActiveEntityState(pinned);
             return; // no event listener needed — entity is pinned
         }

@@ -57,7 +57,7 @@ function resolveDataSilo(role: string | null): DataSilo {
                 entitySwitcher: false,
                 scoreData:      true,         // shows demo score (87)
                 portfolioData:  true,         // reads same demo arrays as COMMANDER
-                pinnedEntityId: 'ENT_02',     // The Medical Equipment Factory — always
+                pinnedEntityId: 'ENT_03',     // Unicharm Gulf Hygienic Industries — always
             };
         default: // 'CLIENT' and any unrecognised role
             return {

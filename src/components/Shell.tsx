@@ -4,10 +4,11 @@ import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
-import { DEMO_NITAQAT_TIER } from '@/lib/generateBriefing';
-import { hasRetentionRisk } from '@/lib/calculateClientHealth';
+import { calculateStockGap, getEntityStockGapInput } from '@/lib/stockGap';
+import { getEntityNitaqatTier, hasEntityRetentionRisk } from '@/lib/entityDatasets';
+import { getEntityReceivablesScore } from '@/lib/entityDemoContent';
 import { hasNewExternalEvents } from '@/lib/fetchExternalPulse';
+import { useEntity } from '@/context/EntityContext';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import ExportButton from './ExportButton';
@@ -23,17 +24,19 @@ export default function Shell({ children }: ShellProps) {
     const pathname = usePathname();
     const router = useRouter();
     const { user } = useAuth();
+    const { activeEntity } = useEntity();
 
     // Detect locale from pathname
     const locale = pathname.startsWith('/ar') ? 'ar' : 'en';
     const isAdmin = user?.role === 'COMMANDER';
 
     // Vault alert glow — pulse amber when any active risk exists
-    const stockGap           = calculateStockGap(DEMO_STOCK_GAP_INPUT);
-    const hasNitaqatDanger   = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
-    const hasReceivablesRisk = 62 < 70; // matches DEMO_RECEIVABLES_SCORE in Vault
-    const vaultHasAlerts     = stockGap.isAtRisk || hasNitaqatDanger || hasRetentionRisk() || hasReceivablesRisk;
-    const hasExternalPulse   = hasNewExternalEvents();
+    const stockGap           = calculateStockGap(getEntityStockGapInput(activeEntity.id));
+    const nitaqatTier        = getEntityNitaqatTier(activeEntity.id);
+    const hasNitaqatDanger   = nitaqatTier === 'red' || nitaqatTier === 'lowGreen';
+    const hasReceivablesRisk = getEntityReceivablesScore(activeEntity.id) < 70;
+    const vaultHasAlerts     = stockGap.isAtRisk || hasNitaqatDanger || hasEntityRetentionRisk(activeEntity.id) || hasReceivablesRisk;
+    const hasExternalPulse   = hasNewExternalEvents(activeEntity.id);
 
     // Active tab detection
     const isActive = (path: string) => {

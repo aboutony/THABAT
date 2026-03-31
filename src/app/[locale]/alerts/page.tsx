@@ -10,13 +10,11 @@ import StockHourglass from '@/components/StockHourglass';
 import ExternalPulseCard from '@/components/ExternalPulseCard';
 import { useAuth } from '@/context/AuthContext';
 import { useEntity } from '@/context/EntityContext';
-import { calculateStockGap, DEMO_STOCK_GAP_INPUT, DEMO_NEXT_SHIPMENT_DAYS } from '@/lib/stockGap';
-import { DEMO_NITAQAT_TIER } from '@/lib/generateBriefing';
-import { hasRetentionRisk, getAtRiskClients } from '@/lib/calculateClientHealth';
+import { calculateStockGap, getEntityNextShipmentDays, getEntityStockGapInput } from '@/lib/stockGap';
+import { getEntityAtRiskClients, getEntityNitaqatTier, hasEntityRetentionRisk } from '@/lib/entityDatasets';
+import { getEntityReceivablesScore } from '@/lib/entityDemoContent';
 import { hasNewExternalEvents } from '@/lib/fetchExternalPulse';
 
-// Receivables risk threshold: score below 70 triggers a vault warning
-const DEMO_RECEIVABLES_SCORE = 62;
 import styles from './vault.module.css';
 
 // ── Warning card definition ────────────────────────────────────────────────
@@ -35,6 +33,28 @@ interface WarningCard {
 
 function getEntityWarnings(entityId: string, locale: string): WarningCard[] {
     switch (entityId) {
+        case 'ENT_03':
+            return [
+                {
+                    id:      'ent03-absorbent-buffer',
+                    titleEn: 'Critical: Absorbent Input Buffer Below Target',
+                    titleAr: 'حرج: مخزون المواد الماصة دون الهدف',
+                    bodyEn:  'Absorbent polymer coverage is below the plant safety threshold while customs review remains open. Prioritize release or local substitution.',
+                    bodyAr:  'تغطية البوليمر الماص دون حد الأمان في المصنع بينما ما زالت مراجعة الجمارك مفتوحة. أعط الأولوية للإفراج أو البديل المحلي.',
+                    href:    `/${locale}/analytics/supply-chain`,
+                    color:   '#F87171',
+                },
+                {
+                    id:      'ent03-qa-release',
+                    titleEn: 'QA Hold: Skin-Contact Batch Awaiting Release',
+                    titleAr: 'حجز جودة: دفعة ملامسة للبشرة بانتظار الاعتماد',
+                    bodyEn:  'One hygiene-material batch is awaiting QA release before BabyJoy and Sofy branch allocation can be completed.',
+                    bodyAr:  'إحدى دفعات المواد الصحية بانتظار اعتماد الجودة قبل استكمال تخصيص فروع بيبي جوي وسوفي.',
+                    href:    `/${locale}/analytics/efficiency-report`,
+                    color:   '#F59E0B',
+                },
+            ];
+
         case 'ENT_06': // The Hospital
             return [
                 {
@@ -123,12 +143,14 @@ export default function ExecutiveVault() {
     }, [user, authLoading, router, locale]);
 
     // ── Risk computation ─────────────────────────────────────────────────
-    const stockGap           = calculateStockGap(DEMO_STOCK_GAP_INPUT);
-    const hasNitaqatDanger   = DEMO_NITAQAT_TIER === 'red' || DEMO_NITAQAT_TIER === 'lowGreen';
-    const retentionRisk      = hasRetentionRisk();
-    const atRiskCount        = retentionRisk ? getAtRiskClients().length : 0;
-    const hasReceivablesRisk = DEMO_RECEIVABLES_SCORE < 70;
-    const externalPulseNew   = hasNewExternalEvents();
+    const stockGap           = calculateStockGap(getEntityStockGapInput(activeEntity.id));
+    const nitaqatTier        = getEntityNitaqatTier(activeEntity.id);
+    const hasNitaqatDanger   = nitaqatTier === 'red' || nitaqatTier === 'lowGreen';
+    const retentionRisk      = hasEntityRetentionRisk(activeEntity.id);
+    const atRiskCount        = retentionRisk ? getEntityAtRiskClients(activeEntity.id).length : 0;
+    const receivablesScore   = getEntityReceivablesScore(activeEntity.id);
+    const hasReceivablesRisk = receivablesScore < 70;
+    const externalPulseNew   = hasNewExternalEvents(activeEntity.id);
 
     // ── Build warning cards ──────────────────────────────────────────────
     // Entity-specific intelligence always leads; generic signals follow.
@@ -177,8 +199,8 @@ export default function ExecutiveVault() {
             id:      'receivables',
             titleEn: 'Receivables Under Pressure',
             titleAr: 'ضغط على المستحقات',
-            bodyEn:  `Receivables score ${DEMO_RECEIVABLES_SCORE}/100 — elevated overdue exposure detected. Review financial position.`,
-            bodyAr:  `نقاط المستحقات ${DEMO_RECEIVABLES_SCORE}/100 — تم رصد ارتفاع في التعرض للمتأخرات. راجع الوضع المالي.`,
+            bodyEn:  `Receivables score ${receivablesScore}/100 — elevated overdue exposure detected. Review financial position.`,
+            bodyAr:  `نقاط المستحقات ${receivablesScore}/100 — تم رصد ارتفاع في التعرض للمتأخرات. راجع الوضع المالي.`,
             href:    `/${locale}/analytics/sales-report`,
             color:   '#F59E0B',
         });
@@ -230,8 +252,8 @@ export default function ExecutiveVault() {
                         </span>
                         <span className={styles.sandWatchSub}>
                             {isAr
-                                ? `الشحنة القادمة خلال ${DEMO_NEXT_SHIPMENT_DAYS} أيام`
-                                : `Next shipment in ${DEMO_NEXT_SHIPMENT_DAYS} days`}
+                                ? `الشحنة القادمة خلال ${getEntityNextShipmentDays(activeEntity.id)} أيام`
+                                : `Next shipment in ${getEntityNextShipmentDays(activeEntity.id)} days`}
                         </span>
                     </div>
                     <span className={styles.sandWatchArrow}>›</span>

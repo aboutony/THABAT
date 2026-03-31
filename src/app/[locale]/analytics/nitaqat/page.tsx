@@ -9,7 +9,8 @@ import Link                           from 'next/link';
 import Shell from '@/components/Shell';
 import NitaqatShield from '@/components/NitaqatShield';
 import { ShieldRating } from '@/components/SupplierCard';
-import { PRIMARY_SUPPLIER, TRUST_COLORS } from '@/lib/calculateTrustScore';
+import { PRIMARY_SUPPLIER, TRUST_COLORS, getEntityPrimarySupplier } from '@/lib/calculateTrustScore';
+import { getEntityWorkforce } from '@/lib/entityDemoContent';
 import {
     calcWeightedSaudi,
     calcSaudizationPct,
@@ -22,6 +23,7 @@ import {
     type NitaqatTier,
 } from '@/lib/nitaqat';
 import { addLedgerEntry, calcAvoidedCost } from '@/lib/ledger';
+import { useEntity } from '@/context/EntityContext';
 
 // Local tier-label key map — `as const` lets next-intl infer the exact key literals
 const TIER_KEYS = {
@@ -38,13 +40,7 @@ import s from './nitaqat.module.css';
 // ── UNIMED demo workforce ─────────────────────────────────────────────────
 // weighted = 42×1.0 + 4×0.5 + 5×0.5 + 1×4.0 = 42 + 2 + 2.5 + 4 = 50.5
 // saudizationPct = 50.5 / 120 × 100 = 42.08%  →  Platinum
-const DEMO_WORKFORCE: WorkforceInput = {
-    totalEmployees:    120,
-    saudiRegular:       42,   // weight 1.0
-    saudiLowSalary:      4,   // weight 0.5
-    saudiStudents:       5,   // weight 0.5
-    saudiSpecialNeeds:   1,   // weight 4.0  (cap 10% of 120 = 12)
-};
+const DEMO_WORKFORCE: WorkforceInput = getEntityWorkforce('ENT_02');
 
 const WORKER_ROWS: {
     key: keyof Omit<WorkforceInput, 'totalEmployees'>;
@@ -67,6 +63,9 @@ export default function NitaqatPage() {
     const isAr    = locale === 'ar';
     const router  = useRouter();
     const t       = useTranslations('nitaqat');
+    const { activeEntity } = useEntity();
+    const workforce = activeEntity.id === 'ENT_02' ? DEMO_WORKFORCE : getEntityWorkforce(activeEntity.id);
+    const primarySupplier = activeEntity.id === 'ENT_02' ? PRIMARY_SUPPLIER : getEntityPrimarySupplier(activeEntity.id);
 
     const { isClient } = useIdentity();
 
@@ -76,15 +75,15 @@ export default function NitaqatPage() {
     const [workforceExpanded,  setWorkforceExpanded]  = useState(false);
 
     // ── Current state ──────────────────────────────────────────────────────
-    const weightedSaudi  = calcWeightedSaudi(DEMO_WORKFORCE);
-    const saudizationPct = calcSaudizationPct(weightedSaudi, DEMO_WORKFORCE.totalEmployees);
-    const currentTier    = getTier(saudizationPct, DEMO_WORKFORCE.totalEmployees);
+    const weightedSaudi  = calcWeightedSaudi(workforce);
+    const saudizationPct = calcSaudizationPct(weightedSaudi, workforce.totalEmployees);
+    const currentTier    = getTier(saudizationPct, workforce.totalEmployees);
     const currentLabel   = t(TIER_KEYS[currentTier]);
 
     // ── Simulation ────────────────────────────────────────────────────────
     const sim = simulateExpats(
         weightedSaudi,
-        DEMO_WORKFORCE.totalEmployees,
+        workforce.totalEmployees,
         currentTier,
         plannedExpats,
     );
@@ -94,7 +93,7 @@ export default function NitaqatPage() {
 
     // Max safe expats without dropping from currentTier (if not red)
     const safeWindow = currentTier !== 'red'
-        ? maxExpatsBeforeDrop(weightedSaudi, DEMO_WORKFORCE.totalEmployees, currentTier)
+        ? maxExpatsBeforeDrop(weightedSaudi, workforce.totalEmployees, currentTier)
         : 0;
 
     const simLabel = t(TIER_KEYS[sim.newTier]);
@@ -189,7 +188,7 @@ export default function NitaqatPage() {
                     <span className={s.gaugeMetaItem}>
                         <span className={s.metaLabel}>{t('totalEmployees')}</span>
                         <span className={s.metaVal}>
-                            {isClient ? 0 : (plannedExpats > 0 ? sim.newTotal : DEMO_WORKFORCE.totalEmployees)}
+                            {isClient ? 0 : (plannedExpats > 0 ? sim.newTotal : workforce.totalEmployees)}
                         </span>
                     </span>
                     <span className={s.gaugeMetaItem}>
@@ -208,20 +207,20 @@ export default function NitaqatPage() {
                 <div className={s.supplierLeft}>
                     <p className={s.supplierLabel}>{t('supplierLabel')}</p>
                     <p className={s.supplierName}>
-                        {isAr ? PRIMARY_SUPPLIER.nameAr : PRIMARY_SUPPLIER.name}
+                        {isAr ? primarySupplier.nameAr : primarySupplier.name}
                     </p>
                     <ShieldRating
-                        score={PRIMARY_SUPPLIER.trustScore}
-                        color={TRUST_COLORS[PRIMARY_SUPPLIER.band]}
+                        score={primarySupplier.trustScore}
+                        color={TRUST_COLORS[primarySupplier.band]}
                         size={13}
                     />
                 </div>
                 <div className={s.supplierRight}>
                     <span
                         className={s.supplierScore}
-                        style={{ color: TRUST_COLORS[PRIMARY_SUPPLIER.band] }}
+                        style={{ color: TRUST_COLORS[primarySupplier.band] }}
                     >
-                        {PRIMARY_SUPPLIER.trustScore.toFixed(1)}<span className={s.supplierOf}>/5</span>
+                        {primarySupplier.trustScore.toFixed(1)}<span className={s.supplierOf}>/5</span>
                     </span>
                     <span className={s.supplierMargin}>{t('supplierMarginNote')}</span>
                 </div>
@@ -262,9 +261,9 @@ export default function NitaqatPage() {
                 </div>
                 <div className={s.workerGrid}>
                     {WORKER_ROWS.map(({ key, labelKey, weight, primary }) => {
-                        const count  = isClient ? 0 : DEMO_WORKFORCE[key];
+                        const count  = isClient ? 0 : workforce[key];
                         const wValue = isClient ? 0 : (key === 'saudiSpecialNeeds'
-                            ? Math.min(count, Math.floor(DEMO_WORKFORCE.totalEmployees * 0.10)) * 4.0
+                            ? Math.min(count, Math.floor(workforce.totalEmployees * 0.10)) * 4.0
                             : count * parseFloat(weight));
                         return (
                             <div
@@ -284,7 +283,7 @@ export default function NitaqatPage() {
                     })}
                     <div className={`${s.workerRow} ${s.workerTotal}`}>
                         <span className={s.workerLabel}>{t('totalEmployees')}</span>
-                        <span className={s.workerCount}>{isClient ? 0 : DEMO_WORKFORCE.totalEmployees}</span>
+                        <span className={s.workerCount}>{isClient ? 0 : workforce.totalEmployees}</span>
                         <span className={s.workerWeight}/>
                         <span className={s.workerWeighted}>{isClient ? '0.0' : weightedSaudi.toFixed(1)}</span>
                     </div>

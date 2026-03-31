@@ -7,11 +7,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
     generateBriefing,
-    DEMO_NITAQAT_TIER,
 } from '@/lib/generateBriefing';
 import type { BriefingContext, RiskKey, ActionKey } from '@/lib/generateBriefing';
-import { calculateStockGap, DEMO_STOCK_GAP_INPUT } from '@/lib/stockGap';
-import { hasRetentionRisk } from '@/lib/calculateClientHealth';
+import { calculateStockGap, getEntityStockGapInput } from '@/lib/stockGap';
 import { useEntity } from '@/context/EntityContext';
 import { useIdentity } from '@/hooks/useIdentity';
 import { useVoiceOracle } from '@/hooks/useVoiceOracle';
@@ -19,7 +17,7 @@ import { processVoiceIntent, INTENT_ROUTE } from '@/lib/processVoiceIntent';
 import type { VoiceIntent } from '@/lib/processVoiceIntent';
 import { generateVocalResponse } from '@/lib/generateVocalResponse';
 import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
-import { getAtRiskClients } from '@/lib/calculateClientHealth';
+import { getEntityAtRiskClients, getEntityNitaqatTier, hasEntityRetentionRisk } from '@/lib/entityDatasets';
 import { TTV_RESULTS } from '@/lib/calculateTTV';
 import VoiceTrigger from './VoiceTrigger';
 import SonicWave from './SonicWave';
@@ -109,7 +107,7 @@ export default function OracleBriefing({
         if (!finalTranscript) return;
 
         const intent   = processVoiceIntent(finalTranscript);
-        const response = generateVocalResponse(intent, locale, score);
+        const response = generateVocalResponse(intent, locale, score, activeEntity.id);
 
         setActiveIntent(intent);
         setVocalResponse(response);
@@ -127,7 +125,7 @@ export default function OracleBriefing({
                 }).then(r => setVoiceActionResult(r));
             }
         } else if (intent === 'RETENTION_RISK') {
-            const atRisk = getAtRiskClients();
+            const atRisk = getEntityAtRiskClients(activeEntity.id);
             if (atRisk.length > 0) {
                 executeActionBridge({
                     type:     'EMAIL_OUTREACH',
@@ -145,7 +143,7 @@ export default function OracleBriefing({
             }, 1800);
             return () => clearTimeout(navTimer);
         }
-    }, [finalTranscript, locale, score, isAr, router]);
+    }, [activeEntity.id, finalTranscript, locale, score, isAr, router]);
 
     const [ctx,      setCtx]      = useState<BriefingContext | null>(null);
     const [revealed, setRevealed] = useState(0);   // 0=thinking, 1/2/3=sentences visible
@@ -153,16 +151,16 @@ export default function OracleBriefing({
 
     // Build context client-side (reads localStorage ledger)
     useEffect(() => {
-        const stockGap = calculateStockGap(DEMO_STOCK_GAP_INPUT);
+        const stockGap = calculateStockGap(getEntityStockGapInput(activeEntity.id));
         const context  = generateBriefing({
             score,
             stockGap,
-            nitaqatTier:      DEMO_NITAQAT_TIER,
+            nitaqatTier:      getEntityNitaqatTier(activeEntity.id),
             scoreBreakdown,
-            hasRetentionRisk: hasRetentionRisk(),
+            hasRetentionRisk: hasEntityRetentionRisk(activeEntity.id),
         });
         setCtx(context);
-    }, [score, scoreBreakdown]);
+    }, [activeEntity.id, score, scoreBreakdown]);
 
     // Staggered reveal — sentence 1 at 320ms, then +600ms each
     useEffect(() => {

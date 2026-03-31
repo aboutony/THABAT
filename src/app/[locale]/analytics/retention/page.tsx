@@ -8,12 +8,12 @@ import Shell from '@/components/Shell';
 import ClientConstellation from '@/components/ClientConstellation';
 import ActionToast from '@/components/ActionToast';
 import {
-    CLIENT_HEALTH_RESULTS,
-    getAtRiskClients,
     type ClientHealthResult,
 } from '@/lib/calculateClientHealth';
+import { getEntityAtRiskClients, getEntityClientHealth } from '@/lib/entityDatasets';
 import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
 import { useIdentity } from '@/hooks/useIdentity';
+import { useEntity } from '@/context/EntityContext';
 import s from './retention.module.css';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -80,14 +80,16 @@ function ScoreBreakdown({ client }: { client: ClientHealthResult }) {
 export default function RetentionSentinelPage() {
     const locale  = useLocale();
     const isAr    = locale === 'ar';
+    const { activeEntity } = useEntity();
     const [outreachSent,  setOutreachSent]  = useState<Record<string, boolean>>({});
     const [expanded,      setExpanded]      = useState<string | null>(null);
     const [toastResult,   setToastResult]   = useState<ActionResult | null>(null);
 
     const { isClient } = useIdentity();
-    const atRisk      = getAtRiskClients().slice(0, 5);
-    const healthy     = CLIENT_HEALTH_RESULTS.filter(c => !c.isFlickering);
-    const atRiskCount = CLIENT_HEALTH_RESULTS.filter(c => c.isFlickering).length;
+    const clientHealth = getEntityClientHealth(activeEntity.id);
+    const atRisk      = getEntityAtRiskClients(activeEntity.id).slice(0, 5);
+    const healthy     = clientHealth.filter(c => !c.isFlickering);
+    const atRiskCount = clientHealth.filter(c => c.isFlickering).length;
 
     const handleOutreach = useCallback(async (client: ClientHealthResult) => {
         if (outreachSent[client.id]) return;
@@ -139,7 +141,7 @@ export default function RetentionSentinelPage() {
                 <div className={s.statsRow}>
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#4ADE80' }}>
-                            {isClient ? '---' : CLIENT_HEALTH_RESULTS.length}
+                            {isClient ? '---' : clientHealth.length}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'عملاء' : 'Clients'}</span>
                     </div>

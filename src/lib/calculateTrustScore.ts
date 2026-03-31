@@ -117,5 +117,66 @@ export const SAUDI_ALTERNATIVES: Supplier[] = [
     }),
 ];
 
+const ENT_03_SUPPLIERS: Supplier[] = [
+    mkSupplier({
+        id: 'HYG-001', shipmentId: 'SHP-3301',
+        name: 'Regional Absorbent Materials FZE', nameAr: 'ريجنال أبزوربنت ماتيريالز',
+        country: 'UAE',                           countryAr: 'الإمارات',
+        city: 'Jebel Ali',                        cityAr: 'جبل علي',
+        onTimeRate: 81, qualityCompliance: 93, processingFrictionDays: 5,
+    }),
+    mkSupplier({
+        id: 'HYG-002', shipmentId: 'SHP-3298',
+        name: 'MENA Nonwoven Supply Co.',        nameAr: 'مينا نونووفن سبلاي',
+        country: 'Turkey',                       countryAr: 'تركيا',
+        city: 'Izmir',                           cityAr: 'إزمير',
+        onTimeRate: 76, qualityCompliance: 90, processingFrictionDays: 4,
+    }),
+    mkSupplier({
+        id: 'HYG-003', shipmentId: 'SHP-3296',
+        name: 'Najd Packaging Films',            nameAr: 'نجد لأفلام التغليف',
+        country: 'Saudi Arabia',                 countryAr: 'المملكة العربية السعودية',
+        city: 'Riyadh',                          cityAr: 'الرياض',
+        onTimeRate: 92, qualityCompliance: 95, processingFrictionDays: 1,
+        isSaudi: true,
+    }),
+    mkSupplier({
+        id: 'HYG-004', shipmentId: 'SHP-3294',
+        name: 'Gulf Convertor Chemicals',        nameAr: 'جلف كونفرتور كيميكالز',
+        country: 'Bahrain',                      countryAr: 'البحرين',
+        city: 'Manama',                          cityAr: 'المنامة',
+        onTimeRate: 61, qualityCompliance: 77, processingFrictionDays: 7,
+    }),
+];
+
+const ENT_03_SAUDI_ALTERNATIVES: Supplier[] = [
+    mkSupplier({
+        id: 'HYG-SAU-001', isSaudi: true,
+        name: 'Saudi Nonwoven Solutions',        nameAr: 'الحلول السعودية للمنسوجات',
+        country: 'Saudi Arabia',                 countryAr: 'المملكة العربية السعودية',
+        city: 'Riyadh',                          cityAr: 'الرياض',
+        onTimeRate: 89, qualityCompliance: 92, processingFrictionDays: 1,
+    }),
+    mkSupplier({
+        id: 'HYG-SAU-002', isSaudi: true,
+        name: 'Gulf Hygiene Materials Co.',      nameAr: 'شركة الخليج للمواد الصحية',
+        country: 'Saudi Arabia',                 countryAr: 'المملكة العربية السعودية',
+        city: 'Jeddah',                          cityAr: 'جدة',
+        onTimeRate: 86, qualityCompliance: 90, processingFrictionDays: 2,
+    }),
+];
+
+export function getEntitySuppliers(entityId: string): Supplier[] {
+    return entityId === 'ENT_03' ? ENT_03_SUPPLIERS : DEMO_SUPPLIERS;
+}
+
+export function getEntitySaudiAlternatives(entityId: string): Supplier[] {
+    return entityId === 'ENT_03' ? ENT_03_SAUDI_ALTERNATIVES : SAUDI_ALTERNATIVES;
+}
+
+export function getEntityPrimarySupplier(entityId: string): Supplier {
+    return getEntitySuppliers(entityId)[0];
+}
+
 /** Primary supplier used on Nitaqat page for margin linkage widget */
 export const PRIMARY_SUPPLIER = DEMO_SUPPLIERS[0]; // Siemens Healthineers

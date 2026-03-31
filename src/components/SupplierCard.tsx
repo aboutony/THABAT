@@ -2,10 +2,11 @@
 
 import { useState, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TRUST_COLORS, SAUDI_ALTERNATIVES } from '@/lib/calculateTrustScore';
+import { TRUST_COLORS, getEntitySaudiAlternatives } from '@/lib/calculateTrustScore';
 import type { Supplier, TrustBand } from '@/lib/calculateTrustScore';
 import { addLedgerEntry } from '@/lib/ledger';
-import { DEMO_SAFEGUARD_VALUE, DEMO_SHORTFALL_UNITS } from '@/lib/calculateSafeguardValue';
+import { getEntitySafeguardMetrics } from '@/lib/calculateSafeguardValue';
+import { useEntity } from '@/context/EntityContext';
 import s from './SupplierCard.module.css';
 
 // ── Band label maps ───────────────────────────────────────────────────────────
@@ -85,6 +86,8 @@ function AltRow({ supplier, isAr, originalName }: {
     const [requested, setRequested] = useState(false);
     const [pulsing,   setPulsing]   = useState(false);
     const color = TRUST_COLORS[supplier.band];
+    const { activeEntity } = useEntity();
+    const { safeguardValue, shortfallUnits } = getEntitySafeguardMetrics(activeEntity.id);
 
     function handleQuote() {
         if (requested) return;
@@ -93,12 +96,12 @@ function AltRow({ supplier, isAr, originalName }: {
         setTimeout(() => setPulsing(false), 700);
         addLedgerEntry({
             actionType:  'SUPPLY_CHAIN_PIVOT',
-            avoidedCost: DEMO_SAFEGUARD_VALUE,
+            avoidedCost: safeguardValue,
             meta: {
                 original:    originalName,
                 alternative: supplier.name,
-                units:       DEMO_SHORTFALL_UNITS,
-                description: `Pivoted to Local Sourcing to prevent ${DEMO_SHORTFALL_UNITS}-unit production halt.`,
+                units:       shortfallUnits,
+                description: `Pivoted to Local Sourcing to prevent ${shortfallUnits}-unit production halt.`,
             },
         });
     }
@@ -137,8 +140,10 @@ export interface SupplierCardProps {
 
 export default function SupplierCard({ supplier, isAr = false }: SupplierCardProps) {
     const [expanded, setExpanded] = useState(false);
+    const { activeEntity } = useEntity();
     const color    = TRUST_COLORS[supplier.band];
     const isCrimson = supplier.band === 'crimson';
+    const alternatives = getEntitySaudiAlternatives(activeEntity.id);
 
     return (
         <div className={`${s.card} ${isCrimson ? s.cardCrimson : ''}`}>
@@ -243,7 +248,7 @@ export default function SupplierCard({ supplier, isAr = false }: SupplierCardPro
                                     ? 'موردون سعوديون مسجّلون — تقييم أعلى'
                                     : 'Saudi-Registered Alternatives — Higher Trust Score'}
                             </p>
-                            {SAUDI_ALTERNATIVES.map(alt => (
+                            {alternatives.map(alt => (
                                 <AltRow key={alt.id} supplier={alt} isAr={isAr} originalName={supplier.name} />
                             ))}
                         </div>

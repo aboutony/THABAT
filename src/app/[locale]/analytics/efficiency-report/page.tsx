@@ -8,52 +8,13 @@ import Shell from '@/components/Shell';
 import EfficiencyRadar from '@/components/EfficiencyRadar';
 import ActionToast from '@/components/ActionToast';
 import { formatNumber } from '@/lib/locale-utils';
+import { getEntityEfficiencyContent } from '@/lib/entityDemoContent';
 import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
 import { useIdentity } from '@/hooks/useIdentity';
+import { useEntity } from '@/context/EntityContext';
 import styles from './efficiency.module.css';
 
-const VELOCITY = {
-    orderToCash: 142,
-    sectorAverage: 160,
-    improvement: 11.3,
-};
-
-const FULFILLMENT_STAGES = [
-    { key: 'production', status: 'complete', daysSpent: 18 },
-    { key: 'logistics', status: 'complete', daysSpent: 12 },
-    { key: 'nupcoAcceptance', status: 'active', daysSpent: 7 },
-    { key: 'paymentPending', status: 'pending', daysSpent: 0 },
-];
-
-const INVENTORY = [
-    {
-        product: { en: 'Urological Catheter – Foley 2-Way', ar: 'قسطرة بولية – فولي ثنائية الاتجاه' },
-        sku: 'UC-F2W-16',
-        stock: 14,
-        maxDays: 90,
-        restockQty: 11.25,
-        restockCost: 7312.50,
-        critical: true,
-    },
-    {
-        product: { en: 'Suture Braid Silk 2/0 – 75cm', ar: 'خيط جراحي حريري مجدول 2/0 – 75سم' },
-        sku: 'SBS-20-75',
-        stock: 42,
-        maxDays: 90,
-        restockQty: 0,
-        restockCost: 0,
-        critical: false,
-    },
-    {
-        product: { en: 'Surgical Drain – Jackson-Pratt', ar: 'مصرف جراحي – جاكسون برات' },
-        sku: 'SD-JP-400',
-        stock: 28,
-        maxDays: 90,
-        restockQty: 0,
-        restockCost: 0,
-        critical: false,
-    },
-];
+const DEFAULT_EFFICIENCY = getEntityEfficiencyContent('ENT_02');
 
 export default function EfficiencyReportPage() {
     const locale = useLocale();
@@ -61,6 +22,8 @@ export default function EfficiencyReportPage() {
     const t = useTranslations('efficiency');
     const tc = useTranslations('common');
     const { isClient } = useIdentity();
+    const { activeEntity } = useEntity();
+    const efficiency = activeEntity.id === 'ENT_02' ? DEFAULT_EFFICIENCY : getEntityEfficiencyContent(activeEntity.id);
     const [restockSent,  setRestockSent]  = useState<Record<string, boolean>>({});
     const [toastResult,  setToastResult]  = useState<ActionResult | null>(null);
     const [fixSent,      setFixSent]      = useState<Record<string, boolean>>({});
@@ -94,8 +57,7 @@ export default function EfficiencyReportPage() {
 
     // Velocity dial angles
     const maxDays = 200;
-    const velocityAngle = (VELOCITY.orderToCash / maxDays) * 270 - 135;
-    const sectorAngle = (VELOCITY.sectorAverage / maxDays) * 270 - 135;
+    const sectorAngle = (efficiency.velocity.sectorAverage / maxDays) * 270 - 135;
 
     return (
         <>
@@ -150,11 +112,11 @@ export default function EfficiencyReportPage() {
                                 fill="none"
                                 stroke="#006C35"
                                 strokeWidth="12"
-                                strokeDasharray={`${(VELOCITY.orderToCash / maxDays) * 339} 509`}
+                                strokeDasharray={`${(efficiency.velocity.orderToCash / maxDays) * 339} 509`}
                                 strokeDashoffset="-85"
                                 strokeLinecap="round"
                                 initial={{ strokeDasharray: '0 509' }}
-                                animate={{ strokeDasharray: `${(VELOCITY.orderToCash / maxDays) * 339} 509` }}
+                                animate={{ strokeDasharray: `${(efficiency.velocity.orderToCash / maxDays) * 339} 509` }}
                                 transition={{ duration: 1.2, ease: 'easeOut' }}
                                 style={{ filter: 'drop-shadow(0 0 8px rgba(0, 108, 53, 0.5))' }}
                             />
@@ -176,7 +138,7 @@ export default function EfficiencyReportPage() {
                         </svg>
                         <div className={styles.dialCenter}>
                             <span className={styles.dialValue}>
-                                {isClient ? '---' : formatNumber(VELOCITY.orderToCash, locale)}
+                                {isClient ? '---' : formatNumber(efficiency.velocity.orderToCash, locale)}
                             </span>
                             <span className={styles.dialUnit}>{isClient ? '' : t('days')}</span>
                         </div>
@@ -185,10 +147,10 @@ export default function EfficiencyReportPage() {
                     <div className={styles.dialMeta}>
                         <div className={styles.dialMetaItem}>
                             <span className={styles.sectorDot} />
-                            <span>{t('sectorAverage')}: {formatNumber(VELOCITY.sectorAverage, locale)} {t('days')}</span>
+                            <span>{t('sectorAverage')}: {formatNumber(efficiency.velocity.sectorAverage, locale)} {t('days')}</span>
                         </div>
                         <div className={`${styles.dialMetaItem} ${styles.improvement}`}>
-                            ↗ {formatNumber(VELOCITY.improvement, locale)}% {t('fasterThanSector')}
+                            ↗ {formatNumber(efficiency.velocity.improvement, locale)}% {t('fasterThanSector')}
                         </div>
                     </div>
                     )}
@@ -203,20 +165,24 @@ export default function EfficiencyReportPage() {
                 >
                     <div className={styles.pipelineHeader}>
                         <span className={styles.pipelineTitle}>{t('fulfillmentStatus')}</span>
-                        {!isClient && <span className={styles.pipelinePO}>{formatNumber('PO 4100000309', locale)}</span>}
+                        {!isClient && <span className={styles.pipelinePO}>{formatNumber(efficiency.orderNumber, locale)}</span>}
                     </div>
                     <div className={styles.stageList}>
-                        {FULFILLMENT_STAGES.map((stage, i) => (
+                        {efficiency.stages.map((stage, i) => {
+                            const stageLabel = ('label' in stage && stage.label)
+                                ? stage.label as { en: string; ar: string }
+                                : null;
+                            return (
                             <div key={stage.key} className={styles.stageRow}>
                                 <div className={`${styles.stageIcon} ${styles.stagePending}`}>○</div>
-                                {i < FULFILLMENT_STAGES.length - 1 && (
+                                {i < efficiency.stages.length - 1 && (
                                     <div className={styles.stageConnector} />
                                 )}
                                 <div className={styles.stageContent}>
                                     <span className={styles.stageName}>
                                         {isClient
                                             ? (isAr ? 'في انتظار أمر الشراء' : 'Awaiting PO')
-                                            : t(stage.key)
+                                            : (stageLabel ? (isAr ? stageLabel.ar : stageLabel.en) : t(stage.key))
                                         }
                                     </span>
                                     {!isClient && stage.status !== 'pending' && (
@@ -226,7 +192,7 @@ export default function EfficiencyReportPage() {
                                     )}
                                 </div>
                             </div>
-                        ))}
+                        )})}
                     </div>
                 </motion.div>
 
@@ -242,7 +208,7 @@ export default function EfficiencyReportPage() {
                         <p style={{ color: 'rgba(148,163,184,0.5)', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>
                             {isAr ? 'لا توجد مخزونات نشطة مُتتبَّعة' : 'No active inventory tracked.'}
                         </p>
-                    ) : INVENTORY.map((item) => {
+                    ) : efficiency.inventory.map((item) => {
                         const stockPercent = (item.stock / item.maxDays) * 100;
                         const isCritical = stockPercent < 20;
                         return (

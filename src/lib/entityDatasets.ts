@@ -202,66 +202,66 @@ const ENT_02_CLIENTS: ClientRecord[] = [
 
 const ENT_03_CLIENTS: ClientRecord[] = [
     {
-        id: 'nahdi',
-        name: { en: 'NAHDI Pharmacy', ar: 'النهدي للصيدليات' },
-        acv: 1420000,
-        monthlyOrders: [121000, 118000, 115000],
+        id: 'panda-national',
+        name: { en: 'Panda Retail - National Distribution', ar: 'بنده - التوزيع الوطني' },
+        acv: 2450000,
+        monthlyOrders: [225000, 221000, 218000],
+        avgDaysOverdue: 7,
+        engagementScore: 90,
+        starX: 148, starY: 34,
+    },
+    {
+        id: 'nahdi-medical',
+        name: { en: 'Nahdi Medical', ar: 'النهدي الطبية' },
+        acv: 1820000,
+        monthlyOrders: [168000, 165000, 162000],
         avgDaysOverdue: 9,
+        engagementScore: 87,
+        starX: 54, starY: 24,
+    },
+    {
+        id: 'danube-markets',
+        name: { en: 'Danube Markets', ar: 'أسواق الدانوب' },
+        acv: 1340000,
+        monthlyOrders: [129000, 125000, 121000],
+        avgDaysOverdue: 12,
         engagementScore: 82,
-        starX: 152, starY: 35,
-    },
-    {
-        id: 'spinneys',
-        name: { en: 'Spinneys Supermarkets', ar: 'سبينيس' },
-        acv: 830000,
-        monthlyOrders: [69000, 68000, 66000],
-        avgDaysOverdue: 11,
-        engagementScore: 78,
-        starX: 55, starY: 25,
-    },
-    {
-        id: 'danone-sa',
-        name: { en: 'Saudi DANONE', ar: 'دانون السعودية' },
-        acv: 960000,
-        monthlyOrders: [75000, 78000, 76000],
-        avgDaysOverdue: 16,
-        engagementScore: 66,
-        starX: 112, starY: 60,
-    },
-    {
-        id: 'almarai-consumer',
-        name: { en: 'Almarai Consumer', ar: 'المراعي - مستهلك' },
-        acv: 1180000,
-        monthlyOrders: [78000, 90000, 106000],    // declining
-        avgDaysOverdue: 24,
-        engagementScore: 50,
-        starX: 244, starY: 50,
+        starX: 108, starY: 62,
     },
     {
         id: 'al-dawaa',
-        name: { en: 'Al Dawaa Pharmacy', ar: 'الدواء للصيدليات' },
-        acv: 750000,
-        monthlyOrders: [48000, 57000, 68000],     // significant decline
-        avgDaysOverdue: 21,
-        engagementScore: 45,
+        name: { en: 'Al-Dawaa Pharmacies', ar: 'صيدليات الدواء' },
+        acv: 1120000,
+        monthlyOrders: [98000, 110000, 126000],   // declining
+        avgDaysOverdue: 23,
+        engagementScore: 54,
+        starX: 246, starY: 50,
+    },
+    {
+        id: 'al-othaim',
+        name: { en: 'Al Othaim Markets', ar: 'أسواق العثيم' },
+        acv: 980000,
+        monthlyOrders: [86000, 98000, 112000],    // significant decline
+        avgDaysOverdue: 27,
+        engagementScore: 46,
         starX: 76, starY: 92,
     },
     {
-        id: 'moda-pharmacy',
-        name: { en: 'Modern Pharmacy Group', ar: 'مجموعة الصيدلية الحديثة' },
-        acv: 580000,
-        monthlyOrders: [35000, 44000, 54000],     // sharp decline
-        avgDaysOverdue: 33,
-        engagementScore: 33,
+        id: 'tamimi-markets',
+        name: { en: 'Tamimi Markets', ar: 'أسواق التميمي' },
+        acv: 740000,
+        monthlyOrders: [64000, 76000, 92000],     // sharp decline
+        avgDaysOverdue: 34,
+        engagementScore: 38,
         starX: 196, starY: 100,
     },
     {
-        id: 'dr-habib',
-        name: { en: 'Dr. Sulaiman Al Habib', ar: 'مستشفى السليمان الحبيب' },
-        acv: 670000,
-        monthlyOrders: [32000, 42000, 52000],
-        avgDaysOverdue: 28,
-        engagementScore: 40,
+        id: 'carrefour-sa',
+        name: { en: 'Carrefour Saudi', ar: 'كارفور السعودية' },
+        acv: 690000,
+        monthlyOrders: [58000, 69000, 83000],     // sharp decline
+        avgDaysOverdue: 31,
+        engagementScore: 41,
         starX: 294, starY: 84,
     },
 ];
@@ -724,24 +724,24 @@ export const ENTITY_DATASETS: Record<string, EntityDataset> = {
     'ENT_03': {
         clients: ENT_03_CLIENTS,
         costRates: {
-            // Hygienic products: materials AND logistics both stressed
-            rawMaterials: { variable: 0.36, fixed: 0.00 },  // +15% material stress
-            logistics:    { variable: 0.24, fixed: 0.00 },  // ZATCA Phase 2 friction
+            // Hygienic products: absorbent inputs and national distribution dominate cost
+            rawMaterials: { variable: 0.42, fixed: 0.00 },
+            logistics:    { variable: 0.18, fixed: 0.00 },
             people:       { variable: 0.09, fixed: 0.03 },
             govt:         { variable: 0.03, fixed: 0.07 },
         },
         histFactors: {
-            rawMaterials: 0.82,   // 22% over → PULSE (raw material spike)
-            logistics:    0.80,   // 25% over → PULSE (ZATCA compliance overhead)
-            people:       0.97,   //  3% over → no pulse
-            govt:         0.91,   // 10% over → no pulse
+            rawMaterials: 0.85,   // 18% over → PULSE (absorbent inputs)
+            logistics:    0.88,   // 14% over → watch (regional replenishment)
+            people:       0.96,   //  4% over → no pulse
+            govt:         0.94,   //  6% over → no pulse
         },
         stockGap: {
-            input: { stockDays: 6, avgLeadTimeDays: 12, dailySalesVelocity: 18, onHandUnits: 108 },
-            nextShipmentDays: 10,
+            input: { stockDays: 6, avgLeadTimeDays: 11.4, dailySalesVelocity: 42, onHandUnits: 252 },
+            nextShipmentDays: 5,
         },
-        nitaqatTier:        'lowGreen',
-        constellationLines: [[0, 1], [0, 2], [1, 2], [2, 3], [3, 4]],
+        nitaqatTier:        'highGreen',
+        constellationLines: [[0, 1], [0, 2], [1, 2], [2, 3], [3, 4], [4, 5]],
     },
 
     'ENT_04': {
@@ -872,6 +872,18 @@ export function getEntityDataset(entityId: string): EntityDataset {
 /** Calculates client health scores for the active entity. */
 export function getEntityClientHealth(entityId: string): ClientHealthResult[] {
     return calculateClientHealth(getEntityDataset(entityId).clients);
+}
+
+/** True if any client in the given entity has health < 60. */
+export function hasEntityRetentionRisk(entityId: string): boolean {
+    return getEntityClientHealth(entityId).some(c => c.isFlickering);
+}
+
+/** Returns at-risk clients sorted from weakest to strongest health. */
+export function getEntityAtRiskClients(entityId: string): ClientHealthResult[] {
+    return getEntityClientHealth(entityId)
+        .filter(c => c.isFlickering)
+        .sort((a, b) => a.healthScore - b.healthScore);
 }
 
 /** Maximum ACV across the active entity's clients (for star-size normalisation). */

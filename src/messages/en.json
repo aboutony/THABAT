@@ -213,7 +213,7 @@
         "poConfirmed": "PO Confirmed",
         "deliveryComplete": "Delivery Complete",
         "cashArrival": "Cash Arrival ({days}-day terms)",
-        "cashNote": "NUPCO Marketplace: Net {days} days from delivery confirmation",
+        "cashNote": "Customer settlement cycle: Net {days} days from delivery confirmation",
         "productBreakdown": "Product Breakdown",
         "forecastTitle": "Predictive Revenue Overlay",
         "scenariosLabel": "6-Month Forecast Scenarios",
@@ -256,7 +256,7 @@
         "invoiceAmount": "Invoice Amount",
         "legallyDue": "Legally Due",
         "days": "days",
-        "nupcoTerms": "NUPCO Marketplace: Payment legally due {days} days after electronic filing"
+        "nupcoTerms": "Payment legally due {days} days after electronic filing"
     },
     "common": {
         "sar": "SAR"
@@ -290,7 +290,7 @@
         "fulfillmentStatus": "Fulfillment Status",
         "production": "Production Complete",
         "logistics": "Logistics & Shipping",
-        "nupcoAcceptance": "NUPCO Acceptance",
+        "nupcoAcceptance": "Customer Acceptance",
         "paymentPending": "Payment Pending",
         "inventoryCriticality": "Inventory Criticality",
         "daysRemaining": "days remaining",
@@ -382,7 +382,7 @@
         "value": "Value",
         "status": "Status",
         "actionLog": "Executive Action Log",
-        "footerConfidential": "Confidential – UNIMED Internal Use Only",
+        "footerConfidential": "Confidential – THABAT Demo Internal Use Only",
         "footerGenerated": "Generated via THABAT Stability Intelligence on"
     },
     "supplier": {

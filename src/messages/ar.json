@@ -213,7 +213,7 @@
         "poConfirmed": "تأكيد أمر الشراء",
         "deliveryComplete": "اكتمال التسليم",
         "cashArrival": "وصول النقد (شروط {days} يومًا)",
-        "cashNote": "سوق نوبكو: صافي {days} يومًا من تأكيد التسليم",
+        "cashNote": "دورة سداد العميل: صافي {days} يومًا من تأكيد التسليم",
         "productBreakdown": "تفصيل المنتجات",
         "forecastTitle": "التراكب التنبؤي للإيرادات",
         "scenariosLabel": "سيناريوهات التوقعات لـ 6 أشهر",
@@ -256,7 +256,7 @@
         "invoiceAmount": "مبلغ الفاتورة",
         "legallyDue": "الاستحقاق النظامي",
         "days": "يوم",
-        "nupcoTerms": "سوق نوبكو الإلكتروني: الاستحقاق النظامي بعد {days} يومًا من الأرشفة الإلكترونية"
+        "nupcoTerms": "الاستحقاق النظامي بعد {days} يومًا من الأرشفة الإلكترونية"
     },
     "common": {
         "sar": "ر.س"
@@ -290,7 +290,7 @@
         "fulfillmentStatus": "حالة التنفيذ",
         "production": "اكتمال الإنتاج",
         "logistics": "الخدمات اللوجستية والشحن",
-        "nupcoAcceptance": "قبول نوبكو",
+        "nupcoAcceptance": "قبول العميل",
         "paymentPending": "بانتظار الدفع",
         "inventoryCriticality": "حرجية المخزون",
         "daysRemaining": "يوم متبقي",
@@ -382,7 +382,7 @@
         "value": "القيمة",
         "status": "الحالة",
         "actionLog": "سجل الإجراءات التنفيذية",
-        "footerConfidential": "سري – للاستخدام الداخلي فقط – يونيميد",
+        "footerConfidential": "سري – للاستخدام الداخلي فقط – عرض ثابت",
         "footerGenerated": "تم الإنشاء عبر ذكاء الاستقرار ثبات بتاريخ"
     },
     "supplier": {
