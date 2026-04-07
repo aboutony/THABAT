@@ -43,19 +43,48 @@ export default function OnboardingPage() {
         setFields(prev => ({ ...prev, [key]: value }));
     };
 
-    const isCredentialsValid = fields.serviceLayerUrl && fields.companyDB && fields.username && fields.password;
+    function validateSapUrl(value: string): boolean {
+        try {
+            const u = new URL(value);
+            return u.protocol === 'https:';
+        } catch {
+            return false;
+        }
+    }
+
+    const isCredentialsValid =
+        fields.serviceLayerUrl &&
+        validateSapUrl(fields.serviceLayerUrl) &&
+        fields.companyDB &&
+        fields.username &&
+        fields.password;
+
+    const [urlError, setUrlError] = useState<string | null>(null);
 
     const handleTestConnection = async () => {
         setTestState('syncing');
-
-        // Simulate SAP Service Layer connection test (2.5s)
-        await new Promise(resolve => setTimeout(resolve, 2500));
-
-        // For demo: if URL contains 'sap' or any non-empty URL, succeed
-        if (fields.serviceLayerUrl.length > 5) {
-            setTestState('success');
-            setTimeout(() => setStep('success'), 1500);
-        } else {
+        try {
+            const res = await fetch('/api/integrations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    provider: 'sap',
+                    credentials: {
+                        serviceLayerUrl: fields.serviceLayerUrl,
+                        companyDB: fields.companyDB,
+                        username: fields.username,
+                        password: fields.password,
+                    },
+                }),
+            });
+            if (res.ok) {
+                setTestState('success');
+                setTimeout(() => setStep('success'), 1500);
+            } else {
+                setTestState('error');
+                setTimeout(() => setTestState('idle'), 3000);
+            }
+        } catch {
             setTestState('error');
             setTimeout(() => setTestState('idle'), 3000);
         }
@@ -123,8 +152,22 @@ export default function OnboardingPage() {
                                         type="url"
                                         placeholder="https://sap-server:50000/b1s/v1"
                                         value={fields.serviceLayerUrl}
-                                        onChange={e => updateField('serviceLayerUrl', e.target.value)}
+                                        onChange={e => {
+                                            updateField('serviceLayerUrl', e.target.value);
+                                            const val = e.target.value;
+                                            if (val && !validateSapUrl(val)) {
+                                                setUrlError(isRtl ? 'يجب أن يبدأ الرابط بـ https://' : 'URL must use HTTPS');
+                                            } else {
+                                                setUrlError(null);
+                                            }
+                                        }}
+                                        style={urlError ? { borderColor: 'var(--danger, #ef4444)' } : undefined}
                                     />
+                                    {urlError && (
+                                        <span style={{ fontSize: 11, color: 'var(--danger, #ef4444)', marginTop: 4, display: 'block' }}>
+                                            {urlError}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className={styles.fieldGroup}>
                                     <label className={styles.fieldLabel}>{t('companyDB')}</label>
