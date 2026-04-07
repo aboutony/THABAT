@@ -15,6 +15,8 @@ import { useIdentity } from '@/hooks/useIdentity';
 import { formatPercent } from '@/lib/locale-utils';
 import { getTotalAvoided } from '@/lib/ledger';
 import type { ScoreBreakdown, RawMetrics } from '@/lib/scoring';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import EmptyState from '@/components/EmptyState';
 import styles from './RitualScreen.module.css';
 
 // Fallback demo data when no real metrics exist
@@ -48,6 +50,7 @@ export default function RitualScreen() {
     }, [user, locale, router]);
 
     const [latestData, setLatestData] = useState<LatestScore | null>(null);
+    const [fetchDone, setFetchDone] = useState(false);
     const [showScenario, setShowScenario] = useState(false);
     const [showExport,   setShowExport]   = useState(false);
     const [now, setNow] = useState(() => new Date());
@@ -103,6 +106,8 @@ export default function RitualScreen() {
                 }
             } catch {
                 // Silent fail — use demo data
+            } finally {
+                setFetchDone(true);
             }
         }
         fetchLatest();
@@ -176,6 +181,7 @@ export default function RitualScreen() {
     ];
 
     return (
+        <ErrorBoundary section="Dashboard">
         <>
         <div className={styles.ritual}>
             {/* ── Entity Switcher — COMMANDER only ─────────────────────── */}
@@ -211,24 +217,39 @@ export default function RitualScreen() {
                     <span className={styles.greetingTime}>{timeString}</span>
                 </div>
 
-                {/* ── Oracle Briefing — Floating Command Header ────── */}
-                <OracleBriefing
-                    score={score}
-                    scoreBreakdown={latestData?.score}
-                    oeeHref={`/${locale}/analytics/efficiency-report`}
-                    oeeValue="84%"
-                    oeePercent={84}
-                />
+                {/* ── Oracle Briefing + Drivers — or empty state for new orgs ── */}
+                {fetchDone && !latestData && !isClient ? (
+                    <EmptyState
+                        title={locale === 'ar' ? 'لا توجد بيانات مالية بعد' : 'No financial data yet'}
+                        message={locale === 'ar'
+                            ? 'أدخل أول مجموعة من المقاييس اليومية لتفعيل لوحة التحكم وبدء تتبع الاستقرار.'
+                            : 'Enter your first daily metrics to activate the dashboard and begin tracking your stability score.'}
+                        action={{
+                            label: locale === 'ar' ? 'إدخال المقاييس' : 'Enter Metrics',
+                            href: `/${locale}/settings`,
+                        }}
+                    />
+                ) : (
+                    <>
+                        <OracleBriefing
+                            score={score}
+                            scoreBreakdown={latestData?.score}
+                            oeeHref={`/${locale}/analytics/efficiency-report`}
+                            oeeValue="84%"
+                            oeePercent={84}
+                        />
 
-                {/* Top 3 Drivers */}
-                <div className={styles.driversBlock}>
-                    <h2 className={styles.driversTitle}>{t('title')}</h2>
-                    <div className={styles.driversList}>
-                        {drivers.map((d, i) => (
-                            <DriverCard key={i} {...d} delay={i} />
-                        ))}
-                    </div>
-                </div>
+                        {/* Top 3 Drivers */}
+                        <div className={styles.driversBlock}>
+                            <h2 className={styles.driversTitle}>{t('title')}</h2>
+                            <div className={styles.driversList}>
+                                {drivers.map((d, i) => (
+                                    <DriverCard key={i} {...d} delay={i} />
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
 
                 {/* ── Impact Scoreboard ─────────────────────────────────── */}
                 {totalAvoided > 0 && (
@@ -271,5 +292,6 @@ export default function RitualScreen() {
             </div>
         )}
         </>
+        </ErrorBoundary>
     );
 }

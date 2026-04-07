@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import sql from '@/db';
+import { apiError } from '@/lib/apiError';
 
 const DEMO_PASSWORD = 'Demo2026!';
 const DAYS = 180;
@@ -131,7 +132,6 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ success: true, message: 'Demo reset complete — 4 orgs × 180 days + 2 tier accounts' });
     } catch (error) {
-        console.error('Demo reset error:', error);
-        return NextResponse.json({ error: 'Reset failed' }, { status: 500 });
+        return apiError.internal(error, 'Demo reset error');
     }
 }

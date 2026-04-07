@@ -6,6 +6,7 @@ import { useLocale } from 'next-intl';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Shell from '@/components/Shell';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import StockHourglass from '@/components/StockHourglass';
 import ExternalPulseCard from '@/components/ExternalPulseCard';
 import { useAuth } from '@/context/AuthContext';
@@ -208,6 +209,7 @@ export default function ExecutiveVault() {
 
     return (
         <Shell>
+            <ErrorBoundary section="Vault Alerts">
             <div className={styles.page}>
 
                 {/* ── Page header ──────────────────────────────────────── */}
@@ -315,6 +317,7 @@ export default function ExecutiveVault() {
                 </div>
 
             </div>
+            </ErrorBoundary>
         </Shell>
     );
 }

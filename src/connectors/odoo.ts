@@ -19,6 +19,7 @@ import type {
     ConnectionTestResult,
     NormalizedDailyMetrics,
 } from './types';
+import { logger } from '@/lib/logger';
 
 function asOdoo(creds: ERPCredentials): OdooCredentials {
     if (creds.provider !== 'odoo') throw new Error('Invalid credentials for Odoo');
@@ -168,7 +169,7 @@ export const OdooConnector: ERPConnector = {
 
             return Array.from(dateMap.values()).sort((a, b) => a.date.localeCompare(b.date));
         } catch (error) {
-            console.error('Odoo fetch error:', error);
+            logger.error('Odoo fetchMetrics failed', { error });
             return [];
         }
     },

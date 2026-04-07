@@ -7,6 +7,7 @@ import { motion, AnimatePresence }    from 'framer-motion';
 import Link                           from 'next/link';
 
 import Shell from '@/components/Shell';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import NitaqatShield from '@/components/NitaqatShield';
 import { ShieldRating } from '@/components/SupplierCard';
 import { PRIMARY_SUPPLIER, TRUST_COLORS, getEntityPrimarySupplier } from '@/lib/calculateTrustScore';
@@ -122,8 +123,6 @@ export default function NitaqatPage() {
             window.dispatchEvent(new Event('thabat-ledger-updated'));
         }
 
-        console.log('Action Saved to Ledger', saved);
-
         // Celebration pulse then toast
         setIsCelebrating(true);
         setTimeout(() => setIsCelebrating(false), 700);
@@ -133,6 +132,7 @@ export default function NitaqatPage() {
 
     return (
         <Shell>
+        <ErrorBoundary section="Nitaqat Compliance">
         {/* ── Celebration overlay — position:fixed bypasses all overflow clipping ── */}
         <AnimatePresence>
             {isCelebrating && (
@@ -423,6 +423,7 @@ export default function NitaqatPage() {
                 </AnimatePresence>
             </div>
         </motion.div>
+        </ErrorBoundary>
         </Shell>
     );
 }

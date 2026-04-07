@@ -1,6 +1,17 @@
+/**
+ * POST /api/auth/login
+ *
+ * Phase 1.2 changes:
+ *  - ADDED: Zod input validation (LoginSchema)
+ *  - ADDED: Rate limiting — 5 attempts per IP per 15 minutes
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/db';
 import { verifyPassword, signJWT, COOKIE_NAME } from '@/lib/auth';
+import { parseBody, LoginSchema } from '@/lib/validation';
+import { rateLimitLogin, rateLimitResponse, getClientIp } from '@/lib/rateLimit';
+import { apiError } from '@/lib/apiError';
 
 // Static demo tier accounts (no DB required)
 const DEMO_TIER_ACCOUNTS: Record<string, { fullName: string; orgName: string }> = {
@@ -11,34 +22,34 @@ const DEMO_TIER_PASSWORD = 'Demo2026!';
 
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json();
-        const { email, password } = body;
+        // Rate limit before any processing
+        const ip = getClientIp(request);
+        const limit = rateLimitLogin(ip);
+        if (!limit.success) return rateLimitResponse(limit) as NextResponse;
 
-        if (!email || !password) {
-            return NextResponse.json(
-                { error: 'Email and password required' },
-                { status: 400 }
-            );
+        // Zod validation
+        const parsed = await parseBody(request, LoginSchema);
+        if (!parsed.ok) {
+            return parsed.status === 400
+                ? apiError.badRequest(parsed.error)
+                : apiError.validation(parsed.error);
         }
+        const { email, password } = parsed.data;
 
         // Short-circuit for static demo tier accounts
-        const normalizedEmail = email.toLowerCase();
-        const tierAccount = DEMO_TIER_ACCOUNTS[normalizedEmail];
+        const tierAccount = DEMO_TIER_ACCOUNTS[email];
         if (tierAccount) {
             if (password !== DEMO_TIER_PASSWORD) {
-                return NextResponse.json(
-                    { error: 'Invalid email or password' },
-                    { status: 401 }
-                );
+                return apiError.unauthorized('Invalid email or password');
             }
 
-            const staticId = normalizedEmail.replace(/[@.]/g, '_');
+            const staticId = email.replace(/[@.]/g, '_');
             const token = await signJWT({ userId: staticId, orgId: staticId, role: 'viewer' });
             const response = NextResponse.json({
                 user: {
                     id: staticId,
                     orgId: staticId,
-                    email: normalizedEmail,
+                    email,
                     fullName: tierAccount.fullName,
                     role: 'viewer',
                     languagePreference: 'en',
@@ -57,52 +68,33 @@ export async function POST(request: NextRequest) {
             return response;
         }
 
-        // Find user (no RLS - cross-tenant lookup for auth)
+        // DB lookup — parameterized (safe)
         const users = await sql`
-      SELECT u.id, u.org_id, u.password_hash, u.role, u.full_name, u.email,
-             u.language_preference, u.theme_preference,
-             o.name as org_name
-      FROM users u
-      JOIN organizations o ON o.id = u.org_id
-      WHERE u.email = ${email}
-    `;
+            SELECT u.id, u.org_id, u.password_hash, u.role, u.full_name, u.email,
+                   u.language_preference, u.theme_preference,
+                   o.name as org_name
+            FROM users u
+            JOIN organizations o ON o.id = u.org_id
+            WHERE u.email = ${email}
+        `;
 
         if (users.length === 0) {
-            return NextResponse.json(
-                { error: 'Invalid email or password' },
-                { status: 401 }
-            );
+            return apiError.unauthorized('Invalid email or password');
         }
 
         const user = users[0] as {
-            id: string;
-            org_id: string;
-            password_hash: string;
-            role: string;
-            full_name: string;
-            email: string;
-            language_preference: string;
-            theme_preference: string;
-            org_name: string;
+            id: string; org_id: string; password_hash: string; role: string;
+            full_name: string; email: string; language_preference: string;
+            theme_preference: string; org_name: string;
         };
 
-        // Verify password
         const valid = await verifyPassword(password, user.password_hash);
         if (!valid) {
-            return NextResponse.json(
-                { error: 'Invalid email or password' },
-                { status: 401 }
-            );
+            return apiError.unauthorized('Invalid email or password');
         }
 
-        // Sign JWT
-        const token = await signJWT({
-            userId: user.id,
-            orgId: user.org_id,
-            role: user.role,
-        });
+        const token = await signJWT({ userId: user.id, orgId: user.org_id, role: user.role });
 
-        // Return user data + preferences for zero-flicker login
         const response = NextResponse.json({
             user: {
                 id: user.id,
@@ -126,10 +118,6 @@ export async function POST(request: NextRequest) {
 
         return response;
     } catch (error) {
-        console.error('Login error:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+        return apiError.internal(error, 'Login error');
     }
 }

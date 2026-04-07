@@ -19,6 +19,7 @@ import type {
     ConnectionTestResult,
     NormalizedDailyMetrics,
 } from './types';
+import { logger } from '@/lib/logger';
 
 function asDynamics(creds: ERPCredentials): DynamicsCredentials {
     if (creds.provider !== 'dynamics') throw new Error('Invalid credentials for Dynamics');
@@ -174,7 +175,7 @@ export const DynamicsConnector: ERPConnector = {
 
             return Array.from(dateMap.values()).sort((a, b) => a.date.localeCompare(b.date));
         } catch (error) {
-            console.error('Dynamics fetch error:', error);
+            logger.error('Dynamics fetchMetrics failed', { error });
             return [];
         }
     },

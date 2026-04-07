@@ -1,4 +1,22 @@
+/**
+ * entityDemoContent.ts — Demo scenario data
+ *
+ * ─── Environment behavior ────────────────────────────────────────────────────
+ * DEMO_MODE=true  → all getEntity*() functions return hardcoded scenario data.
+ * DEMO_MODE=false → functions log a warning and still return hardcoded data
+ *                   as a safe fallback. Delivery team replaces each function
+ *                   body with a real DB/repository call in Phase 1.5.
+ *
+ * TODO[DELIVERY — Phase 1.5]: For each getEntity*() function below, replace
+ * the function body with the corresponding repository call, e.g.:
+ *   return SupplyChainRepository.getByEntityId(entityId);
+ *
+ * See docs/db-schema.md for table schemas and repository interfaces.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 import type { WorkforceInput } from './nitaqat';
+import { isDemoMode } from './env';
+import { logger } from './logger';
 
 export interface LocalizedText {
     en: string;
@@ -199,27 +217,50 @@ const ENT_03_EXPORT = {
     ],
 };
 
+// ── Production guard ──────────────────────────────────────────────────────────
+// In production (DEMO_MODE=false), each function logs once and falls back to
+// demo data so the app remains runnable. Phase 1.5 replaces each body with
+// a real repository call — at that point remove the warnProd calls.
+
+function warnProd(fn: string) {
+    if (!isDemoMode() && process.env.NODE_ENV !== 'test') {
+        logger.warn(`${fn}() returning demo data in production — replace with DB call in Phase 1.5`);
+    }
+}
+
+// TODO[DELIVERY — Phase 1.5]: Replace body → SupplyChainRepository.getByEntityId(entityId)
 export function getEntitySupplyChainContent(entityId: string) {
+    warnProd('getEntitySupplyChainContent');
     return entityId === 'ENT_03' ? ENT_03_SUPPLY_CHAIN : DEFAULT_SUPPLY_CHAIN;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → SalesOrderRepository.getByEntityId(entityId)
 export function getEntitySalesOrder(entityId: string) {
+    warnProd('getEntitySalesOrder');
     return entityId === 'ENT_03' ? ENT_03_SALES_ORDER : DEFAULT_SALES_ORDER;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → RetentionRepository.getByEntityId(entityId)
 export function getEntityRetentionReport(entityId: string) {
+    warnProd('getEntityRetentionReport');
     return entityId === 'ENT_03' ? ENT_03_RETENTION : DEFAULT_RETENTION;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → EfficiencyRepository.getByEntityId(entityId)
 export function getEntityEfficiencyContent(entityId: string) {
+    warnProd('getEntityEfficiencyContent');
     return entityId === 'ENT_03' ? ENT_03_EFFICIENCY : DEFAULT_EFFICIENCY;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → ApprovalsRepository.getByEntityId(entityId)
 export function getEntityApprovals(entityId: string) {
+    warnProd('getEntityApprovals');
     return entityId === 'ENT_03' ? ENT_03_APPROVALS : DEFAULT_APPROVALS;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → ReceivablesRepository.getByEntityId(entityId)
 export function getEntityReceivablesContent(entityId: string) {
+    warnProd('getEntityReceivablesContent');
     return entityId === 'ENT_03' ? ENT_03_RECEIVABLES : DEFAULT_RECEIVABLES;
 }
 
@@ -227,14 +268,20 @@ export function getEntityReceivablesScore(entityId: string): number {
     return getEntityReceivablesContent(entityId).riskScore;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → ExportRepository.getByEntityId(entityId)
 export function getEntityExportSummary(entityId: string) {
+    warnProd('getEntityExportSummary');
     return entityId === 'ENT_03' ? ENT_03_EXPORT : DEFAULT_EXPORT;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → WorkforceRepository.getByEntityId(entityId)
 export function getEntityWorkforce(entityId: string): WorkforceInput {
+    warnProd('getEntityWorkforce');
     return entityId === 'ENT_03' ? ENT_03_WORKFORCE : DEFAULT_WORKFORCE;
 }
 
+// TODO[DELIVERY — Phase 1.5]: Replace body → ScenarioRepository.getByEntityId(entityId)
 export function getEntityScenarioBaseline(entityId: string) {
+    warnProd('getEntityScenarioBaseline');
     return entityId === 'ENT_03' ? ENT_03_SCENARIO : DEFAULT_SCENARIO;
 }

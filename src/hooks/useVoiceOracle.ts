@@ -56,8 +56,6 @@ export function useVoiceOracle(locale: string): VoiceOracleState {
                 .join('');
             setTranscript(text);
             transcriptRef.current = text;
-            // Accuracy log — useful for validating in high-noise environments
-            console.log('[VoiceOracle] transcript ►', text, '| lang:', rec.lang, '| final:', e.results[e.results.length - 1]?.isFinal);
         };
 
         rec.onend = () => {
@@ -69,8 +67,7 @@ export function useVoiceOracle(locale: string): VoiceOracleState {
         };
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rec.onerror = (e: any) => {
-            console.warn('[VoiceOracle] error:', e.error);
+        rec.onerror = (_e: any) => {
             setListening(false);
         };
 

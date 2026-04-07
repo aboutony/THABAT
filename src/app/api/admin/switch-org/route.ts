@@ -1,6 +1,11 @@
+/**
+ * Phase 1.2: Added Zod validation on POST body (SwitchOrgSchema)
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import sql from '@/db';
 import { signJWT, getSession, COOKIE_NAME } from '@/lib/auth';
+import { parseBody, SwitchOrgSchema } from '@/lib/validation';
+import { apiError } from '@/lib/apiError';
 
 /**
  * POST /api/admin/switch-org
@@ -10,15 +15,16 @@ import { signJWT, getSession, COOKIE_NAME } from '@/lib/auth';
  */
 export async function POST(request: NextRequest) {
     const session = await getSession();
-    if (!session) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!session) return apiError.unauthorized();
 
     try {
-        const { orgId } = await request.json();
-        if (!orgId) {
-            return NextResponse.json({ error: 'orgId required' }, { status: 400 });
+        const parsed = await parseBody(request, SwitchOrgSchema);
+        if (!parsed.ok) {
+            return parsed.status === 400
+                ? apiError.badRequest(parsed.error)
+                : apiError.validation(parsed.error);
         }
+        const { orgId } = parsed.data;
 
         const isAdmin = session.role === 'admin';
 
@@ -30,14 +36,14 @@ export async function POST(request: NextRequest) {
             const targetGroup = targetOrg?.entity_group as string | null;
 
             if (!currentGroup || !targetGroup || currentGroup !== targetGroup) {
-                return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+                return apiError.forbidden();
             }
         }
 
         // Find any user for the target org to get a valid reference
         const users = await sql`SELECT id, org_id, role FROM users WHERE org_id = ${orgId} LIMIT 1`;
         if (users.length === 0) {
-            return NextResponse.json({ error: 'No user found for this org' }, { status: 404 });
+            return apiError.notFound('No user found for this org');
         }
 
         const user = users[0];
@@ -60,8 +66,7 @@ export async function POST(request: NextRequest) {
 
         return response;
     } catch (error) {
-        console.error('Switch org error:', error);
-        return NextResponse.json({ error: 'Switch failed' }, { status: 500 });
+        return apiError.internal(error, 'Switch org error');
     }
 }
 
@@ -73,9 +78,7 @@ export async function POST(request: NextRequest) {
  */
 export async function GET() {
     const session = await getSession();
-    if (!session) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!session) return apiError.unauthorized();
 
     try {
         if (session.role === 'admin') {
@@ -123,7 +126,6 @@ export async function GET() {
             }
         }
     } catch (error) {
-        console.error('List orgs error:', error);
-        return NextResponse.json({ error: 'Failed' }, { status: 500 });
+        return apiError.internal(error, 'List orgs error');
     }
 }

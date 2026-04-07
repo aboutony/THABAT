@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Type-check · Lint · Test · Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── 1. Type-check ────────────────────────────────────────────
+      - name: Type-check
+        run: npm run typecheck
+
+      # ── 2. Lint ──────────────────────────────────────────────────
+      - name: Lint
+        run: npm run lint
+
+      # ── 3. Unit tests ────────────────────────────────────────────
+      - name: Test
+        run: npm run test
+
+      # ── 4. Production build ──────────────────────────────────────
+      # DB client is lazy-initialized (only throws on first query, not
+      # import), so next build succeeds with placeholder credentials.
+      # Real secrets are used when available; CI-safe fallbacks ensure
+      # the build step never fails on forks or uninitialized repos.
+      - name: Build
+        run: |
+          export TURSO_DATABASE_URL="${TURSO_DATABASE_URL:-file:ci-placeholder.db}"
+          export TURSO_AUTH_TOKEN="${TURSO_AUTH_TOKEN:-}"
+          export JWT_SECRET="${JWT_SECRET:-ci-placeholder-secret-min-32-characters}"
+          export THABAT_ADMIN_KEY="${THABAT_ADMIN_KEY:-ci-placeholder}"
+          npm run build
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          THABAT_ADMIN_KEY: ${{ secrets.THABAT_ADMIN_KEY }}

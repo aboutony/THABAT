@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 import Shell from '@/components/Shell';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import LeadTimePulse from '@/components/LeadTimePulse';
 import SupplierCard from '@/components/SupplierCard';
 import { getEntitySuppliers } from '@/lib/calculateTrustScore';
@@ -43,6 +44,7 @@ export default function SupplyChainPage() {
 
     return (
         <Shell>
+            <ErrorBoundary section="Supply Chain">
             <div className={s.page}>
 
                 {/* Back link */}
@@ -209,6 +211,7 @@ export default function SupplyChainPage() {
                 </>)}
 
             </div>
+            </ErrorBoundary>
         </Shell>
     );
 }

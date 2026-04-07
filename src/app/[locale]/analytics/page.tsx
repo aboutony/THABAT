@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import ActionLedger from '@/components/ActionLedger';
+import EmptyState from '@/components/EmptyState';
 import PageHeader from '@/components/PageHeader';
 import PercentileBadge from '@/components/PercentileBadge';
 import StabilityRing from '@/components/StabilityRing';
@@ -105,6 +106,20 @@ export default function AnalyticsPage() {
                     </div>
                 ) : (
                     <PercentileBadge percentile={15} industryLabel={tb('ofIndustry', { industry: isAr ? 'الشركات المصنعة للمعدات الطبية في المملكة' : 'Saudi Medical Manufacturers' })} />
+                )}
+
+                {/* Empty state for real orgs with no metrics yet */}
+                {!score && !fetchingLatest && !isClient && (
+                    <EmptyState
+                        title={isAr ? 'لا توجد بيانات مالية بعد' : 'No financial data yet'}
+                        message={isAr
+                            ? 'أدخل أول مجموعة من المقاييس اليومية لتفعيل لوحة التحليلات.'
+                            : 'Enter your first daily metrics to activate analytics and score tracking.'}
+                        action={{
+                            label: isAr ? 'إدخال المقاييس' : 'Enter Metrics',
+                            href: `/${locale}/settings`,
+                        }}
+                    />
                 )}
 
                 {/* Stability Ring — hidden for CLIENT (no data baseline) */}

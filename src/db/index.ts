@@ -6,6 +6,7 @@
  */
 
 import { createClient, type Client, type InArgs } from '@libsql/client';
+import { logger } from '@/lib/logger';
 
 // Singleton
 let _client: Client | null = null;
@@ -172,7 +173,7 @@ function createSql() {
                 return obj;
             });
         } catch (error) {
-            console.error('[SQL Error]', query.trim().substring(0, 200), error);
+            logger.error('SQL query failed', { error, query: query.trim().substring(0, 200) });
             throw error;
         }
     }
@@ -191,7 +192,7 @@ function createSql() {
                 return obj;
             });
         } catch (error) {
-            console.error('[SQL unsafe Error]', query.substring(0, 200), error);
+            logger.error('SQL unsafe query failed', { error, query: query.substring(0, 200) });
             throw error;
         }
     };

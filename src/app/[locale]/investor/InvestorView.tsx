@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { generateBoardReport, type BoardReport } from '@/lib/generateBoardReport';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import s from './investor.module.css';
 
 // ── Score → display band ────────────────────────────────────────────────────
@@ -55,6 +56,7 @@ export default function InvestorView() {
         t('developing');
 
     return (
+        <ErrorBoundary section="Investor Report">
         <div className={s.page}>
             <div className={s.inner}>
 
@@ -170,5 +172,6 @@ export default function InvestorView() {
 
             </div>
         </div>
+        </ErrorBoundary>
     );
 }
