@@ -37,21 +37,34 @@ export default function ActionLedger() {
     const t = useTranslations('ledger');
     const [entries, setEntries] = useState<LedgerEntry[]>([]);
 
-    const refresh = useCallback(() => setEntries(getLedger()), []);
+    // Primary load: fetch from DB; fall back to localStorage for demo/guest
+    const refresh = useCallback(async () => {
+        try {
+            const res = await fetch('/api/ledger');
+            if (res.ok) {
+                const data = await res.json() as { entries: LedgerEntry[] };
+                if (data.entries.length > 0) {
+                    setEntries(data.entries);
+                    return;
+                }
+            }
+        } catch { /* fall through */ }
+        // Fallback: localStorage (demo-tier / no session)
+        setEntries(getLedger());
+    }, []);
 
     useEffect(() => {
         refresh();
-        window.addEventListener('storage',                refresh);
+        // Re-sync on localStorage writes (COMMANDER entity switch, local adds)
         window.addEventListener('thabat-ledger-updated', refresh);
         return () => {
-            window.removeEventListener('storage',                refresh);
             window.removeEventListener('thabat-ledger-updated', refresh);
         };
     }, [refresh]);
 
-    function handleRealize(id: string) {
+    async function handleRealize(id: string) {
         markLedgerRealized(id);
-        refresh();
+        await refresh();
     }
 
     // ── Empty state ───────────────────────────────────────────────────────

@@ -18,7 +18,7 @@
 | **1.6** | Structured logging — `logger.ts` (JSON in prod / human-readable in dev), replaced all server-side `console.error/warn`, removed client debug logs | ✅ Done |
 | **1.7** | Onboarding wizard hardening — real URL validation, live connection test before saving ERP credentials | ✅ Done |
 | **1.8** | Real-data onboarding flow — metrics input UI for new real organizations | ✅ Done |
-| **1.9** | Action ledger persistence — move from `localStorage` to database | ⬜ Pending |
+| **1.9** | Action ledger persistence — move from `localStorage` to database | ✅ Done |
 | **1.10** | Final audit & delivery handoff prep | ⬜ Pending |
 
 ---
