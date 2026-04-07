@@ -16,7 +16,7 @@
 | **1.4** | Error handling & resilience — React `ErrorBoundary` (global + 5 section boundaries), `apiError` factory (8 typed factories, consistent JSON shape), `EmptyState` component for new orgs | ✅ Done |
 | **1.5** | CI/CD pipeline — GitHub Actions (typecheck → lint → test → build), CI-safe env fallbacks, `typecheck` npm script | ✅ Done |
 | **1.6** | Structured logging — `logger.ts` (JSON in prod / human-readable in dev), replaced all server-side `console.error/warn`, removed client debug logs | ✅ Done |
-| **1.7** | Onboarding wizard hardening — real URL validation, live connection test before saving ERP credentials | ⬜ Pending |
+| **1.7** | Onboarding wizard hardening — real URL validation, live connection test before saving ERP credentials | ✅ Done |
 | **1.8** | Real-data onboarding flow — metrics input UI for new real organizations | ⬜ Pending |
 | **1.9** | Action ledger persistence — move from `localStorage` to database | ⬜ Pending |
 | **1.10** | Final audit & delivery handoff prep | ⬜ Pending |

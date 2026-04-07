@@ -50,6 +50,8 @@ export default function IntegrationsPage() {
     const [loading, setLoading] = useState(false);
     const [syncing, setSyncing] = useState<string | null>(null);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    const [customUrlError, setCustomUrlError] = useState<string | null>(null);
 
     // Sovereign Connector Hub state
     const [selectedSystem, setSelectedSystem] = useState('');
@@ -60,6 +62,17 @@ export default function IntegrationsPage() {
         apiKey: '',
         authType: 'bearer',
     });
+
+    function validateHttpsUrl(value: string): string | null {
+        if (!value.trim()) return isAr ? 'الرابط مطلوب' : 'URL is required';
+        try {
+            const u = new URL(value);
+            if (u.protocol !== 'https:') return isAr ? 'يجب أن يبدأ الرابط بـ https://' : 'URL must use HTTPS';
+            return null;
+        } catch {
+            return isAr ? 'رابط غير صالح' : 'Invalid URL format';
+        }
+    }
 
     const fetchConnections = useCallback(async () => {
         try {
@@ -99,11 +112,31 @@ export default function IntegrationsPage() {
         // Real connector (odoo / dynamics) → credential wizard modal
         setSelectedERP(system.provider);
         setCredentials({});
+        setFieldErrors({});
         setMessage(null);
     };
 
     const handleSaveCredentials = async () => {
         if (!selectedERP) return;
+
+        // Per-field client-side validation before hitting the API
+        const config = ERP_CONFIGS[selectedERP];
+        const errors: Record<string, string> = {};
+        for (const field of config.fields) {
+            const value = credentials[field.key] ?? '';
+            if (field.required && !value.trim()) {
+                errors[field.key] = isAr ? 'هذا الحقل مطلوب' : 'This field is required';
+            } else if (field.type === 'url' && value.trim()) {
+                const urlErr = validateHttpsUrl(value);
+                if (urlErr) errors[field.key] = urlErr;
+            }
+        }
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            return;
+        }
+        setFieldErrors({});
+
         setLoading(true);
         setMessage(null);
 
@@ -156,11 +189,22 @@ export default function IntegrationsPage() {
     };
 
     const handleSaveCustom = () => {
-        if (!customFields.url || !customFields.apiKey) return;
+        // Validate URL
+        const urlErr = validateHttpsUrl(customFields.url);
+        if (urlErr) {
+            setCustomUrlError(urlErr);
+            return;
+        }
+        setCustomUrlError(null);
+
+        if (!customFields.apiKey.trim()) return;
+
         setCustomSaved(true);
         setMessage({
             type: 'success',
-            text: isAr ? 'تم حفظ إعدادات API بنجاح' : 'API configuration saved successfully.',
+            text: isAr
+                ? 'تم تسجيل إعدادات API — سيقوم فريق التسليم بتفعيل الاتصال خلال 24 ساعة.'
+                : 'API configuration registered — your delivery team will activate the connection within 24 hours.',
         });
         setTimeout(() => setCustomSaved(false), 3000);
     };
@@ -202,6 +246,7 @@ export default function IntegrationsPage() {
                             setSelectedSystem(e.target.value);
                             setShowCustomPanel(false);
                             setCustomSaved(false);
+                            setCustomUrlError(null);
                         }}
                         dir={isAr ? 'rtl' : 'ltr'}
                     >
@@ -246,9 +291,18 @@ export default function IntegrationsPage() {
                                         className={styles.customPanelInput}
                                         placeholder="https://api.clienterp.com/v1"
                                         value={customFields.url}
-                                        onChange={e => setCustomFields(p => ({ ...p, url: e.target.value }))}
+                                        onChange={e => {
+                                            setCustomFields(p => ({ ...p, url: e.target.value }));
+                                            setCustomUrlError(null);
+                                        }}
                                         dir="ltr"
+                                        style={customUrlError ? { borderColor: 'var(--danger)' } : undefined}
                                     />
+                                    {customUrlError && (
+                                        <span style={{ fontSize: 11, color: 'var(--danger)', marginTop: 4, display: 'block' }}>
+                                            {customUrlError}
+                                        </span>
+                                    )}
                                 </div>
 
                                 <div className={styles.customPanelField}>
@@ -338,7 +392,7 @@ export default function IntegrationsPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setSelectedERP(null)}
+                            onClick={() => { setSelectedERP(null); setFieldErrors({}); }}
                         >
                             <motion.div
                                 className={`glass-card ${styles.modal}`}
@@ -359,7 +413,7 @@ export default function IntegrationsPage() {
                                     </h3>
                                     <button
                                         className={styles.closeBtn}
-                                        onClick={() => setSelectedERP(null)}
+                                        onClick={() => { setSelectedERP(null); setFieldErrors({}); }}
                                     >
                                         ✕
                                     </button>
@@ -370,20 +424,36 @@ export default function IntegrationsPage() {
                                         <div key={field.key} className={styles.field}>
                                             <label className={styles.fieldLabel}>
                                                 {isAr ? field.labelAR : field.labelEN}
+                                                {field.required && (
+                                                    <span style={{ color: 'var(--danger)', marginInlineStart: 3 }}>*</span>
+                                                )}
                                             </label>
                                             <input
                                                 type={field.type}
                                                 className={styles.fieldInput}
                                                 placeholder={field.placeholder}
                                                 value={credentials[field.key] || ''}
-                                                onChange={(e) =>
+                                                onChange={(e) => {
                                                     setCredentials(prev => ({
                                                         ...prev,
                                                         [field.key]: e.target.value,
-                                                    }))
-                                                }
+                                                    }));
+                                                    if (fieldErrors[field.key]) {
+                                                        setFieldErrors(prev => {
+                                                            const next = { ...prev };
+                                                            delete next[field.key];
+                                                            return next;
+                                                        });
+                                                    }
+                                                }}
                                                 required={field.required}
+                                                style={fieldErrors[field.key] ? { borderColor: 'var(--danger)' } : undefined}
                                             />
+                                            {fieldErrors[field.key] && (
+                                                <span style={{ fontSize: 11, color: 'var(--danger)', marginTop: 4, display: 'block' }}>
+                                                    {fieldErrors[field.key]}
+                                                </span>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
