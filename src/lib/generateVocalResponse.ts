@@ -7,7 +7,7 @@
  */
 
 import type { VoiceIntent } from './processVoiceIntent';
-import { getAtRiskClients, CLIENT_HEALTH_RESULTS } from './calculateClientHealth';
+import { getEntityAtRiskClients, getEntityClientHealth, getEntityNitaqatTier } from './entityDatasets';
 import { TTV_RESULTS } from './calculateTTV';
 
 // ── Generator ─────────────────────────────────────────────────────────────────
@@ -17,13 +17,14 @@ export function generateVocalResponse(
     locale: string,
     /** Optional: pass the current health score for richer FINANCIAL_HEALTH answers */
     healthScore?: number,
+    entityId = 'ENT_02',
 ): string {
     const isAr = locale === 'ar';
 
     switch (intent) {
 
         case 'RETENTION_RISK': {
-            const atRisk = getAtRiskClients();
+            const atRisk = getEntityAtRiskClients(entityId);
             const count  = atRisk.length;
 
             if (count === 0) {
@@ -78,10 +79,21 @@ export function generateVocalResponse(
         }
 
         case 'COMPLIANCE_STATUS': {
-            const totalClients = CLIENT_HEALTH_RESULTS.length;
+            const totalClients = getEntityClientHealth(entityId).length;
+            const currentTier = getEntityNitaqatTier(entityId);
+            const tierLabelEn = currentTier === 'platinum' ? 'Platinum'
+                : currentTier === 'highGreen' ? 'High Green'
+                : currentTier === 'medGreen' ? 'Medium Green'
+                : currentTier === 'lowGreen' ? 'Low Green'
+                : 'Red';
+            const tierLabelAr = currentTier === 'platinum' ? 'بلاتيني'
+                : currentTier === 'highGreen' ? 'أخضر مرتفع'
+                : currentTier === 'medGreen' ? 'أخضر متوسط'
+                : currentTier === 'lowGreen' ? 'أخضر منخفض'
+                : 'أحمر';
             return isAr
-                ? `مستوى نطاقات الحالي: أخضر مرتفع. نسبة السعودة 34%. تراقب ${totalClients} عميلاً في المنظومة.`
-                : `Current Nitaqat tier: High Green. Saudization at 34%. Monitoring ${totalClients} clients in the system.`;
+                ? `مستوى نطاقات الحالي: ${tierLabelAr}. تراقب المنظومة ${totalClients} عميلاً رئيسياً.`
+                : `Current Nitaqat tier: ${tierLabelEn}. Monitoring ${totalClients} major clients in the system.`;
         }
 
         case 'UNKNOWN':

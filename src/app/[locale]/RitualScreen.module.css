@@ -436,3 +436,39 @@
     color: var(--text-tertiary);
     text-transform: uppercase;
 }
+/* ── CLIENT Ignition Overlay ─────────────────────────────────────────────── */
+.ignitionOverlay {
+    position: fixed;
+    bottom: 72px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    padding: 0 20px;
+    pointer-events: none;
+    z-index: 40;
+}
+
+.ignitionBtn {
+    pointer-events: all;
+    padding: 14px 28px;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.50);
+    border-radius: 12px;
+    color: #D4AF37;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 0 24px rgba(212, 175, 55, 0.18);
+    animation: ignition-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ignition-pulse {
+    0%, 100% { box-shadow: 0 0 24px rgba(212,175,55,0.18); }
+    50%       { box-shadow: 0 0 40px rgba(212,175,55,0.38); }
+}

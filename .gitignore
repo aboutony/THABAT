@@ -35,8 +35,15 @@ yarn-error.log*
 *.db-shm
 *.db-wal
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — secrets must NEVER be committed
+.env
+.env.local
+.env.demo
+.env.production
+.env.*.local
+# these ARE committed (templates with placeholders — no real secrets)
+!.env.example
+!.env.production.template
 
 # vercel
 .vercel

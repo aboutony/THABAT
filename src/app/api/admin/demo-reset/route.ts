@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import sql from '@/db';
+import { apiError } from '@/lib/apiError';
 
 const DEMO_PASSWORD = 'Demo2026!';
 const DAYS = 180;
@@ -43,8 +44,14 @@ const PROFILES = [
     },
 ];
 
+// ── Tier access accounts (no metrics — role resolved client-side) ──────────
+const TIER_ACCOUNTS = [
+    { email: 'guest@thabat.app',  orgName: 'Guest Preview',  fullName: 'Guest Commander' },
+    { email: 'client@thabat.app', orgName: 'Client Preview', fullName: 'Client Commander' },
+];
+
 /**
- * POST /api/admin/demo-reset — Clears and re-seeds 4 demo orgs via Turso.
+ * POST /api/admin/demo-reset — Clears and re-seeds 4 demo orgs + 2 tier accounts via Turso.
  */
 export async function POST(request: NextRequest) {
     if (!verifyAdminKey(request)) {
@@ -108,9 +115,23 @@ export async function POST(request: NextRequest) {
             }
         }
 
-        return NextResponse.json({ success: true, message: 'Demo reset complete — 4 orgs × 180 days' });
+        // Seed tier accounts (guest + client — no metrics, role resolved client-side)
+        for (const t of TIER_ACCOUNTS) {
+            const existing = await sql`SELECT u.id, u.org_id FROM users u WHERE u.email = ${t.email}`;
+            if (existing.length > 0) {
+                const orgId  = existing[0].org_id as string;
+                const userId = existing[0].id    as string;
+                await sql`DELETE FROM users WHERE id = ${userId}`;
+                await sql`DELETE FROM organizations WHERE id = ${orgId}`;
+            }
+            const orgId  = crypto.randomUUID().replace(/-/g, '');
+            const userId = crypto.randomUUID().replace(/-/g, '');
+            await sql`INSERT INTO organizations (id, name, industry, industry_code, revenue_band, growth_stage) VALUES (${orgId}, ${t.orgName}, ${'Technology'}, ${'TECH'}, ${'1M-10M'}, ${'stable'})`;
+            await sql`INSERT INTO users (id, org_id, email, password_hash, full_name, role) VALUES (${userId}, ${orgId}, ${t.email}, ${pwHash}, ${t.fullName}, ${'viewer'})`;
+        }
+
+        return NextResponse.json({ success: true, message: 'Demo reset complete — 4 orgs × 180 days + 2 tier accounts' });
     } catch (error) {
-        console.error('Demo reset error:', error);
-        return NextResponse.json({ error: 'Reset failed' }, { status: 500 });
+        return apiError.internal(error, 'Demo reset error');
     }
 }

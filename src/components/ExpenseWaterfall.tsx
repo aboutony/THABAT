@@ -21,6 +21,8 @@ import { useTranslations } from 'next-intl';
 import { formatSARShort } from '@/lib/forecast';
 import { useEntity } from '@/context/EntityContext';
 import { getEntityDataset, type EntityCostRates } from '@/lib/entityDatasets';
+import { useIdentity } from '@/hooks/useIdentity';
+import { useLocale } from 'next-intl';
 import styles from './ExpenseWaterfall.module.css';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -114,10 +116,12 @@ export default function ExpenseWaterfall({
     isAr,
     marginRiskAlert,
 }: ExpenseWaterfallProps) {
-    const t  = useTranslations('waterfall');
-    const tc = useTranslations('common');
+    const t      = useTranslations('waterfall');
+    const tc     = useTranslations('common');
+    const locale = useLocale();
 
-    const { activeEntity } = useEntity();
+    const { activeEntity }  = useEntity();
+    const { isClient }      = useIdentity();
 
     const [expandedId,  setExpandedId]  = useState<CategoryId | null>(null);
     const [auditModeId, setAuditModeId] = useState<CategoryId | null>(null);
@@ -194,6 +198,29 @@ export default function ExpenseWaterfall({
         setAuditModeId(prev => (prev === id ? null : id));
         setExpandedId(id); // open drill-down too
     };
+
+    // ── CLIENT ghost state ───────────────────────────────────────────────────
+    if (isClient) {
+        const ctaLabel = isAr
+            ? 'تفعيل التغذية المالية'
+            : 'Initiate Financial Feed';
+        return (
+            <div className={styles.ghostWrapper}>
+                {[0.72, 0.52, 0.40, 0.30].map((w, i) => (
+                    <div
+                        key={i}
+                        className={styles.ghostBar}
+                        style={{ width: `${w * 100}%`, animationDelay: `${i * 0.18}s` }}
+                    />
+                ))}
+                <div className={styles.ghostOverlay}>
+                    <a href={`/${locale}/settings`} className={styles.ghostCta}>
+                        {ctaLabel}
+                    </a>
+                </div>
+            </div>
+        );
+    }
 
     // ── Render ───────────────────────────────────────────────────────────────
     return (

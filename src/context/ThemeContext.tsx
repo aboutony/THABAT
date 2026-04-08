@@ -33,23 +33,21 @@ function applyTheme(t: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setThemeState] = useState<Theme>('dark');
+    const [theme, setThemeState] = useState<Theme>(() => {
+        if (typeof window === 'undefined') return 'dark';
+        const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+        return (stored === 'dark' || stored === 'light') ? stored : 'dark';
+    });
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // Read stored preference (anti-FOUC script already set the attribute)
-        const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-        if (stored && (stored === 'dark' || stored === 'light')) {
-            setThemeState(stored);
-            applyTheme(stored);
-        } else {
-            // Always default to dark for the Rolex exec demo
-            const initial: Theme = 'dark';
-            setThemeState(initial);
-            applyTheme(initial);
-            localStorage.setItem(STORAGE_KEY, initial);
+        // Apply the resolved theme to the DOM on first mount
+        applyTheme(theme);
+        if (!localStorage.getItem(STORAGE_KEY)) {
+            localStorage.setItem(STORAGE_KEY, theme);
         }
         setMounted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const setTheme = useCallback((t: Theme) => {

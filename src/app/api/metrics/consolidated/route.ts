@@ -6,6 +6,7 @@ import {
     type RawMetrics,
     type CalibrationProfile,
 } from '@/lib/scoring';
+import { apiError } from '@/lib/apiError';
 
 /**
  * GET /api/metrics/consolidated?group=unimed
@@ -16,14 +17,10 @@ import {
 export async function GET(request: NextRequest) {
     try {
         const session = await getSession();
-        if (!session) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        if (!session) return apiError.unauthorized();
 
         const group = request.nextUrl.searchParams.get('group');
-        if (!group) {
-            return NextResponse.json({ error: 'group parameter required' }, { status: 400 });
-        }
+        if (!group) return apiError.badRequest('group parameter required');
 
         // Exchange rates (Executive Currency = SAR)
         const FX_RATES: Record<string, number> = {
@@ -40,9 +37,7 @@ export async function GET(request: NextRequest) {
             FROM organizations WHERE entity_group = ${group}
         `;
 
-        if (orgs.length === 0) {
-            return NextResponse.json({ error: 'No entities found for group' }, { status: 404 });
-        }
+        if (orgs.length === 0) return apiError.notFound('No entities found for group');
 
         // Per-entity scores
         const entityBreakdowns = [];
@@ -136,7 +131,6 @@ export async function GET(request: NextRequest) {
             },
         });
     } catch (error) {
-        console.error('Consolidated metrics error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return apiError.internal(error, 'Consolidated metrics error');
     }
 }

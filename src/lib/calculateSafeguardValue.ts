@@ -1,4 +1,5 @@
 // ── Safeguard Value — financial loss prevented by a supply-chain pivot ────────
+import { calculateStockGap, getEntityStockGapInput } from './stockGap';
 // Formula: ShortfallUnits × AvgUnitProfit
 // Represents the SAR value of production/sales that would have been lost if
 // the stock-out was not averted by switching to an alternative supplier.
@@ -12,6 +13,28 @@ export interface SafeguardInput {
 
 export function calculateSafeguardValue(input: SafeguardInput): number {
     return Math.round(input.shortfallUnits * input.avgUnitProfit);
+}
+
+const ENTITY_AVG_UNIT_PROFIT: Record<string, number> = {
+    ENT_03: 195,
+};
+
+export function getEntityAvgUnitProfit(entityId: string): number {
+    return ENTITY_AVG_UNIT_PROFIT[entityId] ?? DEMO_AVG_UNIT_PROFIT;
+}
+
+export function getEntitySafeguardMetrics(entityId: string) {
+    const stockGap = calculateStockGap(getEntityStockGapInput(entityId));
+    const avgUnitProfit = getEntityAvgUnitProfit(entityId);
+
+    return {
+        shortfallUnits: stockGap.shortfallUnits,
+        avgUnitProfit,
+        safeguardValue: calculateSafeguardValue({
+            shortfallUnits: stockGap.shortfallUnits,
+            avgUnitProfit,
+        }),
+    };
 }
 
 // ── UNIMED demo constants (Ultrasound Probe Array) ────────────────────────────

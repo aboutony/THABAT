@@ -4,6 +4,7 @@ import { Inter, IBM_Plex_Sans_Arabic } from 'next/font/google';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { EntityProvider } from '@/context/EntityContext';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import '../globals.css';
 
 const inter = Inter({
@@ -74,7 +75,10 @@ export default async function RootLayout({
                     <ThemeProvider>
                         <AuthProvider>
                             <EntityProvider>
-                                {children}
+                                {/* Global error boundary — catches any unhandled crash in the app tree */}
+                                <ErrorBoundary>
+                                    {children}
+                                </ErrorBoundary>
                             </EntityProvider>
                         </AuthProvider>
                     </ThemeProvider>

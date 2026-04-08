@@ -4,11 +4,13 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import { useEntity } from '@/context/EntityContext';
+import { useIdentity } from '@/hooks/useIdentity';
 import s from './EntitySelector.module.css';
 
 export default function EntitySelector() {
     const locale = useLocale();
     const { activeEntity, entities, switchEntity } = useEntity();
+    const { isCommander } = useIdentity();
     const [open, setOpen] = useState(false);
     const wrapRef = useRef<HTMLDivElement>(null);
 

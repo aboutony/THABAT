@@ -1,4 +1,5 @@
 // ── Stock-at-Risk gap detector ────────────────────────────────────────────────
+import { getEntityStockGapData } from './entityDatasets';
 // Compares average lead time (from Nerve Center) against remaining stock days.
 // If leadTimeDays > stockDays the product will stock-out before the next
 // replenishment arrives — triggering the Crimson state on StockHourglass.
@@ -50,6 +51,14 @@ export function calculateStockGap(input: StockGapInput): StockGapResult {
         leadTimeDays: avgLeadTimeDays,
         shortfallUnits,
     };
+}
+
+export function getEntityStockGapInput(entityId: string): StockGapInput {
+    return getEntityStockGapData(entityId).input;
+}
+
+export function getEntityNextShipmentDays(entityId: string): number {
+    return getEntityStockGapData(entityId).nextShipmentDays;
 }
 
 // ── Demo data constants (UNIMED Ultrasound Probe Array) ───────────────────────

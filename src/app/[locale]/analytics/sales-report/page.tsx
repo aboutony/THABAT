@@ -3,28 +3,18 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
 import { getRevenueForecast, formatSARShort, type ForecastResult } from '@/lib/forecast';
+import { getEntitySalesOrder } from '@/lib/entityDemoContent';
 import ExpenseWaterfall from '@/components/ExpenseWaterfall';
+import { useIdentity } from '@/hooks/useIdentity';
+import { useEntity } from '@/context/EntityContext';
 import styles from './sales.module.css';
 
 // ─── NUPCO Purchase Order Data ───────────────────────────────────────────────
-const NUPCO_PO = {
-    number: 'PO 4100000309',
-    client: { en: 'NUPCO (National Unified Procurement Company)', ar: 'نوبكو (الشركة الوطنية الموحدة للشراء)' },
-    baseRevenue: 1053000.0,
-    unitPrice: 650.0,
-    baseUnits: 1620,
-    paymentTerms: 120,
-    products: [
-        { name: { en: 'Urological Catheter – Foley 2-Way', ar: 'قسطرة بولية – فولي ثنائية الاتجاه' }, sku: 'UC-F2W-16', unitPrice: 650.0, qty: 800 },
-        { name: { en: 'Suture Braid Silk 2/0 – 75cm', ar: 'خيط جراحي حريري مجدول 2/0 – 75سم' }, sku: 'SBS-20-75', unitPrice: 469.9, qty: 600 },
-        { name: { en: 'Surgical Drain – Jackson-Pratt', ar: 'مصرف جراحي – جاكسون برات' }, sku: 'SD-JP-400', unitPrice: 312.5, qty: 220 },
-    ],
-};
+const NUPCO_PO = getEntitySalesOrder('ENT_02');
 
 // ─── Agentic Alert Bar ────────────────────────────────────────────────────────
 interface AlertBarProps {
@@ -235,6 +225,26 @@ function ForecastChart({ forecast, isAr }: ForecastChartProps) {
     );
 }
 
+// ─── Ghost Forecast Chart (CLIENT zero state) ─────────────────────────────────
+function GhostForecastChart() {
+    const W = 320, H = 130;
+    const PAD = { top: 14, right: 10, bottom: 30, left: 46 };
+    const midY = PAD.top + (H - PAD.top - PAD.bottom) / 2;
+    return (
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 'auto', display: 'block' }} aria-hidden="true">
+            {[0.1, 0.5, 0.9].map((f, i) => {
+                const y = PAD.top + (H - PAD.top - PAD.bottom) * (1 - f);
+                return (
+                    <line key={i} x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
+                        stroke="rgba(148,163,184,0.08)" strokeWidth="0.8" strokeDasharray="3 3" />
+                );
+            })}
+            <line x1={PAD.left} y1={midY} x2={W - PAD.right} y2={midY}
+                stroke="rgba(148,163,184,0.30)" strokeWidth="1.5" strokeDasharray="6 4" />
+        </svg>
+    );
+}
+
 // ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function SalesReportPage() {
     const locale = useLocale();
@@ -242,6 +252,9 @@ export default function SalesReportPage() {
     const router = useRouter();
     const t = useTranslations('salesReport');
     const tc = useTranslations('common');
+    const { isClient } = useIdentity();
+    const { activeEntity } = useEntity();
+    const salesOrder = activeEntity.id === 'ENT_02' ? NUPCO_PO : getEntitySalesOrder(activeEntity.id);
     const [volumeMultiplier, setVolumeMultiplier] = useState(100);
     const [alertDismissed, setAlertDismissed] = useState(false);
 
@@ -250,18 +263,18 @@ export default function SalesReportPage() {
     // Pipeline snapshot (existing — cash timeline)
     const forecast = useMemo(() => {
         const factor = volumeMultiplier / 100;
-        const revenue = NUPCO_PO.baseRevenue * factor;
-        const units = Math.round(NUPCO_PO.baseUnits * factor);
+        const revenue = salesOrder.baseRevenue * factor;
+        const units = Math.round(salesOrder.baseUnits * factor);
         const today = new Date();
         const deliveryDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
-        const cashDate = new Date(deliveryDate.getTime() + NUPCO_PO.paymentTerms * 24 * 60 * 60 * 1000);
+        const cashDate = new Date(deliveryDate.getTime() + salesOrder.paymentTerms * 24 * 60 * 60 * 1000);
         return { revenue, units, deliveryDate, cashDate };
-    }, [volumeMultiplier]);
+    }, [salesOrder, volumeMultiplier]);
 
     // 6-month predictive forecast
     const revenueForecast = useMemo(
-        () => getRevenueForecast(NUPCO_PO.baseRevenue, volumeMultiplier),
-        [volumeMultiplier],
+        () => getRevenueForecast(salesOrder.baseRevenue, volumeMultiplier),
+        [salesOrder.baseRevenue, volumeMultiplier],
     );
 
     // Agentic alert severity determination
@@ -317,7 +330,9 @@ export default function SalesReportPage() {
                     )}
                 </AnimatePresence>
 
-                {/* ── Pipeline ── */}
+                {/* ── Pipeline + Slider (live data only) ── */}
+                {!isClient && (
+                    <>
                 <motion.div
                     className={`glass-card ${styles.pipelineCard}`}
                     initial={{ opacity: 0, y: 20 }}
@@ -325,8 +340,8 @@ export default function SalesReportPage() {
                     transition={{ duration: 0.6 }}
                 >
                     <div className={styles.pipelineHeader}>
-                        <span className={styles.poTag}>{formatNumber(NUPCO_PO.number, locale)}</span>
-                        <span className={styles.clientLabel}>{L(NUPCO_PO.client)}</span>
+                        <span className={styles.poTag}>{formatNumber(salesOrder.number, locale)}</span>
+                        <span className={styles.clientLabel}>{L(salesOrder.client)}</span>
                     </div>
                     <div className={styles.pipelineValue}>
                         {formatSAR(forecast.revenue)}
@@ -367,7 +382,7 @@ export default function SalesReportPage() {
                     <div className={styles.sliderMetrics}>
                         <div className={styles.metricPill}>
                             <span className={styles.metricLabel}>{t('unitPrice')}</span>
-                            <span className={styles.metricVal}>{formatSAR(NUPCO_PO.unitPrice)}</span>
+                            <span className={styles.metricVal}>{formatSAR(salesOrder.unitPrice)}</span>
                         </div>
                         <div className={styles.metricPill}>
                             <span className={styles.metricLabel}>{t('projectedRevenue')}</span>
@@ -375,6 +390,8 @@ export default function SalesReportPage() {
                         </div>
                     </div>
                 </motion.div>
+                    </>
+                )}
 
                 {/* ── Predictive Revenue Overlay ── */}
                 <motion.div
@@ -388,51 +405,60 @@ export default function SalesReportPage() {
                             <div className={styles.forecastTitle}>{t('forecastTitle')}</div>
                             <div className={styles.forecastSubtitle}>{t('scenariosLabel')}</div>
                         </div>
-                        <span className={`${styles.trendBadge} ${styles[`trend_${revenueForecast.overallTrend}`]}`}>
-                            {trendIcon} {t(trendKey)}
-                        </span>
+                        {!isClient && (
+                            <span className={`${styles.trendBadge} ${styles[`trend_${revenueForecast.overallTrend}`]}`}>
+                                {trendIcon} {t(trendKey)}
+                            </span>
+                        )}
                     </div>
 
-                    <ForecastChart forecast={revenueForecast} isAr={isAr} />
+                    {isClient
+                        ? <GhostForecastChart />
+                        : <ForecastChart forecast={revenueForecast} isAr={isAr} />
+                    }
 
-                    {/* Legend */}
-                    <div className={styles.chartLegend}>
-                        <span className={styles.legendItem}>
-                            <span className={`${styles.legendDot} ${styles.legendBase}`} />
-                            {t('legendBase')}
-                        </span>
-                        <span className={styles.legendItem}>
-                            <span className={`${styles.legendLine} ${styles.legendBull}`} />
-                            {t('legendBull')}
-                        </span>
-                        <span className={styles.legendItem}>
-                            <span className={`${styles.legendLine} ${styles.legendBear}`} />
-                            {t('legendBear')}
-                        </span>
-                    </div>
-
-                    {/* Peak / Floor callouts */}
-                    <div className={styles.forecastCallouts}>
-                        <div className={styles.callout}>
-                            <span className={styles.calloutLabel}>{t('peakBull')}</span>
-                            <span className={`${styles.calloutVal} ${styles.calloutGreen}`}>
-                                {tc('sar')} {formatSARShort(revenueForecast.peakBull)}
+                    {!isClient && (
+                        <>
+                        {/* Legend */}
+                        <div className={styles.chartLegend}>
+                            <span className={styles.legendItem}>
+                                <span className={`${styles.legendDot} ${styles.legendBase}`} />
+                                {t('legendBase')}
+                            </span>
+                            <span className={styles.legendItem}>
+                                <span className={`${styles.legendLine} ${styles.legendBull}`} />
+                                {t('legendBull')}
+                            </span>
+                            <span className={styles.legendItem}>
+                                <span className={`${styles.legendLine} ${styles.legendBear}`} />
+                                {t('legendBear')}
                             </span>
                         </div>
-                        {revenueForecast.marginRiskMonths > 0 && (
-                            <div className={`${styles.callout} ${styles.calloutRisk}`}>
-                                <span className={styles.calloutLabel}>
-                                    {t('marginRiskWarning', { months: formatNumber(revenueForecast.marginRiskMonths, locale) })}
+
+                        {/* Peak / Floor callouts */}
+                        <div className={styles.forecastCallouts}>
+                            <div className={styles.callout}>
+                                <span className={styles.calloutLabel}>{t('peakBull')}</span>
+                                <span className={`${styles.calloutVal} ${styles.calloutGreen}`}>
+                                    {tc('sar')} {formatSARShort(revenueForecast.peakBull)}
                                 </span>
                             </div>
-                        )}
-                        <div className={styles.callout}>
-                            <span className={styles.calloutLabel}>{t('worstBear')}</span>
-                            <span className={`${styles.calloutVal} ${styles.calloutAmber}`}>
-                                {tc('sar')} {formatSARShort(revenueForecast.worstBear)}
-                            </span>
+                            {revenueForecast.marginRiskMonths > 0 && (
+                                <div className={`${styles.callout} ${styles.calloutRisk}`}>
+                                    <span className={styles.calloutLabel}>
+                                        {t('marginRiskWarning', { months: formatNumber(revenueForecast.marginRiskMonths, locale) })}
+                                    </span>
+                                </div>
+                            )}
+                            <div className={styles.callout}>
+                                <span className={styles.calloutLabel}>{t('worstBear')}</span>
+                                <span className={`${styles.calloutVal} ${styles.calloutAmber}`}>
+                                    {tc('sar')} {formatSARShort(revenueForecast.worstBear)}
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                        </>
+                    )}
                 </motion.div>
 
                 {/* ── Executive Expense Waterfall (Phase 03) ── */}
@@ -442,15 +468,17 @@ export default function SalesReportPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.45, duration: 0.5 }}
                 >
-                    <ExpenseWaterfall
-                        revenue={forecast.revenue}
-                        baseRevenue={NUPCO_PO.baseRevenue}
-                        isAr={isAr}
-                        marginRiskAlert={activeAlert}
-                    />
+                        <ExpenseWaterfall
+                            revenue={forecast.revenue}
+                            baseRevenue={salesOrder.baseRevenue}
+                            isAr={isAr}
+                            marginRiskAlert={activeAlert}
+                        />
                 </motion.div>
 
-                {/* ── Liquidity Timeline ── */}
+                {/* ── Liquidity Timeline + Product Breakdown (live data only) ── */}
+                {!isClient && (
+                    <>
                 <motion.div
                     className={`glass-card ${styles.timelineCard}`}
                     initial={{ opacity: 0, y: 16 }}
@@ -479,7 +507,7 @@ export default function SalesReportPage() {
                             <div className={`${styles.dot} ${styles.dotEnd}`} />
                             <div className={styles.nodeContent}>
                                 <span className={styles.nodeDate}>{formatDate(forecast.cashDate)}</span>
-                                <span className={styles.nodeLabel}>{t('cashArrival', { days: formatNumber(NUPCO_PO.paymentTerms, locale) })}</span>
+                                <span className={styles.nodeLabel}>{t('cashArrival', { days: formatNumber(salesOrder.paymentTerms, locale) })}</span>
                             </div>
                         </div>
                     </div>
@@ -489,11 +517,10 @@ export default function SalesReportPage() {
                             <line x1="12" y1="16" x2="12" y2="12" />
                             <line x1="12" y1="8" x2="12.01" y2="8" />
                         </svg>
-                        {t('cashNote', { days: formatNumber(NUPCO_PO.paymentTerms, locale) })}
+                        {t('cashNote', { days: formatNumber(salesOrder.paymentTerms, locale) })}
                     </div>
                 </motion.div>
 
-                {/* ── Product Breakdown ── */}
                 <motion.div
                     className={`glass-card ${styles.breakdownCard}`}
                     initial={{ opacity: 0, y: 16 }}
@@ -501,7 +528,7 @@ export default function SalesReportPage() {
                     transition={{ delay: 0.65, duration: 0.5 }}
                 >
                     <div className={styles.breakdownTitle}>{t('productBreakdown')}</div>
-                    {NUPCO_PO.products.map((p, i) => (
+                    {salesOrder.products.map((p, i) => (
                         <div key={i} className={styles.productRow}>
                             <div className={styles.productInfo}>
                                 <span className={styles.productName}>{L(p.name)}</span>
@@ -518,6 +545,8 @@ export default function SalesReportPage() {
                         </div>
                     ))}
                 </motion.div>
+                    </>
+                )}
             </div>
         </Shell>
     );

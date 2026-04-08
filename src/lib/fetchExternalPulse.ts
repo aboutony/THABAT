@@ -89,18 +89,64 @@ const PULSE_FEED: ExternalPulse[] = [
     },
 ];
 
+const ENT_03_PULSE_FEED: ExternalPulse[] = [
+    {
+        id:         'sfda-qa-skin-contact',
+        category:   'regulatory',
+        severity:   'alert',
+        sourceEn:   'SFDA',
+        sourceAr:   'الهيئة العامة للغذاء والدواء',
+        headlineEn: 'Skin-Contact Material Release Needs Full QA Traceability',
+        headlineAr: 'إطلاق المواد الملامسة للبشرة يتطلب تتبعاً كاملاً للجودة',
+        bodyEn:     'One hygiene-material release lot remains under enhanced QA review. Batch genealogy and skin-contact documentation must stay complete before branch allocation.',
+        bodyAr:     'إحدى دفعات المواد الصحية ما زالت تحت مراجعة جودة معززة. يجب اكتمال شجرة التتبع ووثائق المواد الملامسة للبشرة قبل تخصيص الفروع.',
+        timestamp:  '2026-03-29',
+        isNew:      true,
+    },
+    {
+        id:         'retail-west-demand-uplift',
+        category:   'market',
+        severity:   'watch',
+        sourceEn:   'Modern Trade Watch',
+        sourceAr:   'مراقبة تجارة التجزئة الحديثة',
+        headlineEn: 'West Region Hygiene Demand Running Ahead of Allocation',
+        headlineAr: 'طلب منتجات العناية في المنطقة الغربية يتجاوز المخصصات',
+        bodyEn:     'Branch sell-out for baby and feminine-care categories is ahead of plan in Jeddah and Makkah. Rebalance BabyJoy and Sofy replenishment before the weekend peak.',
+        bodyAr:     'مبيعات فروع فئات العناية بالطفل والعناية النسائية تتقدم على الخطة في جدة ومكة. أعد موازنة إعادة توريد بيبي جوي وسوفي قبل ذروة نهاية الأسبوع.',
+        timestamp:  '2026-03-28',
+        isNew:      true,
+    },
+    {
+        id:         'riyadh-export-window',
+        category:   'local',
+        severity:   'info',
+        sourceEn:   'Branch Operations',
+        sourceAr:   'عمليات الفروع',
+        headlineEn: 'Riyadh Plant Export Window Opens for GCC Replenishment',
+        headlineAr: 'فتح نافذة التصدير من مصنع الرياض لإعادة الإمداد الخليجي',
+        bodyEn:     'The next consolidated loading window supports branch replenishment and GCC export allocations. Prioritize absorbent inputs before locking outbound plans.',
+        bodyAr:     'تدعم نافذة التحميل الموحدة القادمة إعادة إمداد الفروع وتخصيصات التصدير الخليجية. أعط أولوية للمواد الماصة قبل تثبيت خطط الشحن الخارجي.',
+        timestamp:  '2026-03-27',
+        isNew:      false,
+    },
+];
+
 // ── Public API ─────────────────────────────────────────────────────────────────
 
-export function fetchExternalPulse(): ExternalPulse[] {
-    return PULSE_FEED;
+function getEntityPulseFeed(entityId?: string): ExternalPulse[] {
+    return entityId === 'ENT_03' ? ENT_03_PULSE_FEED : PULSE_FEED;
+}
+
+export function fetchExternalPulse(entityId?: string): ExternalPulse[] {
+    return getEntityPulseFeed(entityId);
 }
 
 /** True if any new external events exist — drives the Shell Globe pulse */
-export function hasNewExternalEvents(): boolean {
-    return PULSE_FEED.some(p => p.isNew);
+export function hasNewExternalEvents(entityId?: string): boolean {
+    return getEntityPulseFeed(entityId).some(p => p.isNew);
 }
 
 /** Count of new external events */
-export function newExternalEventCount(): number {
-    return PULSE_FEED.filter(p => p.isNew).length;
+export function newExternalEventCount(entityId?: string): number {
+    return getEntityPulseFeed(entityId).filter(p => p.isNew).length;
 }

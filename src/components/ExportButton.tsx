@@ -2,7 +2,10 @@
 
 import { useState, useCallback } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { formatNumber, toArabicDigits } from '@/lib/locale-utils';
+import { formatNumber } from '@/lib/locale-utils';
+import { getEntityEfficiencyContent, getEntityExportSummary, getEntityRetentionReport } from '@/lib/entityDemoContent';
+import { useIdentity } from '@/hooks/useIdentity';
+import { useEntity } from '@/context/EntityContext';
 import styles from './ExportButton.module.css';
 
 export default function ExportButton() {
@@ -10,6 +13,8 @@ export default function ExportButton() {
     const isAr = locale === 'ar';
     const t = useTranslations('export');
     const [exporting, setExporting] = useState(false);
+    const { isClient } = useIdentity();
+    const { activeEntity } = useEntity();
 
     const fn = (v: number | string) => formatNumber(v, locale);
     const today = new Date().toLocaleDateString(isAr ? 'ar-SA' : 'en-US', {
@@ -31,41 +36,20 @@ export default function ExportButton() {
             const fontFamily = isAr
                 ? "'Segoe UI', 'Arial', 'Tahoma', sans-serif"
                 : "'Segoe UI', 'Helvetica Neue', Arial, sans-serif";
+            const retention = getEntityRetentionReport(activeEntity.id);
+            const efficiency = getEntityEfficiencyContent(activeEntity.id);
+            const exportSummary = getEntityExportSummary(activeEntity.id);
 
             // Contract rows
-            const contracts = [
-                {
-                    client: isAr ? 'نوبكو – اتفاقية إطارية' : 'NUPCO – Framework Agreement',
-                    value: `${isAr ? 'ر.س' : 'SAR'} ${fn('1,053,000.00')}`,
-                    status: isAr ? 'مستقر للغاية' : 'Highly Stable',
-                    color: '#006C35',
-                },
-                {
-                    client: isAr ? 'وزارة الصحة – شراء مباشر' : 'MOH – Direct Purchase',
-                    value: `${isAr ? 'ر.س' : 'SAR'} ${fn('2,100,000.00')}`,
-                    status: isAr ? 'مستقر للغاية' : 'Highly Stable',
-                    color: '#006C35',
-                },
-                {
-                    client: isAr ? 'مستشفى الملك فيصل التخصصي' : 'King Faisal Specialist Hospital',
-                    value: `${isAr ? 'ر.س' : 'SAR'} ${fn('1,350,000.00')}`,
-                    status: isAr ? 'يتطلب تجديد' : 'Renewal Required',
-                    color: '#F59E0B',
-                },
-            ];
+            const contracts = retention.contracts.slice(0, 3).map(contract => ({
+                client: isAr ? contract.client.ar : contract.client.en,
+                value: `${isAr ? 'ر.س' : 'SAR'} ${fn(contract.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}`,
+                status: isAr ? contract.stability.ar : contract.stability.en,
+                color: contract.status === 'expiring' ? '#F59E0B' : '#006C35',
+            }));
 
             // Action log entries
-            const actions = [
-                isAr
-                    ? `أمر الشراء ${toArabicDigits('4600100323')} – تمت الموافقة من الرئيس التنفيذي بتاريخ ${toArabicDigits('03/03/2026')}`
-                    : 'PO 4600100323 – Approved by CEO on 03/03/2026',
-                isAr
-                    ? `ملخص تجديد عقد مستشفى الملك فيصل التخصصي – مطلوب خلال ${toArabicDigits('72')} يومًا`
-                    : 'KFSH Renewal Brief – Requested (72 days remaining)',
-                isAr
-                    ? `إعادة توريد القسطرة البولية – تم الاعتماد (ر.س ${toArabicDigits('7,312.50')})`
-                    : 'Catheter Restock PO – Approved (SAR 7,312.50)',
-            ];
+            const actions = exportSummary.actionLog.map(action => isAr ? action.ar : action.en);
 
             const html = `<!DOCTYPE html>
 <html dir="${dir}" lang="${isAr ? 'ar' : 'en'}">
@@ -135,7 +119,7 @@ td { font-size: 12px; color: #E0E0E0; padding: 10px 8px; border-bottom: 1px soli
             <span class="brand-sub">${t('subtitle')}</span>
         </div>
         <div style="text-align:${isAr ? 'start' : 'end'}">
-            <span class="brand-client">UNIMED</span>
+            <span class="brand-client">${isAr ? activeEntity.nameAr : activeEntity.name}</span>
             <span class="brand-date">${today}</span>
         </div>
     </div>
@@ -145,24 +129,24 @@ td { font-size: 12px; color: #E0E0E0; padding: 10px 8px; border-bottom: 1px soli
 <div class="section">
     <div class="section-label">${t('stabilityScore')}</div>
     <div class="score-row">
-        <div class="score-circle"><span class="score-num">${fn(87)}</span></div>
+        <div class="score-circle"><span class="score-num" style="color:${isClient ? 'rgba(148,163,184,0.25)' : '#006C35'}">${isClient ? '---' : fn(exportSummary.score)}</span></div>
         <div>
-            <div class="score-trend">↗ ${t('strengthening')}</div>
-            <div class="score-desc">${t('scoreDesc')}</div>
+            ${isClient ? '' : `<div class="score-trend">↗ ${t('strengthening')}</div>`}
+            <div class="score-desc">${isClient ? (isAr ? 'في انتظار التغذية المالية' : 'Awaiting Financial Feed') : t('scoreDesc')}</div>
         </div>
     </div>
     <div class="kpi-grid">
         <div class="kpi-item">
             <span class="kpi-label">${t('revenueGrowth')}</span>
-            <span class="kpi-value">${fn(12.4)}%</span>
+            <span class="kpi-value">${isClient ? '---' : `${fn(exportSummary.revenueGrowth)}%`}</span>
         </div>
         <div class="kpi-item">
             <span class="kpi-label">${t('clientRetention')}</span>
-            <span class="kpi-value">${fn(94.2)}%</span>
+            <span class="kpi-value">${isClient ? '---' : `${fn(exportSummary.clientRetention)}%`}</span>
         </div>
         <div class="kpi-item">
             <span class="kpi-label">${t('opEfficiency')}</span>
-            <span class="kpi-value">${fn(88.7)}%</span>
+            <span class="kpi-value">${isClient ? '---' : `${fn(exportSummary.opEfficiency)}%`}</span>
         </div>
     </div>
 </div>
@@ -171,13 +155,13 @@ td { font-size: 12px; color: #E0E0E0; padding: 10px 8px; border-bottom: 1px soli
     <div class="section-label">${t('velocityTitle')}</div>
     <div class="velocity-row">
         <div>
-            <span class="velocity-num">${fn(142)}</span>
-            <span class="velocity-unit">${t('days')}</span>
+            <span class="velocity-num" style="color:${isClient ? 'rgba(148,163,184,0.25)' : '#006C35'}">${isClient ? '---' : fn(efficiency.velocity.orderToCash)}</span>
+            ${isClient ? '' : `<span class="velocity-unit">${t('days')}</span>`}
         </div>
-        <div class="velocity-meta">
-            ${t('sectorAvg')}: ${fn(160)} ${t('days')}
-            <span class="velocity-good">↗ ${fn(11.3)}% ${t('faster')}</span>
-        </div>
+        ${isClient ? '' : `<div class="velocity-meta">
+            ${t('sectorAvg')}: ${fn(efficiency.velocity.sectorAverage)} ${t('days')}
+            <span class="velocity-good">↗ ${fn(efficiency.velocity.improvement)}% ${t('faster')}</span>
+        </div>`}
     </div>
 </div>
 
@@ -228,7 +212,7 @@ td { font-size: 12px; color: #E0E0E0; padding: 10px 8px; border-bottom: 1px soli
         } finally {
             setTimeout(() => setExporting(false), 1000);
         }
-    }, [exporting, isAr, locale, t, fn, today]);
+    }, [activeEntity.id, activeEntity.name, activeEntity.nameAr, exporting, isAr, isClient, locale, t, fn, today]);
 
     return (
         <button

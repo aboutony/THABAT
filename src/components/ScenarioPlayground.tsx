@@ -5,9 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
 import { projectScenarioImpact } from '@/lib/projectScenarioImpact';
 import { addLedgerEntry } from '@/lib/ledger';
+import { useIdentity } from '@/hooks/useIdentity';
 import type { NitaqatTierKey } from '@/lib/ledger';
 import type { OptimalResult } from '@/lib/findOptimalPath';
 import type { ScenarioLevers } from '@/lib/projectScenarioImpact';
+import { useEntity } from '@/context/EntityContext';
 import OptimizerWidget from './OptimizerWidget';
 import s from './ScenarioPlayground.module.css';
 
@@ -77,9 +79,12 @@ const TIER_DARK: Record<NitaqatTierKey, string> = {
 interface ScenarioPlaygroundProps { onClose: () => void; }
 
 export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps) {
-    const t      = useTranslations('scenario');
-    const tO     = useTranslations('optimizer');
-    const locale = useLocale();
+    const t        = useTranslations('scenario');
+    const tO       = useTranslations('optimizer');
+    const locale   = useLocale();
+    const isAr     = locale === 'ar';
+    const { isClient } = useIdentity();
+    const { activeEntity } = useEntity();
 
     const [levers, setLevers] = useState<Record<LeverKey, number>>({
         salesGrowthPct:    0,
@@ -100,7 +105,10 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
         : levers,
     [levers, economicStress]);
 
-    const projection = useMemo(() => projectScenarioImpact(effectiveLevers), [effectiveLevers]);
+    const projection = useMemo(
+        () => projectScenarioImpact(effectiveLevers, activeEntity.id),
+        [activeEntity.id, effectiveLevers],
+    );
 
     // Persist current lever state to sessionStorage so ExportPortal can include
     // live What-If values in the Capital Report even without saving to ledger.
@@ -197,8 +205,26 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
                     <button className={s.closeBtn} onClick={onClose} aria-label="Close">✕</button>
                 </div>
 
+                {/* ── CLIENT lock gate ─────────────────────────────────── */}
+                {isClient && (
+                    <div style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                        justifyContent: 'center', gap: 12, padding: '48px 24px', textAlign: 'center',
+                    }}>
+                        <span style={{ fontSize: 36, opacity: 0.35 }}>🔒</span>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {isAr ? 'مميزة للقائد' : 'Commander-Level Feature'}
+                        </p>
+                        <p style={{ fontSize: 13, color: 'var(--text-tertiary)', maxWidth: 260, lineHeight: 1.5 }}>
+                            {isAr
+                                ? 'مختبر السيناريوهات متاح بعد توصيل نظام ERP الخاص بك.'
+                                : 'Scenario Lab unlocks after your ERP is connected and data is ingested.'}
+                        </p>
+                    </div>
+                )}
+
                 {/* ── Scrollable body ───────────────────────────────────── */}
-                <div className={s.body}>
+                {!isClient && <div className={s.body}>
 
                     {/* ── LEVERS ──────────────────────────────────────────── */}
                     <div className={s.section}>
@@ -338,7 +364,7 @@ export default function ScenarioPlayground({ onClose }: ScenarioPlaygroundProps)
                         </AnimatePresence>
                     </div>
 
-                </div>
+                </div>}
 
                 {/* ── Reasoning drawer (bottom-sheet inside panel) ──────── */}
                 <AnimatePresence>

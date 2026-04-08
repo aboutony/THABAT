@@ -10,9 +10,10 @@ import s from './ExportPortal.module.css';
 interface ExportPortalProps {
     onClose: () => void;
     healthScore: number;
+    isClient?: boolean;
 }
 
-export default function ExportPortal({ onClose, healthScore }: ExportPortalProps) {
+export default function ExportPortal({ onClose, healthScore, isClient }: ExportPortalProps) {
     const t      = useTranslations('report');
     const locale = useLocale();
 
@@ -173,9 +174,11 @@ export default function ExportPortal({ onClose, healthScore }: ExportPortalProps
                         </div>
                         <div className={s.summaryCell}>
                             <p className={s.summaryCellVal}>
-                                {report.totalValueProtected > 0
-                                    ? `${(report.totalValueProtected / 1000).toFixed(0)}K`
-                                    : '—'
+                                {isClient
+                                    ? '---'
+                                    : report.totalValueProtected > 0
+                                        ? `${(report.totalValueProtected / 1000).toFixed(0)}K`
+                                        : '—'
                                 }
                             </p>
                             <p className={s.summaryCellLabel}>{t('kpiProtected')}</p>
@@ -233,7 +236,7 @@ export default function ExportPortal({ onClose, healthScore }: ExportPortalProps
 
             {/* ── Hidden capture target (off-screen) ───────────────── */}
             <div className={s.captureHost}>
-                <ReportDocument ref={captureRef} report={report} />
+                <ReportDocument ref={captureRef} report={report} isClient={isClient} />
             </div>
         </div>
     );

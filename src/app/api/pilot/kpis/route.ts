@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import sql from '@/db';
 import { getSession } from '@/lib/auth';
+import { apiError } from '@/lib/apiError';
 
 /**
  * GET /api/pilot/kpis — Enhanced pilot engagement tracking
@@ -9,14 +10,8 @@ import { getSession } from '@/lib/auth';
 export async function GET() {
   try {
     const session = await getSession();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Admin-only route
-    if (session.role !== 'admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    if (!session) return apiError.unauthorized();
+    if (session.role !== 'admin') return apiError.forbidden();
 
     // Total organizations
     const orgsResult = await sql`SELECT COUNT(*) as count FROM organizations` as { count: number }[];
@@ -147,7 +142,6 @@ export async function GET() {
       recentActions,
     });
   } catch (error) {
-    console.error('Pilot KPI error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return apiError.internal(error, 'Pilot KPI error');
   }
 }

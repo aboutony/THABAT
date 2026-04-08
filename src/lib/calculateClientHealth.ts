@@ -8,7 +8,16 @@
  *
  * A score < 60 marks the client as at-risk (amber, flickering star).
  * A score < 40 marks critical churn risk (red).
+ *
+ * ─── Environment behavior ────────────────────────────────────────────────────
+ * DEMO_MODE=true  → pre-computed exports use DEMO_CLIENTS (7 hardcoded healthcare clients)
+ * DEMO_MODE=false → CLIENT_HEALTH_RESULTS is [] and MAX_CLIENT_ACV is 0;
+ *                   components must fetch real clients from DB and pass them
+ *                   into calculateClientHealth(realClients) directly.
+ *                   TODO[DELIVERY]: Wire ClientRepository.list(orgId) → calculateClientHealth()
+ * ─────────────────────────────────────────────────────────────────────────────
  */
+import { isDemoMode } from './env';
 
 export interface ClientRecord {
     id:             string;
@@ -42,9 +51,11 @@ export interface ClientHealthResult extends ClientRecord {
     isFlickering:         boolean;
 }
 
-// ── Demo data ─────────────────────────────────────────────────────────────────
+// ── Demo data — active only when NEXT_PUBLIC_DEMO_MODE=true ──────────────────
+// In production, real client records are fetched from DB and passed directly
+// into calculateClientHealth(realClients). See TODO[DELIVERY] markers above.
 
-const CLIENTS: ClientRecord[] = [
+const DEMO_CLIENTS: ClientRecord[] = [
     {
         id: 'moh',
         name: { en: 'Ministry of Health', ar: 'وزارة الصحة' },
@@ -136,7 +147,7 @@ function paymentScore(avgDaysOverdue: number): number {
 // ── Core function ─────────────────────────────────────────────────────────────
 
 export function calculateClientHealth(
-    clients: ClientRecord[] = CLIENTS,
+    clients: ClientRecord[] = isDemoMode() ? DEMO_CLIENTS : [],
 ): ClientHealthResult[] {
     return clients.map(client => {
         const rvScore  = revenueVelocityScore(client.monthlyOrders);
@@ -176,8 +187,13 @@ export function calculateClientHealth(
 
 // ── Convenience exports ───────────────────────────────────────────────────────
 
-/** Pre-computed results for components that don't need reactivity */
-export const CLIENT_HEALTH_RESULTS = calculateClientHealth();
+/**
+ * Pre-computed results for components that don't need reactivity.
+ * Demo mode: populated from DEMO_CLIENTS.
+ * Production: empty array — components must call calculateClientHealth(realClients)
+ *             with data fetched from DB. Empty states handled in Phase 1.4.4.
+ */
+export const CLIENT_HEALTH_RESULTS: ClientHealthResult[] = calculateClientHealth();
 
 /** True if any client has health < 60 (drives Oracle retention risk) */
 export function hasRetentionRisk(): boolean {
@@ -191,5 +207,10 @@ export function getAtRiskClients(): ClientHealthResult[] {
         .sort((a, b) => a.healthScore - b.healthScore);
 }
 
-/** Max ACV across all clients — used for star size normalisation */
-export const MAX_CLIENT_ACV = Math.max(...CLIENTS.map(c => c.acv));
+/**
+ * Max ACV across all clients — used for star size normalisation.
+ * Returns 0 in production until real clients are loaded from DB.
+ */
+export const MAX_CLIENT_ACV: number = isDemoMode() && DEMO_CLIENTS.length > 0
+    ? Math.max(...DEMO_CLIENTS.map(c => c.acv))
+    : 0;

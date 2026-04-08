@@ -6,38 +6,21 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
+import { getEntityReceivablesContent } from '@/lib/entityDemoContent';
+import { useEntity } from '@/context/EntityContext';
 import styles from './receivables.module.css';
 
-const RECEIVABLES_DATA = {
-    totalOutstanding: 4369800,
-    primaryPO: {
-        number: 'PO 3001145285',
-        client: { en: 'NUPCO Marketplace', ar: 'سوق نوبكو' },
-        product: { en: 'Suture Braid Silk 2/0 – 75cm', ar: 'خيط جراحي حريري مجدول 2/0 – 75سم' },
-        amount: 939.80,
-        filingDate: '2026-01-15',
-        paymentTerms: 120,
-    },
-    agingBuckets: [
-        { label: '0-30', labelAr: '٠-٣٠', amount: 1250000, percent: 28.6 },
-        { label: '31-60', labelAr: '٣١-٦٠', amount: 980000, percent: 22.4 },
-        { label: '61-90', labelAr: '٦١-٩٠', amount: 1450000, percent: 33.2 },
-        { label: '91-120', labelAr: '٩١-١٢٠', amount: 689800, percent: 15.8 },
-    ],
-    topDebtors: [
-        { name: { en: 'NUPCO – Central Region', ar: 'نوبكو – المنطقة الوسطى' }, amount: 1850000, days: 87 },
-        { name: { en: 'MOH – Riyadh Cluster', ar: 'وزارة الصحة – تجمع الرياض' }, amount: 1320000, days: 62 },
-        { name: { en: 'King Faisal Specialist Hospital', ar: 'مستشفى الملك فيصل التخصصي' }, amount: 750000, days: 45 },
-        { name: { en: 'Saudi German Hospital', ar: 'المستشفى السعودي الألماني' }, amount: 449800, days: 28 },
-    ],
-    collectionRate: 78.4,
-};
+const RECEIVABLES_DATA = getEntityReceivablesContent('ENT_02');
 
 export default function ReceivablesReportPage() {
     const locale = useLocale();
     const isAr = locale === 'ar';
     const t = useTranslations('receivables');
     const tc = useTranslations('common');
+    const { activeEntity } = useEntity();
+    const receivables = activeEntity.id === 'ENT_02'
+        ? RECEIVABLES_DATA
+        : getEntityReceivablesContent(activeEntity.id);
 
     const formatSAR = (n: number) => {
         const formatted = n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -54,13 +37,13 @@ export default function ReceivablesReportPage() {
     };
 
     const dueDate = useMemo(() => {
-        const filing = new Date(RECEIVABLES_DATA.primaryPO.filingDate);
-        const due = new Date(filing.getTime() + RECEIVABLES_DATA.primaryPO.paymentTerms * 24 * 60 * 60 * 1000);
+        const filing = new Date(receivables.primaryPO.filingDate);
+        const due = new Date(filing.getTime() + receivables.primaryPO.paymentTerms * 24 * 60 * 60 * 1000);
         const dateLocale = isAr ? 'ar-SA' : 'en-US';
         return due.toLocaleDateString(dateLocale, { month: 'short', day: 'numeric', year: 'numeric' });
-    }, [isAr]);
+    }, [isAr, receivables.primaryPO.filingDate, receivables.primaryPO.paymentTerms]);
 
-    const maxBucket = Math.max(...RECEIVABLES_DATA.agingBuckets.map(b => b.amount));
+    const maxBucket = Math.max(...receivables.agingBuckets.map(b => b.amount));
     const L = (obj: { en: string; ar: string }) => isAr ? obj.ar : obj.en;
 
     return (
@@ -78,11 +61,11 @@ export default function ReceivablesReportPage() {
                     transition={{ duration: 0.6 }}
                 >
                     <div className={styles.headerTitle}>{t('title')}</div>
-                    <div className={styles.totalValue}>{formatSARShort(RECEIVABLES_DATA.totalOutstanding)}</div>
+                    <div className={styles.totalValue}>{formatSARShort(receivables.totalOutstanding)}</div>
                     <div className={styles.totalLabel}>{t('totalOutstanding')}</div>
                     <div className={styles.collectionRow}>
                         <span className={styles.collectionLabel}>{t('collectionRate')}</span>
-                        <span className={styles.collectionValue}>{formatNumber(RECEIVABLES_DATA.collectionRate, locale)}%</span>
+                        <span className={styles.collectionValue}>{formatNumber(receivables.collectionRate, locale)}%</span>
                     </div>
                 </motion.div>
 
@@ -93,21 +76,21 @@ export default function ReceivablesReportPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.15, duration: 0.5 }}
                 >
-                    <div className={styles.poTag}>{formatNumber(RECEIVABLES_DATA.primaryPO.number, locale)}</div>
-                    <div className={styles.poProduct}>{L(RECEIVABLES_DATA.primaryPO.product)}</div>
-                    <div className={styles.poClient}>{L(RECEIVABLES_DATA.primaryPO.client)}</div>
+                    <div className={styles.poTag}>{formatNumber(receivables.primaryPO.number, locale)}</div>
+                    <div className={styles.poProduct}>{L(receivables.primaryPO.product)}</div>
+                    <div className={styles.poClient}>{L(receivables.primaryPO.client)}</div>
                     <div className={styles.poRow}>
                         <span className={styles.poLabel}>{t('invoiceAmount')}</span>
-                        <span className={styles.poAmount}>{formatSAR(RECEIVABLES_DATA.primaryPO.amount)}</span>
+                        <span className={styles.poAmount}>{formatSAR(receivables.primaryPO.amount)}</span>
                     </div>
                     <div className={styles.poRow}>
                         <span className={styles.poLabel}>{t('legallyDue')}</span>
                         <span className={styles.poDate}>
-                            {dueDate} ({formatNumber(RECEIVABLES_DATA.primaryPO.paymentTerms, locale)} {t('days')})
+                            {dueDate} ({formatNumber(receivables.primaryPO.paymentTerms, locale)} {t('days')})
                         </span>
                     </div>
                     <div className={styles.poNote}>
-                        {t('nupcoTerms', { days: formatNumber(RECEIVABLES_DATA.primaryPO.paymentTerms, locale) })}
+                        {L(receivables.note)}
                     </div>
                 </motion.div>
 
@@ -120,8 +103,8 @@ export default function ReceivablesReportPage() {
                 >
                     <div className={styles.sectionTitle}>{t('agingBuckets')}</div>
                     <div className={styles.bucketList}>
-                        {(isAr ? [...RECEIVABLES_DATA.agingBuckets].reverse() : RECEIVABLES_DATA.agingBuckets).map((bucket, i) => {
-                            const origIdx = RECEIVABLES_DATA.agingBuckets.indexOf(bucket);
+                        {(isAr ? [...receivables.agingBuckets].reverse() : receivables.agingBuckets).map((bucket, i) => {
+                            const origIdx = receivables.agingBuckets.indexOf(bucket);
                             return (
                                 <div key={i} className={styles.bucketRow}>
                                     <span className={styles.bucketLabel}>
@@ -157,7 +140,7 @@ export default function ReceivablesReportPage() {
                     transition={{ delay: 0.45, duration: 0.5 }}
                 >
                     <div className={styles.sectionTitle}>{t('topDebtors')}</div>
-                    {RECEIVABLES_DATA.topDebtors.map((debtor, i) => (
+                    {receivables.topDebtors.map((debtor, i) => (
                         <div key={i} className={styles.debtorRow}>
                             <div className={styles.debtorInfo}>
                                 <span className={styles.debtorName}>{L(debtor.name)}</span>

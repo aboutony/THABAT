@@ -19,6 +19,7 @@ import type {
     ConnectionTestResult,
     NormalizedDailyMetrics,
 } from './types';
+import { logger } from '@/lib/logger';
 
 function asSAP(creds: ERPCredentials): SAPCredentials {
     if (creds.provider !== 'sap') throw new Error('Invalid credentials for SAP');
@@ -201,7 +202,7 @@ export const SAPConnector: ERPConnector = {
 
             return Array.from(dateMap.values()).sort((a, b) => a.date.localeCompare(b.date));
         } catch (error) {
-            console.error('SAP fetch error:', error);
+            logger.error('SAP fetchMetrics failed', { error });
             return [];
         }
     },

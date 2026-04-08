@@ -11,7 +11,8 @@
 import { motion } from 'framer-motion';
 import { useLocale } from 'next-intl';
 import { fetchExternalPulse } from '@/lib/fetchExternalPulse';
-import type { ExternalPulse, PulseSeverity } from '@/lib/fetchExternalPulse';
+import type { PulseSeverity } from '@/lib/fetchExternalPulse';
+import { useEntity } from '@/context/EntityContext';
 import s from './ExternalPulseCard.module.css';
 
 // ── Severity config ────────────────────────────────────────────────────────────
@@ -33,7 +34,8 @@ const CATEGORY_ICON: Record<string, string> = {
 export default function ExternalPulseCard() {
     const locale = useLocale();
     const isAr   = locale === 'ar';
-    const pulses = fetchExternalPulse();
+    const { activeEntity } = useEntity();
+    const pulses = fetchExternalPulse(activeEntity.id);
 
     return (
         <div className={s.card}>

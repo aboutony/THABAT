@@ -1,18 +1,18 @@
-// ── Action Ledger — THABAT Phase 05 + 06 ─────────────────────────────────
-// Stores finalized recruitment plans and supply-chain pivots, tracking
-// their real-world outcome.
-// Persisted to localStorage; dispatches 'thabat-ledger-updated' so all
-// open components can sync without a full re-render.
+// ── Action Ledger — THABAT Phase 1.9 ─────────────────────────────────────
+// Persists to the database via /api/ledger.
+// Also dual-writes to localStorage so the multi-entity COMMANDER demo
+// stays responsive without a network round-trip on entity switch.
+// Guest / demo-tier users (no real session) fall back to localStorage only.
 
-export type NitaqatTierKey  = 'platinum' | 'highGreen' | 'medGreen' | 'lowGreen' | 'red';
-export type LedgerStatus    = 'pending' | 'realized';
+export type NitaqatTierKey   = 'platinum' | 'highGreen' | 'medGreen' | 'lowGreen' | 'red';
+export type LedgerStatus     = 'pending' | 'realized';
 export type LedgerActionType = 'NITAQAT' | 'SUPPLY_CHAIN_PIVOT' | 'SCENARIO_PLAN' | 'VERIFIED_STRATEGY';
 
 export interface SupplyChainMeta {
-    original:    string;   // original supplier name
-    alternative: string;   // pivoted-to supplier name
-    units:       number;   // shortfall units averted
-    description: string;   // human-readable action description
+    original:    string;
+    alternative: string;
+    units:       number;
+    description: string;
 }
 
 export interface LedgerEntry {
@@ -21,16 +21,13 @@ export interface LedgerEntry {
     actionType:        LedgerActionType;
     avoidedCost:       number;               // SAR
     status:            LedgerStatus;
-    // Nitaqat-specific (undefined for SUPPLY_CHAIN_PIVOT)
     plannedExpats?:    number;
     currentTier?:      NitaqatTierKey;
     projectedTier?:    NitaqatTierKey;
     tierDropped?:      boolean;
     correctionNeeded?: number;
     safeWindow?:       number;
-    // Supply-chain-specific (undefined for NITAQAT)
     meta?:             SupplyChainMeta;
-    // Scenario-specific (undefined for other types)
     scenarioMeta?:     ScenarioMeta;
 }
 
@@ -43,32 +40,49 @@ export interface ScenarioMeta {
     projectedStockRisk:  boolean;
 }
 
-// ── Persistence helpers ───────────────────────────────────────────────────
-// Storage key is namespaced per active entity so data never bleeds between
-// companies. getLedgerStorageKey() is called on every read/write (not cached)
-// so switching entity immediately routes to the correct silo.
+// ── localStorage helpers (client-only) ────────────────────────────────────
 
 import { getLedgerStorageKey } from './entityContext';
 
-export function getLedger(): LedgerEntry[] {
+function lsGet(): LedgerEntry[] {
     if (typeof window === 'undefined') return [];
     try {
-        return JSON.parse(
-            localStorage.getItem(getLedgerStorageKey()) ?? '[]'
-        ) as LedgerEntry[];
-    } catch {
-        return [];
-    }
+        return JSON.parse(localStorage.getItem(getLedgerStorageKey()) ?? '[]') as LedgerEntry[];
+    } catch { return []; }
 }
 
-function saveLedger(entries: LedgerEntry[]): void {
+function lsSave(entries: LedgerEntry[]): void {
     if (typeof window === 'undefined') return;
     localStorage.setItem(getLedgerStorageKey(), JSON.stringify(entries));
     window.dispatchEvent(new Event('thabat-ledger-updated'));
 }
 
-// ── CRUD ─────────────────────────────────────────────────────────────────
+function lsAddEntry(entry: LedgerEntry): void {
+    const entries = lsGet();
+    entries.unshift(entry);
+    lsSave(entries);
+}
 
+function lsMarkRealized(id: string): void {
+    const entries = lsGet();
+    const idx = entries.findIndex(e => e.id === id);
+    if (idx >= 0) { entries[idx].status = 'realized'; lsSave(entries); }
+}
+
+// ── Sync helpers — safe no-ops outside browser ─────────────────────────────
+
+function isClientContext(): boolean {
+    return typeof window !== 'undefined' && typeof fetch !== 'undefined';
+}
+
+// ── Public API ────────────────────────────────────────────────────────────
+
+/**
+ * Save a new ledger entry.
+ * Writes to DB (non-blocking) + localStorage simultaneously.
+ * Returns the entry immediately using a client-generated id so callers
+ * don't need to await a network round-trip.
+ */
 export function addLedgerEntry(
     payload: Omit<LedgerEntry, 'id' | 'date' | 'status'>,
 ): LedgerEntry {
@@ -78,19 +92,57 @@ export function addLedgerEntry(
         date:   new Date().toISOString(),
         status: 'pending',
     };
-    const entries = getLedger();
-    entries.unshift(entry); // newest first
-    saveLedger(entries);
+
+    // Always write to localStorage for instant local feedback
+    lsAddEntry(entry);
+
+    // Fire-and-forget DB write — replace client id with server id if successful
+    if (isClientContext()) {
+        fetch('/api/ledger', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(entry),
+        }).then(async (res) => {
+            if (res.ok) {
+                const data = await res.json() as { entry: LedgerEntry };
+                // Swap client-generated id for the DB-assigned id in localStorage
+                const entries = lsGet();
+                const idx = entries.findIndex(e => e.id === entry.id);
+                if (idx >= 0) {
+                    entries[idx].id   = data.entry.id;
+                    entries[idx].date = data.entry.date;
+                    lsSave(entries);
+                }
+            }
+        }).catch(() => { /* localStorage already has the entry — no data lost */ });
+    }
+
     return entry;
 }
 
+/**
+ * Mark an entry as realized.
+ * Updates localStorage immediately, then syncs to DB.
+ */
 export function markLedgerRealized(id: string): void {
-    const entries = getLedger();
-    const idx = entries.findIndex(e => e.id === id);
-    if (idx >= 0) {
-        entries[idx].status = 'realized';
-        saveLedger(entries);
+    lsMarkRealized(id);
+
+    if (isClientContext()) {
+        fetch('/api/ledger', {
+            method:  'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ id }),
+        }).catch(() => { /* localStorage already updated */ });
     }
+}
+
+/**
+ * Synchronous read from localStorage (for components that need instant data).
+ * ActionLedger.tsx uses the API for its primary load; this is used by
+ * getTotalAvoided() in RitualScreen.
+ */
+export function getLedger(): LedgerEntry[] {
+    return lsGet();
 }
 
 // ── Aggregates ────────────────────────────────────────────────────────────
@@ -101,19 +153,12 @@ export function getTotalAvoided(): number {
 
 // ── Business logic ────────────────────────────────────────────────────────
 
-/**
- * Calculates the SAR value of costs avoided by following the simulation:
- * - Tier-drop scenario: cost of corrective Saudi hires (SAR 12,000 ea.)
- * - Safe-hire scenario: visa renewal fees saved (SAR 2,400 per expat/yr)
- */
 export function calcAvoidedCost(
     plannedExpats:    number,
     correctionNeeded: number,
     tierDropped:      boolean,
     safeWindow:       number,
 ): number {
-    if (tierDropped && correctionNeeded > 0) {
-        return correctionNeeded * 12_000;
-    }
+    if (tierDropped && correctionNeeded > 0) return correctionNeeded * 12_000;
     return Math.min(plannedExpats, safeWindow) * 2_400;
 }

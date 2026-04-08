@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { findOptimalPath } from '@/lib/findOptimalPath';
 import type { OptimalResult } from '@/lib/findOptimalPath';
 import type { ScenarioLevers } from '@/lib/projectScenarioImpact';
+import { useEntity } from '@/context/EntityContext';
 import s from './OptimizerWidget.module.css';
 
 interface OptimizerWidgetProps {
@@ -13,6 +14,7 @@ interface OptimizerWidgetProps {
 
 export default function OptimizerWidget({ onOptimize }: OptimizerWidgetProps) {
     const t = useTranslations('optimizer');
+    const { activeEntity } = useEntity();
     const [spinning, setSpinning] = useState(false);
 
     function handleSpark() {
@@ -20,7 +22,7 @@ export default function OptimizerWidget({ onOptimize }: OptimizerWidgetProps) {
         setSpinning(true);
         // Tiny delay so the pulse animation fires before synchronous work
         setTimeout(() => {
-            const result = findOptimalPath('balanced');
+            const result = findOptimalPath('balanced', activeEntity.id);
             onOptimize(result.levers, result);
             setSpinning(false);
         }, 180);

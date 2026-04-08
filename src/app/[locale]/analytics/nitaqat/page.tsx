@@ -7,9 +7,11 @@ import { motion, AnimatePresence }    from 'framer-motion';
 import Link                           from 'next/link';
 
 import Shell from '@/components/Shell';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import NitaqatShield from '@/components/NitaqatShield';
 import { ShieldRating } from '@/components/SupplierCard';
-import { PRIMARY_SUPPLIER, TRUST_COLORS } from '@/lib/calculateTrustScore';
+import { PRIMARY_SUPPLIER, TRUST_COLORS, getEntityPrimarySupplier } from '@/lib/calculateTrustScore';
+import { getEntityWorkforce } from '@/lib/entityDemoContent';
 import {
     calcWeightedSaudi,
     calcSaudizationPct,
@@ -22,6 +24,7 @@ import {
     type NitaqatTier,
 } from '@/lib/nitaqat';
 import { addLedgerEntry, calcAvoidedCost } from '@/lib/ledger';
+import { useEntity } from '@/context/EntityContext';
 
 // Local tier-label key map — `as const` lets next-intl infer the exact key literals
 const TIER_KEYS = {
@@ -32,18 +35,13 @@ const TIER_KEYS = {
     red:       'tierRed',
 } as const satisfies Record<NitaqatTier, string>;
 
+import { useIdentity } from '@/hooks/useIdentity';
 import s from './nitaqat.module.css';
 
 // ── UNIMED demo workforce ─────────────────────────────────────────────────
 // weighted = 42×1.0 + 4×0.5 + 5×0.5 + 1×4.0 = 42 + 2 + 2.5 + 4 = 50.5
 // saudizationPct = 50.5 / 120 × 100 = 42.08%  →  Platinum
-const DEMO_WORKFORCE: WorkforceInput = {
-    totalEmployees:    120,
-    saudiRegular:       42,   // weight 1.0
-    saudiLowSalary:      4,   // weight 0.5
-    saudiStudents:       5,   // weight 0.5
-    saudiSpecialNeeds:   1,   // weight 4.0  (cap 10% of 120 = 12)
-};
+const DEMO_WORKFORCE: WorkforceInput = getEntityWorkforce('ENT_02');
 
 const WORKER_ROWS: {
     key: keyof Omit<WorkforceInput, 'totalEmployees'>;
@@ -66,6 +64,11 @@ export default function NitaqatPage() {
     const isAr    = locale === 'ar';
     const router  = useRouter();
     const t       = useTranslations('nitaqat');
+    const { activeEntity } = useEntity();
+    const workforce = activeEntity.id === 'ENT_02' ? DEMO_WORKFORCE : getEntityWorkforce(activeEntity.id);
+    const primarySupplier = activeEntity.id === 'ENT_02' ? PRIMARY_SUPPLIER : getEntityPrimarySupplier(activeEntity.id);
+
+    const { isClient } = useIdentity();
 
     const [plannedExpats,      setPlannedExpats]      = useState(0);
     const [finalized,          setFinalized]          = useState(false);
@@ -73,15 +76,15 @@ export default function NitaqatPage() {
     const [workforceExpanded,  setWorkforceExpanded]  = useState(false);
 
     // ── Current state ──────────────────────────────────────────────────────
-    const weightedSaudi  = calcWeightedSaudi(DEMO_WORKFORCE);
-    const saudizationPct = calcSaudizationPct(weightedSaudi, DEMO_WORKFORCE.totalEmployees);
-    const currentTier    = getTier(saudizationPct, DEMO_WORKFORCE.totalEmployees);
+    const weightedSaudi  = calcWeightedSaudi(workforce);
+    const saudizationPct = calcSaudizationPct(weightedSaudi, workforce.totalEmployees);
+    const currentTier    = getTier(saudizationPct, workforce.totalEmployees);
     const currentLabel   = t(TIER_KEYS[currentTier]);
 
     // ── Simulation ────────────────────────────────────────────────────────
     const sim = simulateExpats(
         weightedSaudi,
-        DEMO_WORKFORCE.totalEmployees,
+        workforce.totalEmployees,
         currentTier,
         plannedExpats,
     );
@@ -91,7 +94,7 @@ export default function NitaqatPage() {
 
     // Max safe expats without dropping from currentTier (if not red)
     const safeWindow = currentTier !== 'red'
-        ? maxExpatsBeforeDrop(weightedSaudi, DEMO_WORKFORCE.totalEmployees, currentTier)
+        ? maxExpatsBeforeDrop(weightedSaudi, workforce.totalEmployees, currentTier)
         : 0;
 
     const simLabel = t(TIER_KEYS[sim.newTier]);
@@ -104,7 +107,7 @@ export default function NitaqatPage() {
             sim.tierDropped,
             safeWindow,
         );
-        const saved = addLedgerEntry({
+        addLedgerEntry({
             actionType:       'NITAQAT',
             plannedExpats,
             currentTier:      currentTier,
@@ -120,8 +123,6 @@ export default function NitaqatPage() {
             window.dispatchEvent(new Event('thabat-ledger-updated'));
         }
 
-        console.log('Action Saved to Ledger', saved);
-
         // Celebration pulse then toast
         setIsCelebrating(true);
         setTimeout(() => setIsCelebrating(false), 700);
@@ -131,6 +132,7 @@ export default function NitaqatPage() {
 
     return (
         <Shell>
+        <ErrorBoundary section="Nitaqat Compliance">
         {/* ── Celebration overlay — position:fixed bypasses all overflow clipping ── */}
         <AnimatePresence>
             {isCelebrating && (
@@ -174,26 +176,30 @@ export default function NitaqatPage() {
             {/* ── Gauge card ──────────────────────────────────────────────── */}
             <div className={`glass-card ${s.gaugeCard}`}>
                 <NitaqatShield
-                    saudizationPct={plannedExpats > 0 ? sim.newWeightedPct : saudizationPct}
-                    tier={plannedExpats > 0 ? sim.newTier : currentTier}
-                    tierLabel={plannedExpats > 0 ? simLabel : currentLabel}
+                    saudizationPct={isClient ? 0 : (plannedExpats > 0 ? sim.newWeightedPct : saudizationPct)}
+                    tier={isClient ? 'red' : (plannedExpats > 0 ? sim.newTier : currentTier)}
+                    tierLabel={isClient
+                        ? (isAr ? 'في انتظار تكامل GOSI' : 'Awaiting GOSI Integration')
+                        : (plannedExpats > 0 ? simLabel : currentLabel)
+                    }
                     isAr={isAr}
                 />
                 <div className={s.gaugeMeta}>
                     <span className={s.gaugeMetaItem}>
                         <span className={s.metaLabel}>{t('totalEmployees')}</span>
                         <span className={s.metaVal}>
-                            {plannedExpats > 0 ? sim.newTotal : DEMO_WORKFORCE.totalEmployees}
+                            {isClient ? 0 : (plannedExpats > 0 ? sim.newTotal : workforce.totalEmployees)}
                         </span>
                     </span>
                     <span className={s.gaugeMetaItem}>
                         <span className={s.metaLabel}>{t('saudiWeighted')}</span>
-                        <span className={s.metaVal}>{weightedSaudi.toFixed(1)}</span>
+                        <span className={s.metaVal}>{isClient ? '0.0' : weightedSaudi.toFixed(1)}</span>
                     </span>
                 </div>
             </div>
 
-            {/* ── Supplier Trust Shield — margin linkage ──────────────────── */}
+            {/* ── Supplier Trust Shield — hidden for CLIENT ───────────────── */}
+            {!isClient && (
             <Link
                 href={`/${locale}/analytics/supply-chain`}
                 className={`glass-card ${s.supplierCard}`}
@@ -201,26 +207,28 @@ export default function NitaqatPage() {
                 <div className={s.supplierLeft}>
                     <p className={s.supplierLabel}>{t('supplierLabel')}</p>
                     <p className={s.supplierName}>
-                        {isAr ? PRIMARY_SUPPLIER.nameAr : PRIMARY_SUPPLIER.name}
+                        {isAr ? primarySupplier.nameAr : primarySupplier.name}
                     </p>
                     <ShieldRating
-                        score={PRIMARY_SUPPLIER.trustScore}
-                        color={TRUST_COLORS[PRIMARY_SUPPLIER.band]}
+                        score={primarySupplier.trustScore}
+                        color={TRUST_COLORS[primarySupplier.band]}
                         size={13}
                     />
                 </div>
                 <div className={s.supplierRight}>
                     <span
                         className={s.supplierScore}
-                        style={{ color: TRUST_COLORS[PRIMARY_SUPPLIER.band] }}
+                        style={{ color: TRUST_COLORS[primarySupplier.band] }}
                     >
-                        {PRIMARY_SUPPLIER.trustScore.toFixed(1)}<span className={s.supplierOf}>/5</span>
+                        {primarySupplier.trustScore.toFixed(1)}<span className={s.supplierOf}>/5</span>
                     </span>
                     <span className={s.supplierMargin}>{t('supplierMarginNote')}</span>
                 </div>
             </Link>
+            )}
 
-            {/* ── Visa interlink — full-width, high-context after gauge ────── */}
+            {/* ── Visa interlink — hidden for CLIENT ──────────────────────── */}
+            {!isClient && (
             <div className={`glass-card ${s.visaCard}`}>
                 <span className={s.visaIcon}>🛂</span>
                 <div className={s.visaText}>
@@ -234,6 +242,7 @@ export default function NitaqatPage() {
                     {t('viewWaterfall')} →
                 </Link>
             </div>
+            )}
 
             {/* ── Workforce snapshot ──────────────────────────────────────── */}
             <div className={`glass-card ${s.card}`}>
@@ -252,10 +261,10 @@ export default function NitaqatPage() {
                 </div>
                 <div className={s.workerGrid}>
                     {WORKER_ROWS.map(({ key, labelKey, weight, primary }) => {
-                        const count  = DEMO_WORKFORCE[key];
-                        const wValue = key === 'saudiSpecialNeeds'
-                            ? Math.min(count, Math.floor(DEMO_WORKFORCE.totalEmployees * 0.10)) * 4.0
-                            : count * parseFloat(weight);
+                        const count  = isClient ? 0 : workforce[key];
+                        const wValue = isClient ? 0 : (key === 'saudiSpecialNeeds'
+                            ? Math.min(count, Math.floor(workforce.totalEmployees * 0.10)) * 4.0
+                            : count * parseFloat(weight));
                         return (
                             <div
                                 key={key}
@@ -274,15 +283,15 @@ export default function NitaqatPage() {
                     })}
                     <div className={`${s.workerRow} ${s.workerTotal}`}>
                         <span className={s.workerLabel}>{t('totalEmployees')}</span>
-                        <span className={s.workerCount}>{DEMO_WORKFORCE.totalEmployees}</span>
+                        <span className={s.workerCount}>{isClient ? 0 : workforce.totalEmployees}</span>
                         <span className={s.workerWeight}/>
-                        <span className={s.workerWeighted}>{weightedSaudi.toFixed(1)}</span>
+                        <span className={s.workerWeighted}>{isClient ? '0.0' : weightedSaudi.toFixed(1)}</span>
                     </div>
                 </div>
             </div>
 
-            {/* ── Expansion simulator ─────────────────────────────────────── */}
-            <div className={`glass-card ${s.card}`}>
+            {/* ── Expansion simulator — hidden for CLIENT ─────────────────── */}
+            {!isClient && <div className={`glass-card ${s.card}`}>
                 <div className={s.simHeader}>
                     <p className={s.cardTitle}>{t('simulatorTitle')}</p>
                     <p className={s.cardSubtitle}>{t('simulatorSubtitle')}</p>
@@ -369,17 +378,21 @@ export default function NitaqatPage() {
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </div>
+            </div>}
 
             {/* ── Safe expansion window ────────────────────────────────────── */}
             <div className={`glass-card ${s.card}`}>
                 <p className={s.cardTitle}>{t('maxExpatsSafe')}</p>
                 <div className={s.insightRow}>
                     <div className={s.insightStat}>
-                        <span className={s.insightNum} style={{ color: TIER_COLORS[currentTier] }}>
-                            {safeWindow}
+                        <span className={s.insightNum} style={{ color: isClient ? 'rgba(148,163,184,0.3)' : TIER_COLORS[currentTier] }}>
+                            {isClient ? '---' : safeWindow}
                         </span>
-                        <span className={s.insightDesc}>{t('maxExpatsText', { n: safeWindow })}</span>
+                        <span className={s.insightDesc}>
+                            {isClient
+                                ? (isAr ? 'في انتظار تكامل GOSI' : 'Awaiting GOSI Integration')
+                                : t('maxExpatsText', { n: safeWindow })}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -389,7 +402,9 @@ export default function NitaqatPage() {
                 <motion.button
                     className={s.finalizeBtn}
                     onClick={handleFinalize}
-                    whileTap={{ scale: 0.97 }}
+                    whileTap={isClient ? undefined : { scale: 0.97 }}
+                    disabled={isClient}
+                    style={isClient ? { opacity: 0.35, cursor: 'not-allowed' } : undefined}
                 >
                     {t('finalizeBtn')}
                 </motion.button>
@@ -408,6 +423,7 @@ export default function NitaqatPage() {
                 </AnimatePresence>
             </div>
         </motion.div>
+        </ErrorBoundary>
         </Shell>
     );
 }

@@ -6,7 +6,8 @@ import { motion } from 'framer-motion';
 import styles from './entry.module.css';
 
 interface MetricsEntryProps {
-    onSubmit: (data: MetricsData) => Promise<void>;
+    /** Return true on success, false on failure (host handles error display). */
+    onSubmit: (data: MetricsData) => Promise<boolean>;
     loading: boolean;
 }
 
@@ -42,8 +43,8 @@ export default function MetricsEntry({ onSubmit, loading }: MetricsEntryProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await onSubmit(form);
-        setSuccess(true);
+        const ok = await onSubmit(form);
+        setSuccess(ok);
     };
 
     const fields = [

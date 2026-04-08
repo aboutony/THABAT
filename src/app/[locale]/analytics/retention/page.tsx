@@ -8,11 +8,12 @@ import Shell from '@/components/Shell';
 import ClientConstellation from '@/components/ClientConstellation';
 import ActionToast from '@/components/ActionToast';
 import {
-    CLIENT_HEALTH_RESULTS,
-    getAtRiskClients,
     type ClientHealthResult,
 } from '@/lib/calculateClientHealth';
+import { getEntityAtRiskClients, getEntityClientHealth } from '@/lib/entityDatasets';
 import { executeActionBridge, type ActionResult } from '@/lib/executeActionBridge';
+import { useIdentity } from '@/hooks/useIdentity';
+import { useEntity } from '@/context/EntityContext';
 import s from './retention.module.css';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -79,13 +80,16 @@ function ScoreBreakdown({ client }: { client: ClientHealthResult }) {
 export default function RetentionSentinelPage() {
     const locale  = useLocale();
     const isAr    = locale === 'ar';
+    const { activeEntity } = useEntity();
     const [outreachSent,  setOutreachSent]  = useState<Record<string, boolean>>({});
     const [expanded,      setExpanded]      = useState<string | null>(null);
     const [toastResult,   setToastResult]   = useState<ActionResult | null>(null);
 
-    const atRisk      = getAtRiskClients().slice(0, 5);
-    const healthy     = CLIENT_HEALTH_RESULTS.filter(c => !c.isFlickering);
-    const atRiskCount = CLIENT_HEALTH_RESULTS.filter(c => c.isFlickering).length;
+    const { isClient } = useIdentity();
+    const clientHealth = getEntityClientHealth(activeEntity.id);
+    const atRisk      = getEntityAtRiskClients(activeEntity.id).slice(0, 5);
+    const healthy     = clientHealth.filter(c => !c.isFlickering);
+    const atRiskCount = clientHealth.filter(c => c.isFlickering).length;
 
     const handleOutreach = useCallback(async (client: ClientHealthResult) => {
         if (outreachSent[client.id]) return;
@@ -137,21 +141,21 @@ export default function RetentionSentinelPage() {
                 <div className={s.statsRow}>
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#4ADE80' }}>
-                            {CLIENT_HEALTH_RESULTS.length}
+                            {isClient ? '---' : clientHealth.length}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'عملاء' : 'Clients'}</span>
                     </div>
                     <div className={s.statDivider} />
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#F59E0B' }}>
-                            {atRiskCount}
+                            {isClient ? '---' : atRiskCount}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'في خطر' : 'At Risk'}</span>
                     </div>
                     <div className={s.statDivider} />
                     <div className={s.stat}>
                         <span className={s.statNum} style={{ color: '#4ADE80' }}>
-                            {healthy.length}
+                            {isClient ? '---' : healthy.length}
                         </span>
                         <span className={s.statLabel}>{isAr ? 'بصحة جيدة' : 'Healthy'}</span>
                     </div>
@@ -160,12 +164,17 @@ export default function RetentionSentinelPage() {
                 {/* ── Constellation ────────────────────────────────────── */}
                 <ClientConstellation />
 
-                {/* ── At-risk client list ──────────────────────────────── */}
-                <div className={isAr ? s.sectionHeaderArabic : s.sectionLabel}>
+                {/* ── At-risk client list (hidden for CLIENT tier) ─────── */}
+                {!isClient && (
+                <div
+                    className={isAr ? s.sectionHeaderArabic : s.sectionLabel}
+                    style={isAr ? { textAlign: 'right', width: '100%' } : undefined}
+                >
                     {isAr ? 'أعلى 5 عملاء في خطر' : 'Top 5 At-Risk Clients'}
                 </div>
+                )}
 
-                {atRisk.map((client, i) => {
+                {!isClient && atRisk.map((client, i) => {
                     const isExpanded = expanded === client.id;
                     return (
                         <motion.div
@@ -181,14 +190,21 @@ export default function RetentionSentinelPage() {
                                 className={s.cardHeader}
                                 onClick={() => setExpanded(isExpanded ? null : client.id)}
                             >
-                                <div className={s.clientMeta}>
-                                    <span className={s.clientName}>
+                                <div
+                                    className={s.clientMeta}
+                                    style={isAr ? { alignItems: 'flex-end' } : undefined}
+                                >
+                                    <span
+                                        className={s.clientName}
+                                        style={isAr ? { marginLeft: 'auto', textAlign: 'right' } : undefined}
+                                    >
                                         {isAr ? client.name.ar : client.name.en}
                                     </span>
                                     <span className={s.riskBadge} style={{
                                         color: client.color,
                                         background: `${client.color}18`,
                                         borderColor: `${client.color}30`,
+                                        ...(isAr ? { marginLeft: 'auto' } : {}),
                                     }}>
                                         {riskLabel(client.riskLevel)}
                                     </span>
@@ -239,8 +255,8 @@ export default function RetentionSentinelPage() {
                     );
                 })}
 
-                {/* ── Healthy clients ──────────────────────────────────── */}
-                {healthy.length > 0 && (
+                {/* ── Healthy clients (hidden for CLIENT tier) ─────────── */}
+                {!isClient && healthy.length > 0 && (
                     <div className={s.healthySection}>
                         <div className={s.sectionLabel}>
                             {isAr ? 'العملاء بصحة جيدة' : 'Healthy Clients'}

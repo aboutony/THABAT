@@ -6,11 +6,12 @@ import s from './ReportDocument.module.css';
 
 interface ReportDocumentProps {
     report: BoardReport;
+    isClient?: boolean;
 }
 
 // Rendered off-screen inside ExportPortal; captured by html2canvas.
 const ReportDocument = forwardRef<HTMLDivElement, ReportDocumentProps>(
-    function ReportDocument({ report }, ref) {
+    function ReportDocument({ report, isClient }, ref) {
         const generatedDate = new Date(report.generatedAt).toLocaleDateString('en-SA', {
             day: 'numeric', month: 'long', year: 'numeric',
         });
@@ -51,7 +52,9 @@ const ReportDocument = forwardRef<HTMLDivElement, ReportDocumentProps>(
                         </div>
                         <div className={s.kpi}>
                             <p className={s.kpiVal}>
-                                SAR {report.totalValueProtected.toLocaleString('en-SA')}
+                                {isClient
+                                    ? 'SAR ---'
+                                    : `SAR ${report.totalValueProtected.toLocaleString('en-SA')}`}
                             </p>
                             <p className={s.kpiLabel}>Value Protected</p>
                         </div>

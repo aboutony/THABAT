@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import Shell from '@/components/Shell';
 import { formatNumber } from '@/lib/locale-utils';
+import { getEntityApprovals } from '@/lib/entityDemoContent';
+import { useEntity } from '@/context/EntityContext';
 import styles from './approvals.module.css';
 
 interface PurchaseOrder {
@@ -21,58 +23,23 @@ interface PurchaseOrder {
     status: 'pending' | 'approved' | 'rejected';
 }
 
-const PENDING_POS: PurchaseOrder[] = [
-    {
-        id: 'po-001',
-        poNumber: 'PO-2026-0847',
-        product: 'Suture Braid Silk 2/0 – 75cm',
-        sku: 'SBS-20-75',
-        supplier: 'Medline Saudi Arabia',
-        amount: 939.80,
-        currency: 'SAR',
-        date: '2026-03-01',
-        urgency: 'high',
-        status: 'pending',
-    },
-    {
-        id: 'po-002',
-        poNumber: 'PO-2026-0848',
-        product: 'Surgical Gloves – Sterile (Box/50)',
-        sku: 'SG-ST-50',
-        supplier: 'Al-Borg Medical Supplies',
-        amount: 1250.00,
-        currency: 'SAR',
-        date: '2026-03-02',
-        urgency: 'medium',
-        status: 'pending',
-    },
-    {
-        id: 'po-003',
-        poNumber: 'PO-2026-0849',
-        product: 'IV Cannula 20G – Safety',
-        sku: 'IVC-20G-S',
-        supplier: 'Becton Dickinson KSA',
-        amount: 2180.00,
-        currency: 'SAR',
-        date: '2026-03-03',
-        urgency: 'low',
-        status: 'pending',
-    },
-];
+const PENDING_POS: PurchaseOrder[] = getEntityApprovals('ENT_02');
 
 export default function ApprovalsPage() {
     const locale = useLocale();
     const t = useTranslations('approvals');
     const tc = useTranslations('common');
-    const [orders, setOrders] = useState<PurchaseOrder[]>(PENDING_POS);
+    const { activeEntity } = useEntity();
+    const [approvedIds, setApprovedIds] = useState<Record<string, boolean>>({});
     const [toast, setToast] = useState<string | null>(null);
+    const baseOrders = activeEntity.id === 'ENT_02' ? PENDING_POS : getEntityApprovals(activeEntity.id);
+    const orders = useMemo(
+        () => baseOrders.map(po => approvedIds[po.id] ? { ...po, status: 'approved' as const } : po),
+        [approvedIds, baseOrders],
+    );
 
     const handleApprove = (id: string) => {
-        setOrders(prev =>
-            prev.map(po =>
-                po.id === id ? { ...po, status: 'approved' as const } : po
-            )
-        );
+        setApprovedIds(prev => ({ ...prev, [id]: true }));
         setToast(t('toastSuccess'));
         setTimeout(() => setToast(null), 3500);
     };

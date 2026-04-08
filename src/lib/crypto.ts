@@ -1,11 +1,19 @@
+/**
+ * crypto.ts — AES-256-GCM encryption for ERP credentials
+ *
+ * Reads the key from ERP_ENCRYPTION_KEY (via env.ts) — not the old AES_KEY.
+ * Key must be exactly 64 hex characters (32 bytes).
+ *
+ * Phase 1.2 — Secret hygiene: standardised to ERP_ENCRYPTION_KEY
+ */
+
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { getErpEncryptionKey } from './env';
 
 const ALGORITHM = 'aes-256-gcm';
 
 function getAesKey(): Buffer {
-    const key = process.env.AES_KEY;
-    if (!key) throw new Error('AES_KEY not configured');
-    return Buffer.from(key, 'hex');
+    return Buffer.from(getErpEncryptionKey(), 'hex');
 }
 
 export interface EncryptedData {

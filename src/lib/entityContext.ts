@@ -44,12 +44,12 @@ export const DEMO_ENTITIES: Entity[] = [
     },
     {
         id:          'ENT_03',
-        name:        'The Hygienic Product Manufacturer',
-        nameAr:      'مصنع المستلزمات الصحية',
+        name:        'Unicharm Gulf Hygienic Industries',
+        nameAr:      'يونيتشارم الخليج للصناعات الصحية',
         industry:    'Manufacturing',
         industryAr:  'التصنيع',
-        healthScore: 68,
-        accent:      '#06B6D4',   // cyan
+        healthScore: 86,
+        accent:      '#0EA5A6',   // teal
     },
     {
         id:          'ENT_04',
@@ -101,7 +101,7 @@ export const DEMO_ENTITIES: Entity[] = [
 // ── Constants ─────────────────────────────────────────────────────────────
 
 export const ENTITY_ACTIVE_KEY  = 'thabat-active-entity';
-export const DEFAULT_ENTITY_ID  = 'ENT_01';
+export const DEFAULT_ENTITY_ID  = 'ENT_03';
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -112,7 +112,9 @@ export function getActiveEntityId(): string {
 
 export function getActiveEntity(): Entity {
     const id = getActiveEntityId();
-    return DEMO_ENTITIES.find(e => e.id === id) ?? DEMO_ENTITIES[0];
+    return DEMO_ENTITIES.find(e => e.id === id)
+        ?? DEMO_ENTITIES.find(e => e.id === DEFAULT_ENTITY_ID)
+        ?? DEMO_ENTITIES[0];
 }
 
 /** Persist the new active entity and notify all listeners. */
