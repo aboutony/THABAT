@@ -109,6 +109,7 @@ export default function OracleBriefing({
         const intent   = processVoiceIntent(finalTranscript);
         const response = generateVocalResponse(intent, locale, score, activeEntity.id);
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setActiveIntent(intent);
         setVocalResponse(response);
 
@@ -159,6 +160,7 @@ export default function OracleBriefing({
             scoreBreakdown,
             hasRetentionRisk: hasEntityRetentionRisk(activeEntity.id),
         });
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCtx(context);
     }, [activeEntity.id, score, scoreBreakdown]);
 

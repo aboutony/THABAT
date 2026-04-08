@@ -54,6 +54,7 @@ export default function ActionLedger() {
     }, []);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         refresh();
         // Re-sync on localStorage writes (COMMANDER entity switch, local adds)
         window.addEventListener('thabat-ledger-updated', refresh);

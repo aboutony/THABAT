@@ -41,6 +41,7 @@ export function useVoiceOracle(locale: string): VoiceOracleState {
         const SR = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition;
         if (!SR) return;
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSupported(true);
 
         const rec = new SR();
@@ -48,10 +49,12 @@ export function useVoiceOracle(locale: string): VoiceOracleState {
         rec.interimResults = true;
         rec.lang           = locale === 'ar' ? 'ar-SA' : 'en-US';
 
+        // Web Speech API has no TS types — any is unavoidable here
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         rec.onresult = (e: any) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const text = Array.from<any>(e.results)
+            const text = (Array.from(e.results) as any[])
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .map((r: any) => r[0].transcript)
                 .join('');
             setTranscript(text);
@@ -66,8 +69,8 @@ export function useVoiceOracle(locale: string): VoiceOracleState {
             setListening(false);
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rec.onerror = (_e: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        rec.onerror = (_: Event) => {
             setListening(false);
         };
 

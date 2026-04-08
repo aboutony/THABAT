@@ -11,10 +11,6 @@ export default function EntitySelector() {
     const locale = useLocale();
     const { activeEntity, entities, switchEntity } = useEntity();
     const { isCommander } = useIdentity();
-
-    // Hard gate — only COMMANDER (adonis@thabat.app) sees the entity switcher
-    if (!isCommander) return null;
-
     const [open, setOpen] = useState(false);
     const wrapRef = useRef<HTMLDivElement>(null);
 

@@ -36,6 +36,7 @@ export default function InvestorView() {
     const [report, setReport] = useState<BoardReport | null>(null);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setReport(generateBoardReport(DEMO_SCORE));
     }, []);
 

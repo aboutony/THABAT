@@ -107,7 +107,7 @@ export default function NitaqatPage() {
             sim.tierDropped,
             safeWindow,
         );
-        const saved = addLedgerEntry({
+        addLedgerEntry({
             actionType:       'NITAQAT',
             plannedExpats,
             currentTier:      currentTier,

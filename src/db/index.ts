@@ -215,10 +215,9 @@ export default sql;
  * Execute within tenant context.
  * In Turso mode, the API routes already filter by org_id.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function withTenant<T>(
     orgId: string,
-    callback: (tx: any) => Promise<T>
+    callback: (tx: typeof sql) => Promise<T>
 ): Promise<T> {
     void orgId; // org_id filtering is done in queries
     return callback(sql);
@@ -227,9 +226,8 @@ export async function withTenant<T>(
 /**
  * Execute without RLS (same behavior in Turso mode).
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function withoutRLS<T>(
-    callback: (tx: any) => Promise<T>
+    callback: (tx: typeof sql) => Promise<T>
 ): Promise<T> {
     return callback(sql);
 }

@@ -34,29 +34,31 @@ const EntityContext = createContext<EntityContextValue>({
 
 export function EntityProvider({ children }: { children: ReactNode }) {
     const { user } = useAuth();
-    const [activeEntity, setActiveEntityState] = useState<Entity>(
+    const [activeEntity, setActiveEntityState] = useState<Entity>(() =>
         DEMO_ENTITIES.find(e => e.id === 'ENT_03') ?? DEMO_ENTITIES[0],
     );
 
+    // Derive entity from role without calling setState inside the effect body
+    const role = user?.role ?? null;
+    const entityForRole: Entity =
+        role === 'GUEST'
+            ? (DEMO_ENTITIES.find(e => e.id === 'ENT_03') ?? DEMO_ENTITIES[0])
+            : getActiveEntity();
+
+    // Sync resolved entity into state when role changes (runs outside effect)
+    const [syncedRole, setSyncedRole] = useState<string | null>(null);
+    if (syncedRole !== role) {
+        setSyncedRole(role);
+        setActiveEntityState(entityForRole);
+    }
+
     useEffect(() => {
-        const role = user?.role ?? null;
-
-        // GUEST: always pin to ENT_02 "The Medical Equipment Factory"
-        // CLIENT: entity is irrelevant (zero state), default to ENT_01
-        // COMMANDER: read from localStorage as normal
-        if (role === 'GUEST') {
-            const pinned = DEMO_ENTITIES.find(e => e.id === 'ENT_03') ?? DEMO_ENTITIES[0];
-            setActiveEntityState(pinned);
-            return; // no event listener needed — entity is pinned
-        }
-
-        setActiveEntityState(getActiveEntity());
-
-        // Re-sync whenever the entity changes (COMMANDER only path)
+        if (role === 'GUEST') return; // entity is pinned — no listener needed
+        // Re-sync when COMMANDER switches entity
         const sync = () => setActiveEntityState(getActiveEntity());
         window.addEventListener('thabat-entity-changed', sync);
         return () => window.removeEventListener('thabat-entity-changed', sync);
-    }, [user?.role]);
+    }, [role]);
 
     const switchEntity = useCallback((id: string) => {
         const role = user?.role ?? null;

@@ -158,8 +158,8 @@ export async function PUT(request: NextRequest) {
                     ORDER BY date DESC LIMIT 30
                 `;
 
-                const historicalScores = history.map(
-                    (r: { stability_score: unknown }) => Number(r.stability_score)
+                const historicalScores = (history as { stability_score: unknown }[]).map(
+                    r => Number(r.stability_score)
                 );
 
                 const raw: RawMetrics = {
